@@ -1,0 +1,55 @@
+{
+    "$schema": "../../connector.schema.json",
+    "key": "fake",
+    "name": "Fake Connector",
+    "version": "0.1.0",
+    "sdk": "^0.1",
+    "vendor": "Subscriby",
+    "install": {
+        "mode": "paste_credential",
+        "scopes": ["project", "platform"]
+    },
+    "resource_kinds": [
+        {
+            "kind": "room",
+            "label": "Room",
+            "portal_label": "Private room",
+            "icon": "home",
+            "grant_mode": "membership"
+        },
+        {
+            "kind": "errand",
+            "label": "Errand",
+            "portal_label": "Personal perk",
+            "icon": "clipboard-document-check",
+            "grant_mode": "creator_task"
+        }
+    ],
+    "capabilities": ["messaging", "broadcasts", "access_control", "management_surface", "portal_login", "recovery_probes"],
+    "messaging": {
+        "max_length": 280,
+        "buttons_per_row": 2,
+        "max_buttons": 4,
+        "callback_data_bytes": 32,
+        "supports_underline": false,
+        "supports_spoiler": false,
+        "supports_files": false
+    },
+    "pacing": {
+        "min_interval_microseconds": 1000000,
+        "burst": 1,
+        "per_recipient_interval_microseconds": 1000000
+    },
+    "management_commands": ["project_settings", "plan_manage", "resource_manage"],
+    "relay_modes": [],
+    "recovery": { "probes": true },
+    "listing": {
+        "category": "community",
+        "tagline": "A stand-in connector for tests and local demos",
+        "overview": "Exercises every connector surface without talking to a real platform.",
+        "screenshots": [],
+        "links": { "documentation": "https://docs.subscriby.net/connectors/building" },
+        "added_at": "2026-09-10",
+        "sign_in_required": false
+    }
+}

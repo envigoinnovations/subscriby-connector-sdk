@@ -37,6 +37,7 @@ use Subscriby\Connector\Data\SlotContribution;
 use Subscriby\Connector\Enums\InstallationScope;
 use Subscriby\Connector\Enums\InstallMode;
 use Subscriby\Connector\Enums\ManagementCommand;
+use Subscriby\Connector\Manifest\ManifestFile;
 use Subscriby\Connector\Sdk;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -125,6 +126,7 @@ final class ConformanceSuite
         }
 
         if ($packagePath !== null) {
+            $checks[] = $this->guard('manifest.file_is_the_source', fn (): ConformanceCheck => $this->manifestFile($manifest, rtrim($packagePath, '/\\').'/'.ManifestFile::FILENAME));
             $checks[] = $this->guard('migrations.own_tables_only', fn (): ConformanceCheck => ConformanceCheck::offenders(
                 'migrations.own_tables_only',
                 MigrationRules::violations($key, rtrim($packagePath, '/\\').'/database/migrations'),
@@ -133,6 +135,37 @@ final class ConformanceSuite
         }
 
         return new ConformanceReport($key, $checks);
+    }
+
+    /**
+     * @param   ConnectorManifest  $registered  What the registry holds.
+     * @param   string             $path        The package's `connector.json`.
+     * @return  ConformanceCheck   The file exists, loads, and is what the registry holds.
+     */
+    private function manifestFile(ConnectorManifest $registered, string $path): ConformanceCheck
+    {
+        if (! is_file($path)) {
+            return ConformanceCheck::failed('manifest.file_is_the_source', sprintf('%s does not exist; the manifest must be declared in the file', $path));
+        }
+
+        $loaded = ManifestFile::load($path);
+        $offenders = [];
+
+        foreach (['key' => [$loaded->key, $registered->key], 'name' => [$loaded->name, $registered->name], 'version' => [$loaded->version, $registered->version], 'sdk' => [$loaded->sdk, $registered->sdk]] as $field => [$fromFile, $fromRegistry]) {
+            if ($fromFile !== $fromRegistry) {
+                $offenders[] = sprintf('%s is "%s" in the file and "%s" in the registry', $field, $fromFile, $fromRegistry);
+            }
+        }
+
+        if (count($loaded->capabilities) !== count($registered->capabilities)) {
+            $offenders[] = 'the capabilities differ between the file and the registry';
+        }
+
+        if (count($loaded->installFields) !== count($registered->installFields) || count($loaded->settingsFields) !== count($registered->settingsFields)) {
+            $offenders[] = 'the declared fields differ between the file and the registry';
+        }
+
+        return ConformanceCheck::offenders('manifest.file_is_the_source', $offenders, 'the registered manifest must come from the file:');
     }
 
     /**

@@ -39,6 +39,8 @@ final readonly class ConnectorManifest
      * @param  list<string>                  $relayModes          The support relay modes it offers, in its own vocabulary.
      * @param  RecoveryCapabilities          $recovery            Which recovery facets it implements.
      * @param  Listing                       $listing             How the directory presents it.
+     * @param  list<Field>                   $installFields       What a creator fills in to connect, in display order; empty when the connector binds its own settings schema.
+     * @param  list<Field>                   $settingsFields      What a creator may change afterwards, without values; empty on the same condition.
      *
      * @throws  InvalidManifest  When the manifest contradicts itself or the SDK's rules.
      */
@@ -58,8 +60,18 @@ final readonly class ConnectorManifest
         public array $relayModes,
         public RecoveryCapabilities $recovery,
         public Listing $listing,
+        public array $installFields = [],
+        public array $settingsFields = [],
     ) {
         $this->validate();
+    }
+
+    /**
+     * @return  bool  True when the manifest declares an install or settings form, which the registry then serves for the connector.
+     */
+    public function declaresFields(): bool
+    {
+        return $this->installFields !== [] || $this->settingsFields !== [];
     }
 
     /**

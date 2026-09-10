@@ -9,12 +9,15 @@ use Illuminate\Support\ServiceProvider;
 use ReflectionClass;
 use Subscriby\Connector\Contracts\Connector;
 use Subscriby\Connector\Contracts\ConnectorRegistry;
+use Subscriby\Connector\Exceptions\InvalidManifest;
+use Subscriby\Connector\Manifest\ManifestFile;
 
 /**
  * The service provider every connector package extends.
  *
  * It does the wiring generically so a package author writes none of it: the
- * connector is registered with the application's registry, the package's
+ * package's `connector.json` is read and checked, the connector is registered
+ * with the application's registry under that manifest, and the package's
  * migrations, views (namespace `connector-<key>`), JSON translations, inbound
  * routes (under the `connector.inbound` middleware group) and console commands
  * are loaded from the package directory when present. The package directory is
@@ -24,14 +27,16 @@ use Subscriby\Connector\Contracts\ConnectorRegistry;
 abstract class ConnectorServiceProvider extends ServiceProvider
 {
     /**
-     * Register the connector and load what the package ships.
+     * Read the manifest, register the connector and load what the package ships.
+     *
+     * @throws  InvalidManifest  When `connector.json` is missing or breaks a rule.
      */
     public function boot(): void
     {
-        $connector = $this->connector();
-        $key = $connector->manifest()->key;
+        $manifest = ManifestFile::load($this->packagePath(ManifestFile::FILENAME));
+        $key = $manifest->key;
 
-        $this->app->make(ConnectorRegistry::class)->register($connector);
+        $this->app->make(ConnectorRegistry::class)->register($manifest, $this->connector());
 
         if (is_dir($this->packagePath('database/migrations'))) {
             $this->loadMigrationsFrom($this->packagePath('database/migrations'));
@@ -55,7 +60,7 @@ abstract class ConnectorServiceProvider extends ServiceProvider
     }
 
     /**
-     * @return  Connector  The package's entry point.
+     * @return  Connector  The package's entry point: the classes that implement its ports.
      */
     abstract protected function connector(): Connector;
 

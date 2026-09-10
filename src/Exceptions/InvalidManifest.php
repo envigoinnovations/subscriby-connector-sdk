@@ -11,10 +11,22 @@ use InvalidArgumentException;
  *
  * Raised while the manifest is built, so a connector with a bad manifest fails
  * at boot on the developer's machine rather than at the moment a creator opens
- * the directory.
+ * the directory. The reason is kept apart from the message so a loader can
+ * prefix it with where the manifest came from without repeating the sentence.
  */
 final class InvalidManifest extends InvalidArgumentException
 {
+    /**
+     * @param  string  $key     The connector key, or what was offered as one.
+     * @param  string  $reason  What is wrong, in one sentence.
+     */
+    private function __construct(
+        public readonly string $key,
+        public readonly string $reason,
+    ) {
+        parent::__construct(sprintf('The manifest of connector "%s" is invalid: %s', $key, $reason));
+    }
+
     /**
      * @param   string  $key     The connector key, or what was offered as one.
      * @param   string  $reason  What is wrong, in one sentence.
@@ -22,6 +34,6 @@ final class InvalidManifest extends InvalidArgumentException
      */
     public static function because(string $key, string $reason): self
     {
-        return new self(sprintf('The manifest of connector "%s" is invalid: %s', $key, $reason));
+        return new self($key, $reason);
     }
 }

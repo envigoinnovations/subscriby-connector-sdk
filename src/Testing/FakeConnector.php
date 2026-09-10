@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector\Testing;
 
-use DateTimeImmutable;
 use Subscriby\Connector\Contracts\Connector;
 use Subscriby\Connector\Contracts\ConnectorRegistrar;
 use Subscriby\Connector\Contracts\Ports\AccessController;
@@ -21,18 +20,8 @@ use Subscriby\Connector\Contracts\Ports\SpaceCatalog;
 use Subscriby\Connector\Contracts\Ports\TextRenderer;
 use Subscriby\Connector\Contracts\Ports\UiSlots;
 use Subscriby\Connector\Data\ConnectorManifest;
-use Subscriby\Connector\Data\Listing;
-use Subscriby\Connector\Data\ListingLinks;
-use Subscriby\Connector\Data\MessagingLimits;
-use Subscriby\Connector\Data\Pacing;
-use Subscriby\Connector\Data\RecoveryCapabilities;
-use Subscriby\Connector\Data\ResourceKindDefinition;
-use Subscriby\Connector\Enums\Capability;
-use Subscriby\Connector\Enums\GrantMode;
-use Subscriby\Connector\Enums\InstallationScope;
-use Subscriby\Connector\Enums\InstallMode;
-use Subscriby\Connector\Enums\ListingCategory;
 use Subscriby\Connector\Enums\ManagementCommand;
+use Subscriby\Connector\Manifest\ManifestFile;
 use Subscriby\Connector\Testing\Fakes\FakeAccessController;
 use Subscriby\Connector\Testing\Fakes\FakeFailureClassifier;
 use Subscriby\Connector\Testing\Fakes\FakeIdentityResolver;
@@ -55,7 +44,10 @@ use Subscriby\Connector\Testing\Fakes\FakeUiSlots;
  * than an invite link, one resource kind is a task the creator does by hand,
  * there is no early admission and the admin surface renders three commands out
  * of the catalogue. A core code path that still assumes Telegram fails against
- * it. Its port fakes keep what they were asked in memory and offer assertions.
+ * it. Its manifest is the `connector.json` beside this class, read through the
+ * same loader every package goes through, so the loader runs in every test and
+ * the file doubles as the worked example a connector author copies. Its port
+ * fakes keep what they were asked in memory and offer assertions.
  */
 final class FakeConnector implements Connector
 {
@@ -75,6 +67,8 @@ final class FakeConnector implements Connector
 
     public readonly FakeRecoverySupport $recovery;
 
+    private readonly ConnectorManifest $manifest;
+
     /**
      * @param  string  $key  The connector key; tests that register more than one fake give each its own.
      */
@@ -89,6 +83,7 @@ final class FakeConnector implements Connector
         $this->inbound = new FakeInboundGateway($this->key);
         $this->management = new FakeManagementSurface(self::commands());
         $this->recovery = new FakeRecoverySupport($this->key);
+        $this->manifest = ManifestFile::parse(array_replace(self::declaration(), ['key' => $this->key]), 'FakeConnector connector.json');
     }
 
     /**
@@ -100,58 +95,19 @@ final class FakeConnector implements Connector
     }
 
     /**
-     * @return  ConnectorManifest  A manifest shaped unlike Telegram in every dimension the SDK allows.
+     * @return  ConnectorManifest  The manifest from the `connector.json` beside this class, under this fake's key.
      */
     public function manifest(): ConnectorManifest
     {
-        return new ConnectorManifest(
-            key: $this->key,
-            name: 'Fake Connector',
-            version: '0.1.0',
-            sdk: '^0.1',
-            vendor: 'Subscriby',
-            installMode: InstallMode::PasteCredential,
-            scopes: [InstallationScope::Project, InstallationScope::Platform],
-            resourceKinds: [
-                new ResourceKindDefinition('room', 'Room', 'Private room', 'home', GrantMode::Membership),
-                new ResourceKindDefinition('errand', 'Errand', 'Personal perk', 'clipboard-document-check', GrantMode::CreatorTask),
-            ],
-            capabilities: [
-                Capability::Messaging,
-                Capability::Broadcasts,
-                Capability::AccessControl,
-                Capability::ManagementSurface,
-                Capability::PortalLogin,
-                Capability::RecoveryProbes,
-            ],
-            messaging: new MessagingLimits(
-                maxLength: 280,
-                buttonsPerRow: 2,
-                maxButtons: 4,
-                callbackDataBytes: 32,
-                supportsUnderline: false,
-                supportsSpoiler: false,
-                supportsFiles: false,
-            ),
-            pacing: new Pacing(minIntervalMicroseconds: 1_000_000, burst: 1, perRecipientIntervalMicroseconds: 1_000_000),
-            managementCommands: self::commands(),
-            relayModes: [],
-            recovery: new RecoveryCapabilities(probes: true),
-            listing: new Listing(
-                category: ListingCategory::Community,
-                tagline: 'A stand-in connector for tests and local demos',
-                overview: 'Exercises every connector surface without talking to a real platform.',
-                screenshots: [],
-                links: new ListingLinks(documentation: 'https://docs.subscriby.net/connectors/building'),
-                addedAt: new DateTimeImmutable('2026-09-10'),
-                changelogUrl: null,
-                signInRequired: false,
-            ),
-        );
+        return $this->manifest;
     }
 
     /**
      * Bind every port the manifest promises, plus the ones every connector must bind.
+     *
+     * The settings form is bound here rather than declared in the file, so the
+     * fake exercises the path a connector with installation-dependent fields
+     * takes while a first-party package exercises the declared one.
      *
      * @param  ConnectorRegistrar  $registrar  The registry's collector.
      */
@@ -170,5 +126,15 @@ final class FakeConnector implements Connector
         $registrar->port(RecoverySupport::class, $this->recovery);
         $registrar->port(SettingsSchema::class, new FakeSettingsSchema);
         $registrar->port(UiSlots::class, new FakeUiSlots);
+    }
+
+    /**
+     * @return  array<string, mixed>  The decoded `connector.json` beside this class.
+     */
+    private static function declaration(): array
+    {
+        $decoded = json_decode((string) file_get_contents(__DIR__.'/connector.json'), true, 32, JSON_THROW_ON_ERROR);
+
+        return is_array($decoded) ? $decoded : [];
     }
 }

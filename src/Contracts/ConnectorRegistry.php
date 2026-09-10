@@ -12,20 +12,26 @@ use Subscriby\Connector\Exceptions\InvalidManifest;
  * Every connector the application knows, and how to reach each one's ports.
  *
  * Implemented by the application and bound in its container; a connector
- * package's service provider registers into it at boot. Availability,
- * official status and the disabled list are the application's configuration,
- * never the package's own claim.
+ * package's service provider registers into it at boot with the manifest read
+ * from the package's `connector.json`. Availability, official status and the
+ * disabled list are the application's configuration, never the package's own
+ * claim.
  */
 interface ConnectorRegistry
 {
     /**
      * Accept a connector, checking its manifest against the ports it binds.
      *
-     * @param  Connector  $connector  The connector package's entry point.
+     * A manifest that declares install or settings fields and binds no
+     * `SettingsSchema` gets the SDK's manifest-backed schema bound for it, so a
+     * package whose form is plain data writes no PHP for it.
      *
-     * @throws  InvalidManifest  When the key is taken, a capability lacks its port, a port lacks its capability, a required port is missing, or a reserved capability is claimed without being official.
+     * @param  ConnectorManifest  $manifest   What the connector is, as its `connector.json` declares it.
+     * @param  Connector          $connector  The connector package's entry point.
+     *
+     * @throws  InvalidManifest  When the key is taken, a capability lacks its port, a port lacks its capability, a required port is missing, a reserved capability is claimed without being official, or fields are both declared and bound.
      */
-    public function register(Connector $connector): void;
+    public function register(ConnectorManifest $manifest, Connector $connector): void;
 
     /**
      * @return  list<string>  Every registered connector key, in registration order.
