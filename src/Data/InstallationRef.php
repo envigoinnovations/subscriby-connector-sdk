@@ -23,6 +23,7 @@ final readonly class InstallationRef
      * @param  string|null        $projectId   The project, null for a platform installation.
      * @param  string|null        $externalId  The platform's id for it (bot id, application id, workspace id).
      * @param  string|null        $storageRef  The connector's own row id for it, opaque to the core.
+     * @param  string|null        $handle      The username or handle the platform shows for it, when it has one.
      */
     public function __construct(
         public string $id,
@@ -31,5 +32,6 @@ final readonly class InstallationRef
         public ?string $projectId = null,
         public ?string $externalId = null,
         public ?string $storageRef = null,
+        public ?string $handle = null,
     ) {}
 }
