@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector;
 
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use ReflectionClass;
@@ -54,8 +56,46 @@ abstract class ConnectorServiceProvider extends ServiceProvider
             Route::middleware('connector.inbound')->group($this->packagePath('routes/inbound.php'));
         }
 
+        if (is_file($this->packagePath('routes/web.php'))) {
+            Route::middleware('web')->group($this->packagePath('routes/web.php'));
+        }
+
         if ($this->app->runningInConsole() && $this->packageCommands() !== []) {
             $this->commands($this->packageCommands());
+        }
+    }
+
+    /**
+     * Load every configuration file the package ships, under the file's own name.
+     *
+     * A connector's settings are its own (`config/connector-<key>.php`), and a
+     * package that wraps a third-party client may carry that client's
+     * configuration too, under the key the client reads. Laravel's own merge
+     * lets whatever is already in the repository win, which is right for a
+     * file the application ships and wrong for the defaults another package's
+     * provider merged a moment earlier (the Telegraph fork merges its own
+     * `telegraph.php`, webhook path included, before this provider runs). So a
+     * key the application owns a file for is merged the Laravel way, and any
+     * other key takes the connector's values over what was there. Skipped when
+     * the configuration is cached, because the cache was built with these
+     * values in place.
+     */
+    public function register(): void
+    {
+        if ($this->app instanceof CachesConfiguration && $this->app->configurationIsCached()) {
+            return;
+        }
+
+        $config = $this->app->make(Repository::class);
+
+        foreach (glob($this->packagePath('config').DIRECTORY_SEPARATOR.'*.php') ?: [] as $file) {
+            $name = basename($file, '.php');
+            $shipped = require $file;
+            $existing = (array) $config->get($name, []);
+
+            $config->set($name, is_file($this->app->configPath($name.'.php'))
+                ? array_replace_recursive($shipped, $existing)
+                : array_replace_recursive($existing, $shipped));
         }
     }
 
