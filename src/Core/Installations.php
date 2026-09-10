@@ -7,6 +7,7 @@ namespace Subscriby\Connector\Core;
 use Subscriby\Connector\Data\InstallationRecord;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\ProjectRef;
+use Subscriby\Connector\Enums\InstallationState;
 
 /**
  * The installation rows, as a connector may read and write them.
@@ -62,4 +63,29 @@ interface Installations
      * @return  InstallationRef     The row, new or updated.
      */
     public function record(InstallationRecord $record): InstallationRef;
+
+    /**
+     * Record what the connector last found the installation's standing to be.
+     *
+     * The connector's health probes call this instead of re-describing the
+     * whole installation, so a probe that only learnt "the token was revoked"
+     * writes exactly that.
+     *
+     * @param  InstallationRef    $installation  The installation.
+     * @param  InstallationState  $state         Connected, degraded, revoked or disconnected.
+     * @param  string|null        $reason        The connector's own reason code, null when nothing is wrong.
+     */
+    public function recordState(InstallationRef $installation, InstallationState $state, ?string $reason = null): void;
+
+    /**
+     * Drop an installation whose row on the connector's side is gone.
+     *
+     * A mirror of a legacy deletion for the period in which the connector's
+     * own tables lead and the neutral rows follow them, so the verification
+     * counts stay honest. Once the neutral rows lead, disconnect and uninstall
+     * keep the row and this call has no caller.
+     *
+     * @param  InstallationRef  $installation  The installation to drop.
+     */
+    public function forget(InstallationRef $installation): void;
 }
