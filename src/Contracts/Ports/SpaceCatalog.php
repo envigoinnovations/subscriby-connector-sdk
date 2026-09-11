@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector\Contracts\Ports;
 
-use Subscriby\Connector\Data\CreatorRef;
 use Subscriby\Connector\Data\CredentialBag;
+use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\LinkRequest;
 use Subscriby\Connector\Data\SpaceAccess;
 use Subscriby\Connector\Data\SpaceRef;
 use Subscriby\Connector\Data\SpaceSummary;
@@ -17,8 +18,10 @@ use Subscriby\Connector\Enums\LinkPurpose;
  *
  * Linking is asked for through the connector because only the platform can
  * prove the installation administers a place: Telegram answers a RequestChat
- * keyboard, Discord a guild pick. The connector reports the chosen place back
- * through its inbound gateway and the core files it under the purpose.
+ * keyboard, Discord a guild pick. The connector parks the request under the
+ * creator's account with its own handle, reports the chosen place back
+ * through its inbound gateway, and the core files it under the purpose. One
+ * request per purpose is open at a time for a creator; asking again replaces it.
  */
 interface SpaceCatalog
 {
@@ -27,11 +30,29 @@ interface SpaceCatalog
      *
      * @param  InstallationRef  $installation  The installation that will administer it.
      * @param  CredentialBag    $credentials   Its secrets.
-     * @param  CreatorRef       $creator       Who is asked.
-     * @param  string           $kind          The kind of place wanted, one the manifest declares.
-     * @param  LinkPurpose      $purpose       What the place will be used for.
+     * @param  IdentityRef      $creator       The creator's account to ask in.
+     * @param  LinkRequest      $request       What kind of place, what for, and for which project or resource.
      */
-    public function requestLink(InstallationRef $installation, CredentialBag $credentials, CreatorRef $creator, string $kind, LinkPurpose $purpose): void;
+    public function requestLink(InstallationRef $installation, CredentialBag $credentials, IdentityRef $creator, LinkRequest $request): void;
+
+    /**
+     * Take back the request open for a purpose, and whatever prompt the platform still shows for it.
+     *
+     * @param  InstallationRef  $installation  The installation.
+     * @param  CredentialBag    $credentials   Its secrets.
+     * @param  IdentityRef      $creator       The creator's account the request was parked under.
+     * @param  LinkPurpose      $purpose       Which request.
+     */
+    public function withdrawLinkRequest(InstallationRef $installation, CredentialBag $credentials, IdentityRef $creator, LinkPurpose $purpose): void;
+
+    /**
+     * @param   InstallationRef  $installation  The installation.
+     * @param   CredentialBag    $credentials   Its secrets.
+     * @param   IdentityRef      $creator       The creator's account.
+     * @param   LinkPurpose      $purpose       Which request.
+     * @return  string|null      The subject the open request was made for, or null when none is open.
+     */
+    public function pendingLinkRequest(InstallationRef $installation, CredentialBag $credentials, IdentityRef $creator, LinkPurpose $purpose): ?string;
 
     /**
      * @param   InstallationRef  $installation  The installation to ask through.

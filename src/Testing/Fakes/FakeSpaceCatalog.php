@@ -5,35 +5,59 @@ declare(strict_types=1);
 namespace Subscriby\Connector\Testing\Fakes;
 
 use Subscriby\Connector\Contracts\Ports\SpaceCatalog;
-use Subscriby\Connector\Data\CreatorRef;
 use Subscriby\Connector\Data\CredentialBag;
+use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\LinkRequest;
 use Subscriby\Connector\Data\SpaceAccess;
 use Subscriby\Connector\Data\SpaceRef;
 use Subscriby\Connector\Data\SpaceSummary;
 use Subscriby\Connector\Enums\LinkPurpose;
 
 /**
- * A space catalogue that records link requests and reports a place lost when its id says so.
+ * A space catalogue that parks link requests in memory and reports a place lost when its id says so.
  *
- * A space whose external id starts with `lost-` diagnoses as not a member, so
- * the core's health and failover paths can be driven without a platform.
+ * One request per creator and purpose, as the contract promises; a space
+ * whose external id starts with `lost-` diagnoses as not a member, so the
+ * core's health and failover paths can be driven without a platform.
  */
 final class FakeSpaceCatalog implements SpaceCatalog
 {
-    /** @var list<array{creator: string, kind: string, purpose: LinkPurpose}> */
+    /** @var array<string, LinkRequest> Open requests keyed `creator|purpose`. */
     public array $linkRequests = [];
 
     /**
      * @param  InstallationRef  $installation  The installation.
      * @param  CredentialBag    $credentials   Its secrets.
-     * @param  CreatorRef       $creator       Who is asked.
-     * @param  string           $kind          The kind wanted.
-     * @param  LinkPurpose      $purpose       What for.
+     * @param  IdentityRef      $creator       Who is asked.
+     * @param  LinkRequest      $request       What for.
      */
-    public function requestLink(InstallationRef $installation, CredentialBag $credentials, CreatorRef $creator, string $kind, LinkPurpose $purpose): void
+    public function requestLink(InstallationRef $installation, CredentialBag $credentials, IdentityRef $creator, LinkRequest $request): void
     {
-        $this->linkRequests[] = ['creator' => $creator->id, 'kind' => $kind, 'purpose' => $purpose];
+        $this->linkRequests[$this->key($creator, $request->purpose)] = $request;
+    }
+
+    /**
+     * @param  InstallationRef  $installation  The installation.
+     * @param  CredentialBag    $credentials   Its secrets.
+     * @param  IdentityRef      $creator       Whose request.
+     * @param  LinkPurpose      $purpose       Which request.
+     */
+    public function withdrawLinkRequest(InstallationRef $installation, CredentialBag $credentials, IdentityRef $creator, LinkPurpose $purpose): void
+    {
+        unset($this->linkRequests[$this->key($creator, $purpose)]);
+    }
+
+    /**
+     * @param   InstallationRef  $installation  The installation.
+     * @param   CredentialBag    $credentials   Its secrets.
+     * @param   IdentityRef      $creator       Whose request.
+     * @param   LinkPurpose      $purpose       Which request.
+     * @return  string|null      The subject of the open request, or null.
+     */
+    public function pendingLinkRequest(InstallationRef $installation, CredentialBag $credentials, IdentityRef $creator, LinkPurpose $purpose): ?string
+    {
+        return $this->linkRequests[$this->key($creator, $purpose)]->subjectId ?? null;
     }
 
     /**
@@ -60,5 +84,15 @@ final class FakeSpaceCatalog implements SpaceCatalog
         }
 
         return SpaceAccess::ready();
+    }
+
+    /**
+     * @param   IdentityRef  $creator  The creator's account.
+     * @param   LinkPurpose  $purpose  The purpose.
+     * @return  string       The request key.
+     */
+    private function key(IdentityRef $creator, LinkPurpose $purpose): string
+    {
+        return $creator->externalId.'|'.$purpose->value;
     }
 }
