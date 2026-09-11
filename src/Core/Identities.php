@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Subscriby\Connector\Core;
 
 use Subscriby\Connector\Data\CreatorRef;
+use Subscriby\Connector\Data\HandshakeCompletion;
 use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\MemberRef;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Enums\IdentityLinkSource;
 use Subscriby\Connector\Enums\IdentityPurpose;
+use Subscriby\Connector\Exceptions\HandshakeRefused;
 
 /**
  * The identity rows and who they belong to, as a connector may read and write them.
@@ -19,7 +21,9 @@ use Subscriby\Connector\Enums\IdentityPurpose;
  * decides which creator or member holds it. Recording an identity and linking
  * it are separate calls because the same account can be a creator in one
  * place and a member in another, and because a purchase may know the account
- * before anybody has proven who holds it.
+ * before anybody has proven who holds it. A handshake is the two-sided proof
+ * that joins them: the core opens it, the connector completes it with the
+ * account that answered, and the core writes the link.
  */
 interface Identities
 {
@@ -74,6 +78,34 @@ interface Identities
      * @param  bool                $preferred  Whether the member wants to be reached here first.
      */
     public function linkMember(IdentityRef $identity, MemberRef $member, IdentityLinkSource $source, bool $preferred = false): void;
+
+    /**
+     * Whether a token names a handshake the core ever issued, in whatever state it is now.
+     *
+     * A connector's typed-code path asks this before claiming a message: a
+     * word from the code alphabet is a code only if the core minted it, so a
+     * wizard answer that happens to look like one is left to its wizard.
+     *
+     * @param   string  $token  The token as typed or carried by the deep link.
+     * @return  bool    True when a handshake carries it.
+     */
+    public function isHandshakeToken(string $token): bool;
+
+    /**
+     * Complete a handshake with the account that answered it.
+     *
+     * The connector proves possession (the account opened the link or typed
+     * the code in a private conversation with the shared installation); the
+     * core decides what the handshake was for and writes the link. A creator
+     * link makes the account the creator's primary identity on the connector.
+     *
+     * @param   string               $token     The token as typed or carried by the deep link.
+     * @param   IdentityRecord       $identity  The account that answered, as the connector describes it.
+     * @return  HandshakeCompletion  What was completed, and whose account it now is.
+     *
+     * @throws  HandshakeRefused  When the token names no pending handshake, the account already belongs to another person, or the purpose is not completed through this call.
+     */
+    public function completeHandshake(string $token, IdentityRecord $identity): HandshakeCompletion;
 
     /**
      * @param   IdentityRef      $identity  The account.
