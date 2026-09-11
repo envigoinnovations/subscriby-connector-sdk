@@ -14,6 +14,7 @@ use Subscriby\Connector\Data\HandshakeRef;
 use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\InstallationHealth;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\InstallationSummary;
 use Subscriby\Connector\Data\PortalLoginStart;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Data\ReadinessItem;
@@ -94,6 +95,29 @@ final class FakeRecoverySupport implements RecoverySupport
         }
 
         return null;
+    }
+
+    /**
+     * @param   ProjectRef           $project      The project.
+     * @param   CredentialBag        $credentials  The standby's secrets.
+     * @return  InstallationSummary  Never.
+     *
+     * @throws  UnsupportedByConnector  Always: the fake declares no standby installations.
+     */
+    public function registerStandbyInstallation(ProjectRef $project, CredentialBag $credentials): InstallationSummary
+    {
+        throw UnsupportedByConnector::facet($this->connector, 'standby installations');
+    }
+
+    /**
+     * @param  InstallationRef  $standby      The standby.
+     * @param  CredentialBag    $credentials  Its secrets.
+     *
+     * @throws  UnsupportedByConnector  Always: the fake declares no standby installations.
+     */
+    public function removeStandbyInstallation(InstallationRef $standby, CredentialBag $credentials): void
+    {
+        throw UnsupportedByConnector::facet($this->connector, 'standby installations');
     }
 
     /**

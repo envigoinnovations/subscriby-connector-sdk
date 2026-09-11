@@ -18,6 +18,7 @@ final readonly class InstallationSummary
      * @param  string|null           $handle       The username or handle, when the platform has one.
      * @param  string|null           $avatarUrl    A picture, when the platform has one.
      * @param  array<string, mixed>  $meta         Anything else the connector wants kept with the installation.
+     * @param  string|null           $storageRef   The connector's own row for the installation, when it keeps one; the core stores it as the installation's `storage_ref`.
      */
     public function __construct(
         public string $externalId,
@@ -25,5 +26,6 @@ final readonly class InstallationSummary
         public ?string $handle = null,
         public ?string $avatarUrl = null,
         public array $meta = [],
+        public ?string $storageRef = null,
     ) {}
 }

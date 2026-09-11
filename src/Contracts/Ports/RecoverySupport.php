@@ -14,12 +14,14 @@ use Subscriby\Connector\Data\HandshakeRef;
 use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\InstallationHealth;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\InstallationSummary;
 use Subscriby\Connector\Data\PortalLoginStart;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Data\ReadinessItem;
 use Subscriby\Connector\Data\RecoveryVocabulary;
 use Subscriby\Connector\Data\SpaceAccess;
 use Subscriby\Connector\Data\SpaceRef;
+use Subscriby\Connector\Exceptions\InstallationRefused;
 use Subscriby\Connector\Exceptions\UnsupportedByConnector;
 
 /**
@@ -75,6 +77,34 @@ interface RecoverySupport
      * @return  DeliveryFailure|null  Null while the account answers, otherwise the classified failure.
      */
     public function probeIdentity(InstallationRef $installation, CredentialBag $credentials, IdentityRef $identity): ?DeliveryFailure;
+
+    /**
+     * Keep a second installation ready to take over from a project's live one.
+     *
+     * The standby is proven with the platform and stored, but registered for
+     * nothing: it receives no events and answers nobody until a failover
+     * writes it into the live installation's place. The core records the
+     * neutral installation row from what comes back, so the connector keeps
+     * only its own row and says where that is.
+     *
+     * @param   ProjectRef           $project      The project it stands by for.
+     * @param   CredentialBag        $credentials  The standby's secrets, as the creator pasted them.
+     * @return  InstallationSummary  What the platform says the standby is, its `storageRef` the connector's own row.
+     *
+     * @throws  UnsupportedByConnector  When the manifest declares no standby installations.
+     * @throws  InstallationRefused     When another installation already holds the credentials, or the platform refuses them.
+     */
+    public function registerStandbyInstallation(ProjectRef $project, CredentialBag $credentials): InstallationSummary;
+
+    /**
+     * Forget a standby; it never acted on the platform, so there is nothing to withdraw there.
+     *
+     * @param  InstallationRef  $standby      The standby, its `storageRef` the connector's own row.
+     * @param  CredentialBag    $credentials  Its secrets.
+     *
+     * @throws  UnsupportedByConnector  When the manifest declares no standby installations.
+     */
+    public function removeStandbyInstallation(InstallationRef $standby, CredentialBag $credentials): void;
 
     /**
      * Move every holder from a lost place to its standby.
