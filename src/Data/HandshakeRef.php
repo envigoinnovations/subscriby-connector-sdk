@@ -26,4 +26,12 @@ final readonly class HandshakeRef
         public HandshakePurpose $purpose,
         public string $token,
     ) {}
+
+    /**
+     * @return  string  The deep-link payload a connector routes on: the purpose's prefix followed by the token.
+     */
+    public function startPayload(): string
+    {
+        return $this->purpose->startPayloadPrefix().$this->token;
+    }
 }

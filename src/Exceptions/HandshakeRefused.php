@@ -28,6 +28,9 @@ final class HandshakeRefused extends RuntimeException
     /** The handshake is for something this call does not complete. */
     public const string PURPOSE_NOT_SUPPORTED = 'purpose_not_supported';
 
+    /** Another project's installation heard the account, not the one the handshake belongs to. */
+    public const string INSTALLATION_MISMATCH = 'installation_mismatch';
+
     /**
      * @param  string          $message   What happened, for the log.
      * @param  string          $reason    One of this class's reason constants.
@@ -68,11 +71,27 @@ final class HandshakeRefused extends RuntimeException
     }
 
     /**
+     * @return  self  The refusal.
+     */
+    public static function installationMismatch(): self
+    {
+        return new self('The account was heard by an installation the handshake does not belong to.', self::INSTALLATION_MISMATCH);
+    }
+
+    /**
      * @return  bool  True when the token named no pending handshake.
      */
     public function isExpired(): bool
     {
         return $this->reason === self::EXPIRED;
+    }
+
+    /**
+     * @return  bool  True when another project's installation heard the account.
+     */
+    public function isInstallationMismatch(): bool
+    {
+        return $this->reason === self::INSTALLATION_MISMATCH;
     }
 
     /**

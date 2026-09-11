@@ -8,6 +8,7 @@ use Subscriby\Connector\Data\CreatorRef;
 use Subscriby\Connector\Data\HandshakeCompletion;
 use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\IdentityRef;
+use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\MemberRef;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Enums\IdentityLinkSource;
@@ -97,15 +98,21 @@ interface Identities
      * The connector proves possession (the account opened the link or typed
      * the code in a private conversation with the shared installation); the
      * core decides what the handshake was for and writes the link. A creator
-     * link makes the account the creator's primary identity on the connector.
+     * link makes the account the creator's primary identity on the connector;
+     * a portal sign-in makes (or finds) the account's member in the handshake's
+     * project and tells the connector where the person goes next. A connector
+     * that can say which installation heard the account passes it, so a
+     * project-bound handshake completes only through that project's own
+     * installation.
      *
-     * @param   string               $token     The token as typed or carried by the deep link.
-     * @param   IdentityRecord       $identity  The account that answered, as the connector describes it.
-     * @return  HandshakeCompletion  What was completed, and whose account it now is.
+     * @param   string                $token     The token as typed or carried by the deep link.
+     * @param   IdentityRecord        $identity  The account that answered, as the connector describes it.
+     * @param   InstallationRef|null  $seenBy    The installation that heard the account, when the connector can say.
+     * @return  HandshakeCompletion   What was completed, whose account it now is, and where they go next.
      *
-     * @throws  HandshakeRefused  When the token names no pending handshake, the account already belongs to another person, or the purpose is not completed through this call.
+     * @throws  HandshakeRefused  When the token names no pending handshake, the account already belongs to another person, another project's installation heard it, or the purpose is not completed through this call.
      */
-    public function completeHandshake(string $token, IdentityRecord $identity): HandshakeCompletion;
+    public function completeHandshake(string $token, IdentityRecord $identity, ?InstallationRef $seenBy = null): HandshakeCompletion;
 
     /**
      * @param   IdentityRef      $identity  The account.
