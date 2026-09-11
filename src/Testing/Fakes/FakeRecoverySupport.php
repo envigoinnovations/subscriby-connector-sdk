@@ -7,6 +7,7 @@ namespace Subscriby\Connector\Testing\Fakes;
 use Subscriby\Connector\Contracts\Ports\RecoverySupport;
 use Subscriby\Connector\Data\CreatorRef;
 use Subscriby\Connector\Data\CredentialBag;
+use Subscriby\Connector\Data\DeliveryFailure;
 use Subscriby\Connector\Data\DeliveryResult;
 use Subscriby\Connector\Data\FailOverReport;
 use Subscriby\Connector\Data\HandshakeRef;
@@ -19,6 +20,7 @@ use Subscriby\Connector\Data\ReadinessItem;
 use Subscriby\Connector\Data\RecoveryVocabulary;
 use Subscriby\Connector\Data\SpaceAccess;
 use Subscriby\Connector\Data\SpaceRef;
+use Subscriby\Connector\Enums\DeliveryFailureKind;
 use Subscriby\Connector\Exceptions\UnsupportedByConnector;
 
 /**
@@ -76,14 +78,22 @@ final class FakeRecoverySupport implements RecoverySupport
     }
 
     /**
-     * @param   InstallationRef  $installation  The installation.
-     * @param   CredentialBag    $credentials   Its secrets.
-     * @param   IdentityRef      $identity      The account.
-     * @return  bool             False for a `blocked-` identity, true otherwise.
+     * @param   InstallationRef       $installation  The installation.
+     * @param   CredentialBag         $credentials   Its secrets.
+     * @param   IdentityRef           $identity      The account.
+     * @return  DeliveryFailure|null  Gone for a `deleted-` identity, unreachable for a `blocked-` one, null otherwise.
      */
-    public function probeIdentity(InstallationRef $installation, CredentialBag $credentials, IdentityRef $identity): bool
+    public function probeIdentity(InstallationRef $installation, CredentialBag $credentials, IdentityRef $identity): ?DeliveryFailure
     {
-        return ! str_starts_with($identity->externalId, 'blocked-');
+        if (str_starts_with($identity->externalId, 'deleted-')) {
+            return new DeliveryFailure(DeliveryFailureKind::TargetMissing, 'The account was deleted.', null, 'account_deleted');
+        }
+
+        if (str_starts_with($identity->externalId, 'blocked-')) {
+            return new DeliveryFailure(DeliveryFailureKind::Unreachable, 'The account blocked the fake bot.');
+        }
+
+        return null;
     }
 
     /**

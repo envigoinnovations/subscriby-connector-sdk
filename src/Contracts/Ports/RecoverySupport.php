@@ -6,6 +6,7 @@ namespace Subscriby\Connector\Contracts\Ports;
 
 use Subscriby\Connector\Data\CreatorRef;
 use Subscriby\Connector\Data\CredentialBag;
+use Subscriby\Connector\Data\DeliveryFailure;
 use Subscriby\Connector\Data\DeliveryResult;
 use Subscriby\Connector\Data\FailOverReport;
 use Subscriby\Connector\Data\GrantSnapshot;
@@ -60,12 +61,20 @@ interface RecoverySupport
     public function probeSpace(InstallationRef $installation, CredentialBag $credentials, SpaceRef $space): SpaceAccess;
 
     /**
-     * @param   InstallationRef  $installation  The installation asking.
-     * @param   CredentialBag    $credentials   Its secrets.
-     * @param   IdentityRef      $identity      The account to probe.
-     * @return  bool             True when the platform still reaches the account.
+     * Ask the platform whether an account still exists and can be reached.
+     *
+     * Three answers, because the core acts differently on each: null when the
+     * platform still reaches the account, `TargetMissing` when the account is
+     * gone (the incident the recovery program exists for), any other kind when
+     * the account exists but cannot be reached or the platform could not be
+     * asked, which the core leaves alone.
+     *
+     * @param   InstallationRef       $installation  The installation asking.
+     * @param   CredentialBag         $credentials   Its secrets.
+     * @param   IdentityRef           $identity      The account to probe.
+     * @return  DeliveryFailure|null  Null while the account answers, otherwise the classified failure.
      */
-    public function probeIdentity(InstallationRef $installation, CredentialBag $credentials, IdentityRef $identity): bool;
+    public function probeIdentity(InstallationRef $installation, CredentialBag $credentials, IdentityRef $identity): ?DeliveryFailure;
 
     /**
      * Move every holder from a lost place to its standby.
