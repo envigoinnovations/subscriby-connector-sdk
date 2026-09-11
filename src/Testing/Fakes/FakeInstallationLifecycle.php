@@ -11,6 +11,7 @@ use Subscriby\Connector\Data\InstallationHealth;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\InstallationRequest;
 use Subscriby\Connector\Data\InstallationSummary;
+use Subscriby\Connector\Enums\InstallationScope;
 use Subscriby\Connector\Enums\InstallationState;
 
 /**
@@ -91,5 +92,19 @@ final class FakeInstallationLifecycle implements InstallationLifecycle
     public function startLink(InstallationRef $installation, ?string $payload = null): string
     {
         return 'https://fake.test/'.($installation->externalId ?? 'fake').'?start='.($payload ?? 'start');
+    }
+
+    /**
+     * @return  InstallationRef  The fake's shared presence, `fake-platform`, since its manifest declares the platform scope.
+     */
+    public function platformInstallation(): InstallationRef
+    {
+        return new InstallationRef(
+            id: 'fake-platform',
+            connector: 'fake',
+            scope: InstallationScope::Platform,
+            externalId: 'fake-platform',
+            handle: 'fakebot',
+        );
     }
 }

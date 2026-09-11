@@ -71,4 +71,16 @@ interface InstallationLifecycle
      * @return  string|null      The link, or null when the platform has no such thing.
      */
     public function startLink(InstallationRef $installation, ?string $payload = null): ?string;
+
+    /**
+     * The installation the connector runs for every creator, when its manifest declares the platform scope.
+     *
+     * Subscriby's own presence on the platform: the bot creators sign in
+     * through, are asked in and receive their alerts from. The core hands it
+     * back to `startLink()` for a creator's handshake links and to the
+     * recovery facets that need the platform's own installation to act.
+     *
+     * @return  InstallationRef|null  The shared installation, or null for a connector installed per project only, or while none is configured.
+     */
+    public function platformInstallation(): ?InstallationRef;
 }
