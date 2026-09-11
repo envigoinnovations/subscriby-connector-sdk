@@ -4,23 +4,30 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector\Data;
 
+use Subscriby\Connector\Enums\ManagementCommand;
+use Subscriby\Connector\Enums\MemberCommand;
 use Subscriby\Connector\Enums\MessageActionKind;
 use Subscriby\Connector\Exceptions\InvalidMessage;
 
 /**
  * A button on a message.
  *
- * Built through the three factories only, so the set of things a button can do
+ * Built through the four factories only, so the set of things a button can do
  * stays closed. `assertWithin()` is the validating constructor the 64-byte
  * callback budget used to be tribal knowledge about: a callback that a
- * platform would truncate throws here, on the developer's machine.
+ * platform would truncate throws here, on the developer's machine. A command
+ * button names a catalogue command and its parameters in the core's words;
+ * each connector renders it into the callback its own surface answers to, so
+ * no core message spells a platform's routing.
  */
 final readonly class MessageAction
 {
     /**
-     * @param  MessageActionKind  $kind   What the button does.
-     * @param  string             $label  What it says.
-     * @param  string             $value  The URL to open, the callback data to send, or the text to copy.
+     * @param  MessageActionKind                     $kind     What the button does.
+     * @param  string                                $label    What it says.
+     * @param  string                                $value    The URL to open, the callback data to send, the text to copy, or the command's value.
+     * @param  ManagementCommand|MemberCommand|null  $command  The catalogue command a command button runs.
+     * @param  array<string, scalar>                 $params   The command's parameters, named in the core's words.
      *
      * @throws  InvalidMessage  When the label or value is empty.
      */
@@ -28,6 +35,8 @@ final readonly class MessageAction
         public MessageActionKind $kind,
         public string $label,
         public string $value,
+        public ManagementCommand|MemberCommand|null $command = null,
+        public array $params = [],
     ) {
         if (trim($label) === '') {
             throw InvalidMessage::because('a button needs a label');
@@ -66,6 +75,19 @@ final readonly class MessageAction
     public static function copy(string $label, string $text): self
     {
         return new self(MessageActionKind::Copy, $label, $text);
+    }
+
+    /**
+     * A button that runs a catalogue command in the connector's own surface.
+     *
+     * @param   string                           $label    What the button says.
+     * @param   ManagementCommand|MemberCommand  $command  The command it runs.
+     * @param   array<string, scalar>            $params   Its parameters, named in the core's words (`conversation`, `project`).
+     * @return  self                             The button.
+     */
+    public static function command(string $label, ManagementCommand|MemberCommand $command, array $params = []): self
+    {
+        return new self(MessageActionKind::Command, $label, $command->value, $command, $params);
     }
 
     /**
