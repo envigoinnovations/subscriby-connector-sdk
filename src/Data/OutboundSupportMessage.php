@@ -10,13 +10,13 @@ namespace Subscriby\Connector\Data;
 final readonly class OutboundSupportMessage
 {
     /**
-     * @param  string        $body              The canonical HTML of the reply.
-     * @param  list<string>  $attachmentUrls    Files to send with it, as URLs the connector can fetch.
-     * @param  string|null   $quotedExternalId  The member's message being answered, when the platform can quote it.
+     * @param  string                   $body              The canonical HTML of the reply.
+     * @param  list<SupportAttachment>  $attachments       Files to send with it, in order.
+     * @param  string|null              $quotedExternalId  The member's message being answered, when the platform can quote it.
      */
     public function __construct(
         public string $body,
-        public array $attachmentUrls = [],
+        public array $attachments = [],
         public ?string $quotedExternalId = null,
     ) {}
 }
