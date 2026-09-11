@@ -6,6 +6,7 @@ namespace Subscriby\Connector\Testing\Fakes;
 
 use Subscriby\Connector\Contracts\Ports\IdentityResolver;
 use Subscriby\Connector\Data\CredentialBag;
+use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\IdentitySummary;
 use Subscriby\Connector\Data\InboundEnvelope;
 use Subscriby\Connector\Data\InstallationRef;
@@ -14,10 +15,31 @@ use Subscriby\Connector\Data\InstallationRef;
  * Reads the actor out of a fake envelope's `from` key.
  *
  * External ids are phone-number shaped on purpose (`+15550001`), so a core
- * path that treats an external id as a numeric chat id fails here.
+ * path that treats an external id as a numeric chat id fails here. Adopting
+ * an account keeps no row: the storage ref is derived from the id, so a core
+ * path that needs the connector's row to exist fails here too.
  */
 final class FakeIdentityResolver implements IdentityResolver
 {
+    /**
+     * @param   InstallationRef  $installation  The installation the account is seen by.
+     * @param   IdentitySummary  $identity      The account as reported.
+     * @return  IdentityRecord   The record, its storage ref derived from the id.
+     */
+    public function adopt(InstallationRef $installation, IdentitySummary $identity): IdentityRecord
+    {
+        return new IdentityRecord(
+            connector: $installation->connector,
+            externalId: $identity->externalId,
+            installationId: $installation->id,
+            displayName: $identity->displayName,
+            username: $identity->username,
+            avatarUrl: $identity->avatarUrl,
+            storageRef: 'fake-identity-'.$identity->externalId,
+            meta: $identity->meta,
+        );
+    }
+
     /**
      * @param   InboundEnvelope       $envelope  The decoded event.
      * @return  IdentitySummary|null  The `from` account, or null when the event has none.
