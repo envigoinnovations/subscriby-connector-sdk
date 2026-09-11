@@ -17,21 +17,23 @@ use Subscriby\Connector\Data\InstallationRef;
  * External ids are phone-number shaped on purpose (`+15550001`), so a core
  * path that treats an external id as a numeric chat id fails here. Adopting
  * an account keeps no row: the storage ref is derived from the id, so a core
- * path that needs the connector's row to exist fails here too.
+ * path that needs the connector's row to exist fails here too. Like the
+ * first-party connectors, an adopted account is keyed on the account alone
+ * (one account is one identity however many installations see it), so the
+ * record names no installation.
  */
 final class FakeIdentityResolver implements IdentityResolver
 {
     /**
-     * @param   InstallationRef  $installation  The installation the account is seen by.
+     * @param   InstallationRef  $installation  The installation the account is seen by; it fixes the connector, not the record's installation.
      * @param   IdentitySummary  $identity      The account as reported.
-     * @return  IdentityRecord   The record, its storage ref derived from the id.
+     * @return  IdentityRecord   The record, keyed on the account alone, its storage ref derived from the id.
      */
     public function adopt(InstallationRef $installation, IdentitySummary $identity): IdentityRecord
     {
         return new IdentityRecord(
             connector: $installation->connector,
             externalId: $identity->externalId,
-            installationId: $installation->id,
             displayName: $identity->displayName,
             username: $identity->username,
             avatarUrl: $identity->avatarUrl,
