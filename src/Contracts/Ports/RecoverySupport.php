@@ -11,6 +11,7 @@ use Subscriby\Connector\Data\DeliveryResult;
 use Subscriby\Connector\Data\FailOverReport;
 use Subscriby\Connector\Data\GrantSnapshot;
 use Subscriby\Connector\Data\HandshakeRef;
+use Subscriby\Connector\Data\HealthReasonText;
 use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\InstallationHealth;
 use Subscriby\Connector\Data\InstallationRef;
@@ -39,6 +40,19 @@ interface RecoverySupport
      * @return  RecoveryVocabulary  The nouns the core's recovery pages use for this connector.
      */
     public function vocabulary(): RecoveryVocabulary;
+
+    /**
+     * The connector's own words for a health reason code the core recorded.
+     *
+     * The core keeps stable machine codes for why an installation or a place
+     * stopped answering and shows a generic sentence for each; a connector
+     * that knows the platform's remedy ("recreate the bot in @BotFather")
+     * answers here and the core prefers its words.
+     *
+     * @param   string                 $code  The reason code, as the core's health enums back it.
+     * @return  HealthReasonText|null  The label and explanation, or null for a code the connector has nothing to add to.
+     */
+    public function healthReasonText(string $code): ?HealthReasonText;
 
     /**
      * @param   InstallationRef      $installation  The installation.

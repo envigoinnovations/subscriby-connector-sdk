@@ -11,6 +11,7 @@ use Subscriby\Connector\Data\DeliveryFailure;
 use Subscriby\Connector\Data\DeliveryResult;
 use Subscriby\Connector\Data\FailOverReport;
 use Subscriby\Connector\Data\HandshakeRef;
+use Subscriby\Connector\Data\HealthReasonText;
 use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\InstallationHealth;
 use Subscriby\Connector\Data\InstallationRef;
@@ -45,6 +46,15 @@ final class FakeRecoverySupport implements RecoverySupport
     public function vocabulary(): RecoveryVocabulary
     {
         return new RecoveryVocabulary('bot', 'room', 'fake account', 'membership');
+    }
+
+    /**
+     * @param   string            $code  The reason code.
+     * @return  HealthReasonText  Words that name the code, so a test can see the connector's text won over the core's fallback.
+     */
+    public function healthReasonText(string $code): HealthReasonText
+    {
+        return new HealthReasonText("Fake connector: {$code}", "The fake connector explains {$code}.");
     }
 
     /**
