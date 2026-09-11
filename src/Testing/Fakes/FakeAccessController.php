@@ -21,6 +21,7 @@ use Subscriby\Connector\Data\SpaceRef;
 use Subscriby\Connector\Enums\DeliveryFailureKind;
 use Subscriby\Connector\Enums\GrantMode;
 use Subscriby\Connector\Enums\MembershipStatus;
+use Subscriby\Connector\Exceptions\UnsupportedByConnector;
 
 /**
  * An access controller that keeps memberships in memory.
@@ -65,6 +66,37 @@ final class FakeAccessController implements AccessController
         unset($this->memberships[$this->key($space, $identity)]);
 
         return RevokeResult::revoked();
+    }
+
+    /**
+     * Memberships carry no reference apart from themselves, so there is nothing to withdraw.
+     *
+     * @param   InstallationRef  $installation  The installation.
+     * @param   CredentialBag    $credentials   Its secrets.
+     * @param   GrantRef         $grant         The grant.
+     * @param   SpaceRef         $space         The place.
+     * @return  RevokeResult     Always revoked, the membership untouched.
+     */
+    public function revokeReference(InstallationRef $installation, CredentialBag $credentials, GrantRef $grant, SpaceRef $space): RevokeResult
+    {
+        return RevokeResult::revoked();
+    }
+
+    /**
+     * The fake holds nothing ahead of a window: its manifest declares no `early_admission_hold`.
+     *
+     * @param   InstallationRef  $installation  The installation.
+     * @param   CredentialBag    $credentials   Its secrets.
+     * @param   GrantRef         $grant         The grant.
+     * @param   SpaceRef         $space         The place.
+     * @param   IdentityRef      $identity      The account.
+     * @return  GrantResult      Never.
+     *
+     * @throws  UnsupportedByConnector  Always.
+     */
+    public function admit(InstallationRef $installation, CredentialBag $credentials, GrantRef $grant, SpaceRef $space, IdentityRef $identity): GrantResult
+    {
+        throw UnsupportedByConnector::facet($installation->connector, 'early admission holds');
     }
 
     /**
