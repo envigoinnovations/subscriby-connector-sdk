@@ -6,6 +6,7 @@ namespace Subscriby\Connector;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\CachesConfiguration;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use ReflectionClass;
@@ -22,7 +23,8 @@ use Subscriby\Connector\Manifest\ManifestFile;
  * with the application's registry under that manifest, and the package's
  * migrations, views (namespace `connector-<key>`), JSON translations, inbound
  * routes (under the `connector.inbound` middleware group) and console commands
- * are loaded from the package directory when present. The package directory is
+ * are loaded from the package directory when present, and the listeners the
+ * package declares for the SDK's events are bound. The package directory is
  * the grandparent of the concrete provider's file, which is the layout
  * `<package>/src/<Provider>.php` every connector shares.
  */
@@ -62,6 +64,10 @@ abstract class ConnectorServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole() && $this->packageCommands() !== []) {
             $this->commands($this->packageCommands());
+        }
+
+        foreach ($this->packageListeners() as $event => $listener) {
+            Event::listen($event, $listener);
         }
     }
 
@@ -113,6 +119,21 @@ abstract class ConnectorServiceProvider extends ServiceProvider
      * @return  list<class-string>  Command classes to register.
      */
     protected function packageCommands(): array
+    {
+        return [];
+    }
+
+    /**
+     * The SDK events the package listens to, if any.
+     *
+     * The core dispatches `Subscriby\Connector\Events\*` for what it records
+     * about a connector's installations, identities and grants; a package that
+     * keeps rows of its own in step names the listener here rather than
+     * listening to anything under the application's namespace.
+     *
+     * @return  array<class-string, class-string>  Event class to listener class.
+     */
+    protected function packageListeners(): array
     {
         return [];
     }
