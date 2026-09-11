@@ -95,6 +95,15 @@ final class FakeInstallationLifecycle implements InstallationLifecycle
     }
 
     /**
+     * @param   InstallationRef  $installation  The installation.
+     * @return  string           Its page on the fake host, without a payload.
+     */
+    public function publicUrl(InstallationRef $installation): string
+    {
+        return 'https://fake.test/'.($installation->externalId ?? 'fake');
+    }
+
+    /**
      * @return  InstallationRef  The fake's shared presence, `fake-platform`, since its manifest declares the platform scope.
      */
     public function platformInstallation(): InstallationRef

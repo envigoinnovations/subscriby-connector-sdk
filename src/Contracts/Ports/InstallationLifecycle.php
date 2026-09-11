@@ -73,6 +73,18 @@ interface InstallationLifecycle
     public function startLink(InstallationRef $installation, ?string $payload = null): ?string;
 
     /**
+     * Where a person finds the installation on the platform, with nothing to open on.
+     *
+     * The bot's public page, a server's invite page: what a creator pastes
+     * into a bio or a dashboard shows as "Open in …". Distinct from
+     * `startLink()`, which always carries a payload and opens a conversation.
+     *
+     * @param   InstallationRef  $installation  The installation.
+     * @return  string|null      The link, or null when the platform has no such page or the installation's handle is unknown.
+     */
+    public function publicUrl(InstallationRef $installation): ?string;
+
+    /**
      * The installation the connector runs for every creator, when its manifest declares the platform scope.
      *
      * Subscriby's own presence on the platform: the bot creators sign in
