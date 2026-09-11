@@ -56,7 +56,7 @@ final class FakeSpaceCatalog implements SpaceCatalog
     public function diagnose(InstallationRef $installation, CredentialBag $credentials, SpaceRef $space): SpaceAccess
     {
         if (str_starts_with($space->externalId, 'lost-')) {
-            return new SpaceAccess(false, 'not_member', 'The fake bot is no longer in this room.', true);
+            return new SpaceAccess(false, SpaceAccess::NOT_MEMBER, 'The fake bot is no longer in this room.', true);
         }
 
         return SpaceAccess::ready();
