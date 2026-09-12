@@ -64,7 +64,9 @@ final class FakeRecoverySupport implements RecoverySupport
      */
     public function readinessChecks(InstallationRef $installation, ProjectRef $project): array
     {
-        return [];
+        return [
+            new ReadinessItem('fake_safeguard', 'A fake safeguard', 'Proves the checklist renders a line a connector worded.', 'sparkles', true, true, null, 'In place'),
+        ];
     }
 
     /**

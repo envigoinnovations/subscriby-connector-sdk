@@ -21,6 +21,7 @@ final readonly class ReadinessItem
      * @param  bool         $satisfied    Whether the creator has done it.
      * @param  bool         $prevention   Whether it is a paid prevention feature, shown locked without the capability.
      * @param  string|null  $fixRoute     Where the creator goes to do it, when there is a page.
+     * @param  string|null  $detail       The state in words ("2 of 3 channels"), when the connector has one.
      */
     public function __construct(
         public string $key,
@@ -30,5 +31,6 @@ final readonly class ReadinessItem
         public bool $satisfied,
         public bool $prevention = false,
         public ?string $fixRoute = null,
+        public ?string $detail = null,
     ) {}
 }
