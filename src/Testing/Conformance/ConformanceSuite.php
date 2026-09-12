@@ -450,7 +450,7 @@ final class ConformanceSuite
         $vocabulary = $recovery->vocabulary();
         $offenders = [];
 
-        foreach (['installationNoun' => $vocabulary->installationNoun, 'spaceNoun' => $vocabulary->spaceNoun, 'identityNoun' => $vocabulary->identityNoun, 'grantNoun' => $vocabulary->grantNoun] as $name => $noun) {
+        foreach (['installationNoun' => $vocabulary->installationNoun, 'spaceNoun' => $vocabulary->spaceNoun, 'identityNoun' => $vocabulary->identityNoun, 'grantNoun' => $vocabulary->grantNoun, 'installationsNoun' => $vocabulary->installationsNoun, 'spacesNoun' => $vocabulary->spacesNoun] as $name => $noun) {
             if (trim($noun) === '') {
                 $offenders[] = sprintf('vocabulary %s is empty', $name);
             }

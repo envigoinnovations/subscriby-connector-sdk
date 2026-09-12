@@ -45,7 +45,8 @@
                     "portal_label": { "type": "string", "minLength": 1 },
                     "icon": { "type": "string", "minLength": 1 },
                     "grant_mode": { "enum": ["bearer_link", "membership", "role", "creator_task"] },
-                    "supports_early_admission_hold": { "type": "boolean" }
+                    "supports_early_admission_hold": { "type": "boolean" },
+                    "mirrorable": { "type": "boolean", "description": "Whether a standby place of this kind can receive a live copy of every post." }
                 }
             }
         },

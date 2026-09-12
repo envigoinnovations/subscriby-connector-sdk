@@ -61,6 +61,15 @@ final class FakeSpaceCatalog implements SpaceCatalog
     }
 
     /**
+     * @param   LinkPurpose  $purpose  Which request.
+     * @return  string       A sentence unlike any platform's.
+     */
+    public function linkInstructions(LinkPurpose $purpose): string
+    {
+        return sprintf('Pick the room for the %s request in the fake console.', $purpose->value);
+    }
+
+    /**
      * @param   InstallationRef  $installation  The installation.
      * @param   CredentialBag    $credentials   Its secrets.
      * @param   SpaceRef         $space         The place.

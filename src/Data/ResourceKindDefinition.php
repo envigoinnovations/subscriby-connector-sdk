@@ -24,6 +24,7 @@ final readonly class ResourceKindDefinition
      * @param  string     $icon                        The Heroicon name the dashboard draws for it.
      * @param  GrantMode  $grantMode                   How access to a place of this kind is given.
      * @param  bool       $supportsEarlyAdmissionHold  Whether a dated grant can be held until its window opens.
+     * @param  bool       $mirrorable                  Whether a standby place of this kind can receive a live copy of every post; content is mirrored, conversation is not.
      *
      * @throws  InvalidManifest  When the kind is not a lower-case identifier or a label is empty.
      */
@@ -34,6 +35,7 @@ final readonly class ResourceKindDefinition
         public string $icon,
         public GrantMode $grantMode,
         public bool $supportsEarlyAdmissionHold = false,
+        public bool $mirrorable = false,
     ) {
         if (preg_match('/^[a-z][a-z0-9_-]*$/', $kind) !== 1) {
             throw InvalidManifest::because('unknown', sprintf('resource kind "%s" must be a lower-case identifier', $kind));

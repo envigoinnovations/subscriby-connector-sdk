@@ -45,7 +45,16 @@ final class FakeRecoverySupport implements RecoverySupport
      */
     public function vocabulary(): RecoveryVocabulary
     {
-        return new RecoveryVocabulary('bot', 'room', 'fake account', 'membership');
+        return new RecoveryVocabulary(
+            installationNoun: 'bot',
+            spaceNoun: 'room',
+            identityNoun: 'fake account',
+            grantNoun: 'membership',
+            installationsNoun: 'bots',
+            spacesNoun: 'rooms',
+            mirrorNote: 'Every room is mirrored in the fake console.',
+            identityRelinkedSteps: ['Open the fake console from the new account.'],
+        );
     }
 
     /**

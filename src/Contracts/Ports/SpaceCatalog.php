@@ -55,6 +55,18 @@ interface SpaceCatalog
     public function pendingLinkRequest(InstallationRef $installation, CredentialBag $credentials, IdentityRef $creator, LinkPurpose $purpose): ?string;
 
     /**
+     * What the creator does on the platform once a request is open, in one or two plain sentences.
+     *
+     * The core's pages say that a request is waiting; only the connector
+     * knows whether the creator taps a keyboard button, picks a guild or
+     * approves a prompt, so the sentence that tells them is the connector's.
+     *
+     * @param   LinkPurpose  $purpose  Which request the sentence is for.
+     * @return  string       The instruction, translated.
+     */
+    public function linkInstructions(LinkPurpose $purpose): string;
+
+    /**
      * @param   InstallationRef  $installation  The installation to ask through.
      * @param   CredentialBag    $credentials   Its secrets.
      * @param   SpaceRef         $space         The place.

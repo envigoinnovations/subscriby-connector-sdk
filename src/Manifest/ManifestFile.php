@@ -269,7 +269,7 @@ final class ManifestFile
     {
         $before = $reader->problemCount();
 
-        $reader->refuseUnknownKeys(['kind', 'label', 'portal_label', 'icon', 'grant_mode', 'supports_early_admission_hold']);
+        $reader->refuseUnknownKeys(['kind', 'label', 'portal_label', 'icon', 'grant_mode', 'supports_early_admission_hold', 'mirrorable']);
 
         $kind = $reader->string('kind');
         $label = $reader->string('label');
@@ -277,13 +277,14 @@ final class ManifestFile
         $icon = $reader->string('icon');
         $grantMode = $reader->enum('grant_mode', GrantMode::class);
         $hold = $reader->optionalBool('supports_early_admission_hold') ?? false;
+        $mirrorable = $reader->optionalBool('mirrorable') ?? false;
 
         if ($reader->problemCount() > $before) {
             return null;
         }
 
         try {
-            return new ResourceKindDefinition($kind, $label, $portalLabel, $icon, $grantMode, $hold);
+            return new ResourceKindDefinition($kind, $label, $portalLabel, $icon, $grantMode, $hold, $mirrorable);
         } catch (InvalidManifest $exception) {
             $reader->fail($exception->reason);
 
