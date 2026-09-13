@@ -42,4 +42,26 @@ interface NativePaymentProvider
      * @return  bool  True when a test-mode method can exist alongside the live one.
      */
     public function supportsSandbox(): bool;
+
+    /**
+     * @return  string  The file name, without extension, of the provider's mark under the platform's payment icons.
+     */
+    public function icon(): string;
+
+    /**
+     * @return  string  One line under the provider's name in the picker, saying where it works and what a unit is worth.
+     */
+    public function tagline(): string;
+
+    /**
+     * The fixed value of one unit of the provider's currency in US dollars, when the platform fixes it.
+     *
+     * A native currency no exchange feed carries needs its rate from the
+     * connector: the rate job records the reciprocal as units per dollar,
+     * the form every other currency's rate takes. Null when the currency
+     * floats and a feed carries it.
+     *
+     * @return  float|null  Dollars per unit, or null.
+     */
+    public function unitInUsd(): ?float;
 }
