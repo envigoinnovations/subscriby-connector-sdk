@@ -15,7 +15,7 @@
         },
         "name": { "type": "string", "minLength": 1 },
         "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+" },
-        "sdk": { "type": "string", "minLength": 1, "description": "The connector-sdk constraint the package was built against, such as ^0.1." },
+        "sdk": { "type": "string", "minLength": 1, "description": "The connector-sdk constraint the package was built against, such as ^1.0." },
         "vendor": { "type": "string", "minLength": 1 },
         "install": {
             "type": "object",

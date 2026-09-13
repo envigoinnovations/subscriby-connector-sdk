@@ -27,7 +27,7 @@ final readonly class ConnectorManifest
      * @param  string                        $key                 The connector key: lower-case letters, digits, `_` and `-`; also the table prefix and the config key.
      * @param  string                        $name                The display name.
      * @param  string                        $version             The package version, `major.minor.patch`.
-     * @param  string                        $sdk                 The SDK constraint the package was built against, such as `^0.1`.
+     * @param  string                        $sdk                 The SDK constraint the package was built against, such as `^1.0`.
      * @param  string                        $vendor              Who publishes it.
      * @param  InstallMode                   $installMode         How a creator connects it.
      * @param  list<InstallationScope>       $scopes              The installation scopes it supports.
