@@ -19,12 +19,17 @@ use Subscriby\Connector\Enums\LinkPurpose;
  *
  * One request per creator and purpose, as the contract promises; a space
  * whose external id starts with `lost-` diagnoses as not a member, so the
- * core's health and failover paths can be driven without a platform.
+ * core's health and failover paths can be driven without a platform. Every
+ * diagnosis is recorded with the installation and token it was asked with,
+ * so a test can prove the core asked the installation that holds the place.
  */
 final class FakeSpaceCatalog implements SpaceCatalog
 {
     /** @var array<string, LinkRequest> Open requests keyed `creator|purpose`. */
     public array $linkRequests = [];
+
+    /** @var list<array{installation: string, token: string|null, space: string}> Every diagnose call, oldest first. */
+    public array $diagnoses = [];
 
     /**
      * @param  InstallationRef  $installation  The installation.
@@ -88,6 +93,9 @@ final class FakeSpaceCatalog implements SpaceCatalog
      */
     public function diagnose(InstallationRef $installation, CredentialBag $credentials, SpaceRef $space): SpaceAccess
     {
+        $token = $credentials->get('token');
+        $this->diagnoses[] = ['installation' => $installation->id, 'token' => is_string($token) ? $token : null, 'space' => $space->externalId];
+
         if (str_starts_with($space->externalId, 'lost-')) {
             return new SpaceAccess(false, SpaceAccess::NOT_MEMBER, 'The fake bot is no longer in this room.', true);
         }
