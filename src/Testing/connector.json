@@ -51,6 +51,7 @@
         "links": { "documentation": "https://docs.subscriby.net/connectors/building" },
         "added_at": "2026-09-10",
         "sign_in_required": false,
+        "portal_cta": { "label": "Open the fake room" },
         "marketing": {
             "audience": "fake communities",
             "place": "room",

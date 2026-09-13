@@ -146,6 +146,16 @@
                         "identity": { "type": "string", "minLength": 1, "description": "A person's account on the platform, such as \"Telegram account\"." },
                         "native_payment": { "type": "string", "minLength": 1, "description": "The platform's own payment method, when it has one, such as \"Telegram Stars\"." }
                     }
+                },
+                "portal_cta": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["label"],
+                    "description": "The button the member portal shows to open the connector, when the connector has somewhere to open; the core addresses it through the installation's start link.",
+                    "properties": {
+                        "label": { "type": "string", "minLength": 1, "description": "The button's text, such as \"Open Telegram Bot\"." },
+                        "icon": { "type": "string", "minLength": 1, "description": "An icon slug; the connector's own icon when omitted." }
+                    }
                 }
             }
         }

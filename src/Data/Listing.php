@@ -30,6 +30,7 @@ final readonly class Listing
      * @param  string|null            $changelogUrl    Where releases are announced.
      * @param  bool                   $signInRequired  Whether the creator has to sign in to the platform to install.
      * @param  ListingMarketing|null  $marketing       The words the marketing site borrows; null when the connector lends none.
+     * @param  ListingPortalCta|null  $portalCta       The button the member portal shows to open the connector; null when it has nowhere to open.
      *
      * @throws  InvalidManifest  When the tagline is empty or too long.
      */
@@ -43,6 +44,7 @@ final readonly class Listing
         public ?string $changelogUrl = null,
         public bool $signInRequired = true,
         public ?ListingMarketing $marketing = null,
+        public ?ListingPortalCta $portalCta = null,
     ) {
         $length = mb_strlen(trim($tagline));
 

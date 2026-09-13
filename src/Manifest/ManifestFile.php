@@ -11,6 +11,7 @@ use Subscriby\Connector\Data\Field;
 use Subscriby\Connector\Data\Listing;
 use Subscriby\Connector\Data\ListingLinks;
 use Subscriby\Connector\Data\ListingMarketing;
+use Subscriby\Connector\Data\ListingPortalCta;
 use Subscriby\Connector\Data\MessagingLimits;
 use Subscriby\Connector\Data\Pacing;
 use Subscriby\Connector\Data\RecoveryCapabilities;
@@ -153,7 +154,7 @@ final class ManifestFile
         ];
 
         $listing = $reader->object('listing');
-        $listing->refuseUnknownKeys(['category', 'tagline', 'overview', 'screenshots', 'links', 'added_at', 'changelog_url', 'sign_in_required', 'marketing']);
+        $listing->refuseUnknownKeys(['category', 'tagline', 'overview', 'screenshots', 'links', 'added_at', 'changelog_url', 'sign_in_required', 'marketing', 'portal_cta']);
         $category = $listing->enum('category', ListingCategory::class);
         $tagline = $listing->string('tagline');
         $overview = $listing->string('overview');
@@ -187,6 +188,14 @@ final class ManifestFile
             ];
         }
 
+        $portalCta = null;
+
+        if ($listing->has('portal_cta')) {
+            $cta = $listing->object('portal_cta');
+            $cta->refuseUnknownKeys(['label', 'icon']);
+            $portalCta = [$cta->string('label'), $cta->optionalString('icon')];
+        }
+
         $reader->throwIfInvalid($key === '' ? 'unknown' : $key);
 
         try {
@@ -205,7 +214,7 @@ final class ManifestFile
                 managementCommands: $managementCommands,
                 relayModes: $relayModes,
                 recovery: new RecoveryCapabilities(...$facets),
-                listing: new Listing($category, $tagline, $overview, $screenshots, new ListingLinks(...$linkValues), $addedAt, $changelogUrl, $signInRequired, $marketingValues === null ? null : new ListingMarketing(...$marketingValues)),
+                listing: new Listing($category, $tagline, $overview, $screenshots, new ListingLinks(...$linkValues), $addedAt, $changelogUrl, $signInRequired, $marketingValues === null ? null : new ListingMarketing(...$marketingValues), $portalCta === null ? null : new ListingPortalCta(...$portalCta)),
                 installFields: $installFields,
                 settingsFields: $settingsFields,
             );
