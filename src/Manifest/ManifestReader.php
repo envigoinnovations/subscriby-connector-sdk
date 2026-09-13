@@ -39,6 +39,15 @@ final class ManifestReader
 
     /**
      * @param   string  $key  The key.
+     * @return  bool    Whether the object carries the key at all, whatever its value.
+     */
+    public function has(string $key): bool
+    {
+        return array_key_exists($key, $this->data);
+    }
+
+    /**
+     * @param   string  $key  The key.
      * @return  string  The non-empty string, or `''` after recording that it is missing or wrong.
      */
     public function string(string $key): string

@@ -132,7 +132,21 @@
                 },
                 "added_at": { "type": "string", "format": "date" },
                 "changelog_url": { "$ref": "#/$defs/link" },
-                "sign_in_required": { "type": "boolean" }
+                "sign_in_required": { "type": "boolean" },
+                "marketing": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["audience", "place", "places", "installation", "identity"],
+                    "description": "The words the marketing site borrows: the home, vertical, comparison and legal pages name a platform only through these.",
+                    "properties": {
+                        "audience": { "type": "string", "minLength": 1, "description": "Who the connector serves, such as \"Telegram communities\"." },
+                        "place": { "type": "string", "minLength": 1, "description": "One gated place, lower case, such as \"channel\"." },
+                        "places": { "type": "string", "minLength": 1, "description": "The gated places as a list, such as \"channels, groups and supergroups\"." },
+                        "installation": { "type": "string", "minLength": 1, "description": "What a project installs, lower case, such as \"bot\"." },
+                        "identity": { "type": "string", "minLength": 1, "description": "A person's account on the platform, such as \"Telegram account\"." },
+                        "native_payment": { "type": "string", "minLength": 1, "description": "The platform's own payment method, when it has one, such as \"Telegram Stars\"." }
+                    }
+                }
             }
         }
     },

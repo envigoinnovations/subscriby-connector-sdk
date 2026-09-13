@@ -10,6 +10,7 @@ use Subscriby\Connector\Data\ConnectorManifest;
 use Subscriby\Connector\Data\Field;
 use Subscriby\Connector\Data\Listing;
 use Subscriby\Connector\Data\ListingLinks;
+use Subscriby\Connector\Data\ListingMarketing;
 use Subscriby\Connector\Data\MessagingLimits;
 use Subscriby\Connector\Data\Pacing;
 use Subscriby\Connector\Data\RecoveryCapabilities;
@@ -152,7 +153,7 @@ final class ManifestFile
         ];
 
         $listing = $reader->object('listing');
-        $listing->refuseUnknownKeys(['category', 'tagline', 'overview', 'screenshots', 'links', 'added_at', 'changelog_url', 'sign_in_required']);
+        $listing->refuseUnknownKeys(['category', 'tagline', 'overview', 'screenshots', 'links', 'added_at', 'changelog_url', 'sign_in_required', 'marketing']);
         $category = $listing->enum('category', ListingCategory::class);
         $tagline = $listing->string('tagline');
         $overview = $listing->string('overview');
@@ -170,6 +171,21 @@ final class ManifestFile
             $links->optionalString('terms'),
             $links->optionalString('homepage'),
         ];
+
+        $marketingValues = null;
+
+        if ($listing->has('marketing')) {
+            $marketing = $listing->object('marketing');
+            $marketing->refuseUnknownKeys(['audience', 'place', 'places', 'installation', 'identity', 'native_payment']);
+            $marketingValues = [
+                $marketing->string('audience'),
+                $marketing->string('place'),
+                $marketing->string('places'),
+                $marketing->string('installation'),
+                $marketing->string('identity'),
+                $marketing->optionalString('native_payment'),
+            ];
+        }
 
         $reader->throwIfInvalid($key === '' ? 'unknown' : $key);
 
@@ -189,7 +205,7 @@ final class ManifestFile
                 managementCommands: $managementCommands,
                 relayModes: $relayModes,
                 recovery: new RecoveryCapabilities(...$facets),
-                listing: new Listing($category, $tagline, $overview, $screenshots, new ListingLinks(...$linkValues), $addedAt, $changelogUrl, $signInRequired),
+                listing: new Listing($category, $tagline, $overview, $screenshots, new ListingLinks(...$linkValues), $addedAt, $changelogUrl, $signInRequired, $marketingValues === null ? null : new ListingMarketing(...$marketingValues)),
                 installFields: $installFields,
                 settingsFields: $settingsFields,
             );

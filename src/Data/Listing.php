@@ -21,14 +21,15 @@ final readonly class Listing
     public const TAGLINE_LENGTH = 80;
 
     /**
-     * @param  ListingCategory    $category        The shelf the connector sits on.
-     * @param  string             $tagline         One line under the name, at most 80 characters.
-     * @param  string             $overview        The Overview tab, Markdown.
-     * @param  list<string>       $screenshots     Screenshot URLs.
-     * @param  ListingLinks       $links           Documentation, support, privacy, terms, homepage.
-     * @param  DateTimeImmutable  $addedAt         When the connector was first published; drives the New chip.
-     * @param  string|null        $changelogUrl    Where releases are announced.
-     * @param  bool               $signInRequired  Whether the creator has to sign in to the platform to install.
+     * @param  ListingCategory        $category        The shelf the connector sits on.
+     * @param  string                 $tagline         One line under the name, at most 80 characters.
+     * @param  string                 $overview        The Overview tab, Markdown.
+     * @param  list<string>           $screenshots     Screenshot URLs.
+     * @param  ListingLinks           $links           Documentation, support, privacy, terms, homepage.
+     * @param  DateTimeImmutable      $addedAt         When the connector was first published; drives the New chip.
+     * @param  string|null            $changelogUrl    Where releases are announced.
+     * @param  bool                   $signInRequired  Whether the creator has to sign in to the platform to install.
+     * @param  ListingMarketing|null  $marketing       The words the marketing site borrows; null when the connector lends none.
      *
      * @throws  InvalidManifest  When the tagline is empty or too long.
      */
@@ -41,6 +42,7 @@ final readonly class Listing
         public DateTimeImmutable $addedAt,
         public ?string $changelogUrl = null,
         public bool $signInRequired = true,
+        public ?ListingMarketing $marketing = null,
     ) {
         $length = mb_strlen(trim($tagline));
 

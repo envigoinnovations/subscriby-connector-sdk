@@ -50,6 +50,13 @@
         "screenshots": [],
         "links": { "documentation": "https://docs.subscriby.net/connectors/building" },
         "added_at": "2026-09-10",
-        "sign_in_required": false
+        "sign_in_required": false,
+        "marketing": {
+            "audience": "fake communities",
+            "place": "room",
+            "places": "rooms and halls",
+            "installation": "fake bot",
+            "identity": "fake account"
+        }
     }
 }
