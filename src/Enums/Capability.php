@@ -77,4 +77,31 @@ enum Capability: string
     {
         return $this === self::NativePayments;
     }
+
+    /**
+     * The group a page shelves this capability under.
+     *
+     * Talking to members, letting them in, surviving a ban and taking money
+     * are the four stories a connector tells; every capability belongs to
+     * exactly one, so a list of fourteen switches reads as four cards.
+     *
+     * @return  CapabilityGroup  The shelf.
+     */
+    public function group(): CapabilityGroup
+    {
+        return match ($this) {
+            self::Messaging, self::Broadcasts, self::SupportRelay => CapabilityGroup::Messaging,
+            self::AccessControl,
+            self::EarlyAdmissionHold,
+            self::ManagementSurface,
+            self::PortalLogin,
+            self::CreatorRegistration => CapabilityGroup::Access,
+            self::RecoveryProbes,
+            self::RecoveryStandbyInstallations,
+            self::RecoveryResourceStandby,
+            self::RecoveryMirror,
+            self::RecoveryIdentityRelink => CapabilityGroup::Recovery,
+            self::NativePayments => CapabilityGroup::Payments,
+        };
+    }
 }
