@@ -22,8 +22,10 @@ use Subscriby\Connector\Manifest\ManifestFile;
  * package's `connector.json` is read and checked, the connector is registered
  * with the application's registry under that manifest, and the package's
  * migrations, views (namespace `connector-<key>`), JSON translations, inbound
- * routes (under the `connector.inbound` middleware group) and console commands
- * are loaded from the package directory when present, and the listeners the
+ * routes (behind the application's `connector.inbound` middleware, given the
+ * connector key, which authenticates each call through the connector's
+ * `InboundGateway`, drops a replayed event and refuses a paused connector) and
+ * console commands are loaded from the package directory when present, and the listeners the
  * package declares for the SDK's events are bound. The package directory is
  * the grandparent of the concrete provider's file, which is the layout
  * `<package>/src/<Provider>.php` every connector shares.
@@ -55,7 +57,7 @@ abstract class ConnectorServiceProvider extends ServiceProvider
         }
 
         if (is_file($this->packagePath('routes/inbound.php'))) {
-            Route::middleware('connector.inbound')->group($this->packagePath('routes/inbound.php'));
+            Route::middleware('connector.inbound:'.$key)->group($this->packagePath('routes/inbound.php'));
         }
 
         if (is_file($this->packagePath('routes/web.php'))) {
