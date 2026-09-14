@@ -8,6 +8,7 @@ use PHPUnit\Framework\Assert;
 use Subscriby\Connector\Contracts\Ports\AccessController;
 use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\DeliveryFailure;
+use Subscriby\Connector\Data\GrantAnnouncement;
 use Subscriby\Connector\Data\GrantRef;
 use Subscriby\Connector\Data\GrantRequest;
 use Subscriby\Connector\Data\GrantResult;
@@ -29,12 +30,16 @@ use Subscriby\Connector\Exceptions\UnsupportedByConnector;
  * Grants are memberships, never links, and an identity whose id starts with
  * `blocked-` cannot be reached, so both halves of the core's grant pipeline
  * can be exercised. Idempotent like the real thing: granting twice is one
- * membership, revoking a stranger is still revoked.
+ * membership, revoking a stranger is still revoked. Announcements are kept,
+ * not sent, so a core test can assert the holder was told.
  */
 final class FakeAccessController implements AccessController
 {
     /** @var array<string, GrantMode> Memberships keyed `space|identity`. */
     public array $memberships = [];
+
+    /** @var list<array{holder: IdentityRef, announcement: GrantAnnouncement}> Every announcement the core asked for, in order. */
+    public array $announcements = [];
 
     /**
      * @param   InstallationRef  $installation  The installation.
@@ -112,6 +117,17 @@ final class FakeAccessController implements AccessController
     }
 
     /**
+     * @param  InstallationRef    $installation  The installation.
+     * @param  CredentialBag      $credentials   Its secrets.
+     * @param  IdentityRef        $holder        The account to tell.
+     * @param  GrantAnnouncement  $announcement  What was issued; kept for the test to read.
+     */
+    public function announce(InstallationRef $installation, CredentialBag $credentials, IdentityRef $holder, GrantAnnouncement $announcement): void
+    {
+        $this->announcements[] = ['holder' => $holder, 'announcement' => $announcement];
+    }
+
+    /**
      * @param   InstallationRef          $installation  The installation.
      * @param   CredentialBag            $credentials   Its secrets.
      * @param   iterable<GrantSnapshot>  $grants        The ledger's view.
@@ -157,6 +173,30 @@ final class FakeAccessController implements AccessController
     public function assertNotGranted(string $spaceExternalId, string $identityExternalId): void
     {
         Assert::assertArrayNotHasKey($spaceExternalId.'|'.$identityExternalId, $this->memberships, sprintf('Expected %s not to hold access to %s.', $identityExternalId, $spaceExternalId));
+    }
+
+    /**
+     * @param  string       $identityExternalId  The account that should have been told.
+     * @param  string|null  $windowId            The window the announcement should be about, or null for undated access.
+     */
+    public function assertAnnounced(string $identityExternalId, ?string $windowId = null): void
+    {
+        $matching = array_filter(
+            $this->announcements,
+            fn (array $entry): bool => $entry['holder']->externalId === $identityExternalId && $entry['announcement']->windowId === $windowId,
+        );
+
+        Assert::assertNotEmpty($matching, sprintf('Expected %s to have been told what they hold%s.', $identityExternalId, $windowId === null ? '' : ' for window '.$windowId));
+    }
+
+    /**
+     * @param  string  $identityExternalId  The account that should not have been told.
+     */
+    public function assertNotAnnounced(string $identityExternalId): void
+    {
+        $matching = array_filter($this->announcements, fn (array $entry): bool => $entry['holder']->externalId === $identityExternalId);
+
+        Assert::assertEmpty($matching, sprintf('Expected %s not to have been told anything.', $identityExternalId));
     }
 
     /**

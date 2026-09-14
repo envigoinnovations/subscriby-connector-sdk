@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Subscriby\Connector\Contracts\Ports;
 
 use Subscriby\Connector\Data\CredentialBag;
+use Subscriby\Connector\Data\GrantAnnouncement;
 use Subscriby\Connector\Data\GrantRef;
 use Subscriby\Connector\Data\GrantRequest;
 use Subscriby\Connector\Data\GrantResult;
@@ -27,7 +28,9 @@ use Subscriby\Connector\Exceptions\UnsupportedByConnector;
  * and report it held, any other grants at opening; a held grant is released
  * through `admit()` when its window opens. A grant's reference is withdrawn
  * on its own through `revokeReference()` when another grant keeps the holder
- * in the place.
+ * in the place. Once a run has issued its grants the core asks the connector
+ * to `announce()` them, because how a holder is shown what they hold (links
+ * to tap, a role that appeared) is the connector's idiom, not the core's.
  */
 interface AccessController
 {
@@ -87,6 +90,22 @@ interface AccessController
      * @return  Membership       The account's standing there right now.
      */
     public function membership(InstallationRef $installation, CredentialBag $credentials, SpaceRef $space, IdentityRef $identity): Membership;
+
+    /**
+     * Tell a holder what they now hold, in the connector's own idiom.
+     *
+     * Called by the core once a purchase, a renewal that issued something new
+     * or a reissue has run; a connector whose grants need no telling (a role
+     * the platform itself shows) does nothing. The connector may list more
+     * than the announcement names, as a holder of several purchases expects
+     * every link in one place.
+     *
+     * @param  InstallationRef    $installation  The installation the holder is reached through.
+     * @param  CredentialBag      $credentials   Its secrets.
+     * @param  IdentityRef        $holder        The account to tell.
+     * @param  GrantAnnouncement  $announcement  What this run issued, and the window it was about.
+     */
+    public function announce(InstallationRef $installation, CredentialBag $credentials, IdentityRef $holder, GrantAnnouncement $announcement): void;
 
     /**
      * Bring the platform into line with the ledger for one installation.
