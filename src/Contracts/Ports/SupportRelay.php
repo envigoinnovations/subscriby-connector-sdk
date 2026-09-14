@@ -7,12 +7,14 @@ namespace Subscriby\Connector\Contracts\Ports;
 use Subscriby\Connector\Data\ConversationRef;
 use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\DeliveryResult;
+use Subscriby\Connector\Data\FetchedAttachment;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\Message;
 use Subscriby\Connector\Data\OutboundSupportMessage;
 use Subscriby\Connector\Data\Recipient;
 use Subscriby\Connector\Data\RelayThread;
 use Subscriby\Connector\Data\SpaceRef;
+use Subscriby\Connector\Data\SupportAttachment;
 
 /**
  * Carrying a support conversation between a member and a creator over the connector.
@@ -67,4 +69,23 @@ interface SupportRelay
      * @return  DeliveryResult   Delivered with the platform's message id, or the classified failure; a thread the platform no longer knows is `TargetMissing`.
      */
     public function postToThread(InstallationRef $installation, CredentialBag $credentials, SpaceRef $space, string $threadId, Message $message): DeliveryResult;
+
+    /**
+     * Hand the core the bytes of a file a member sent.
+     *
+     * The core keeps a member's file as the platform's own reference until a
+     * creator opens the thread, then asks for it once and stores its own copy.
+     * A connector whose platform serves files at a URL fetches it; one whose
+     * Bot API runs in local mode is given an absolute path on that server's
+     * disk and reads it from a mounted copy of the directory. Null when the
+     * platform cannot hand the file over (a reference it no longer knows, a
+     * path this container cannot see), with the reason logged by the
+     * connector; the core answers "not found" and stores nothing.
+     *
+     * @param   InstallationRef         $installation  The project's installation the file was received through.
+     * @param   CredentialBag           $credentials   Its secrets.
+     * @param   SupportAttachment       $attachment    The file, by its platform reference.
+     * @return  FetchedAttachment|null  The bytes, or null when the platform cannot hand them over.
+     */
+    public function fetchAttachment(InstallationRef $installation, CredentialBag $credentials, SupportAttachment $attachment): ?FetchedAttachment;
 }
