@@ -8,6 +8,8 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 - `CredentialBag::with()` and `InstallationSummary::credentialsFor()`: what a connector puts in a summary's `meta` while connecting is merged into the credentials the core stores, so a secret minted at `complete()` (a webhook signing secret) survives and returns in every bag.
 - `Core\Installations::credentials()`: the stored bag of an installation the connector can name, for an inbound gateway that has to verify a signature before the core has handed it anything.
+- `Registry\PortRegistrar` and `Registry\PortAgreement`: collecting a connector's ports and checking them against its manifest (the required ports, capability and port in both directions, official-only capabilities, fields declared in the file versus a bound `SettingsSchema`) now live in the SDK, so every registry refuses the same connector in the same words.
+- `Testing\TestRegistry` and `Testing\PassthroughTranslator`: a `ConnectorRegistry` for a package's own suite, so the conformance kit runs without an application. The official, available and disabled lists are constructor arguments, and manifest-declared form labels come back as written.
 
 ## [1.0.0] - 2026-09-15
 

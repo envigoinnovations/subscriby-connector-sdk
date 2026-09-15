@@ -61,6 +61,8 @@ A connector reads and writes the creator's world through `Subscriby\Connector\Co
 
 `Subscriby\Connector\Testing\Conformance\ConformanceSuite` runs the rules every connector must pass, from `manifest.file_is_the_source` to `migrations.own_tables_only`; passing it is what "works with Subscriby" means, and what a marketplace review will check.
 
+`Subscriby\Connector\Testing\TestRegistry` is the `ConnectorRegistry` a package's own suite hands the kit. It accepts a connector through the same `Subscriby\Connector\Registry\PortAgreement` the application runs at boot, so the kit runs with no application behind it and refuses exactly what production would refuse.
+
 ## Data rules
 
 A connector creates only tables prefixed with its key, never alters a core table, points foreign keys inward only (`project_id`, `installation_id`, `identity_id`, cascading on delete) and ships additive migrations after its first publish. The kit reads the migration sources and fails a `Schema::create` without the prefix before anything runs.
