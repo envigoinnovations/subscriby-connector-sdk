@@ -45,4 +45,27 @@ final readonly class CredentialBag
     {
         return $this->values;
     }
+
+    /**
+     * A bag holding these values and more.
+     *
+     * A connector cannot write the core's credential column, so what it mints
+     * while connecting (a webhook signing secret) rides along in
+     * {@see InstallationSummary::$meta} and is merged here, the given keys
+     * winning over the ones already held. Scalars are kept as strings and
+     * anything else as JSON, because the column holds strings.
+     *
+     * @param   array<string, mixed>  $values  What to add.
+     * @return  self                  A new bag; this one is unchanged.
+     */
+    public function with(array $values): self
+    {
+        $merged = $this->values;
+
+        foreach ($values as $key => $value) {
+            $merged[(string) $key] = is_scalar($value) || $value === null ? (string) $value : (string) json_encode($value);
+        }
+
+        return new self($merged);
+    }
 }

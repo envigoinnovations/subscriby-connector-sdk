@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector\Core;
 
+use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\InstallationRecord;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\ProjectRef;
@@ -52,6 +53,20 @@ interface Installations
      * @return  list<InstallationRef>  The platform-scope installations, the connector's shared presence.
      */
     public function listPlatform(string $connector): array;
+
+    /**
+     * The secrets the core holds for an installation, as the ports receive them.
+     *
+     * The one read a connector makes before the core has handed it anything:
+     * an inbound gateway verifying a signature needs the secret it minted at
+     * `complete()`, which travelled through the summary's meta into this bag.
+     * It answers only for an installation the connector can already name, so
+     * it widens nothing a port call would not have given.
+     *
+     * @param   InstallationRef  $installation  The installation.
+     * @return  CredentialBag    Its stored secrets, decrypted for this call; empty for a disconnected installation.
+     */
+    public function credentials(InstallationRef $installation): CredentialBag;
 
     /**
      * Write an installation, or rewrite the one the platform already knows.
