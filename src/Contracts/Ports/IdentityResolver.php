@@ -6,20 +6,39 @@ namespace Subscriby\Connector\Contracts\Ports;
 
 use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\IdentityRecord;
+use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\IdentitySummary;
 use Subscriby\Connector\Data\InboundEnvelope;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\Recipient;
 
 /**
- * Who an inbound event is from, and what the platform knows about an account.
+ * Who an inbound event is from, what the platform knows about an account, and whether an installation can reach it.
  *
  * Required of every connector. The core keeps the identity rows and decides
  * which creator or member an account belongs to; the connector only says which
- * account the platform is talking about, and keeps whatever row of its own it
- * needs to talk to that account later.
+ * account the platform is talking about, keeps whatever row of its own it
+ * needs to talk to that account later, and says whether it can talk to it now.
  */
 interface IdentityResolver
 {
+    /**
+     * Whether the installation can write to an account right now, and how to address it.
+     *
+     * Reachability is the platform's to know: Telegram writes only to a person
+     * who has opened the bot in question, Discord only to a member whose direct
+     * messages are open. The core asks before it sends, so a member's account
+     * that cannot be reached is passed over for one that can rather than
+     * attempted and failed. A connector that cannot tell in advance answers a
+     * `Recipient` and lets the send report the account as unreachable.
+     *
+     * @param   InstallationRef  $installation  The installation that would send.
+     * @param   CredentialBag    $credentials   Its secrets.
+     * @param   IdentityRef      $identity      The account.
+     * @return  Recipient|null   Where to address the message, or null when the installation cannot reach the account.
+     */
+    public function deliveryTarget(InstallationRef $installation, CredentialBag $credentials, IdentityRef $identity): ?Recipient;
+
     /**
      * Take in an account the platform vouched for outside an inbound event, and describe it as the neutral record.
      *

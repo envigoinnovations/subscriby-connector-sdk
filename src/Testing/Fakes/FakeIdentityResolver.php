@@ -7,9 +7,11 @@ namespace Subscriby\Connector\Testing\Fakes;
 use Subscriby\Connector\Contracts\Ports\IdentityResolver;
 use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\IdentityRecord;
+use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\IdentitySummary;
 use Subscriby\Connector\Data\InboundEnvelope;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\Recipient;
 
 /**
  * Reads the actor out of a fake envelope's `from` key.
@@ -20,10 +22,24 @@ use Subscriby\Connector\Data\InstallationRef;
  * path that needs the connector's row to exist fails here too. Like the
  * first-party connectors, an adopted account is keyed on the account alone
  * (one account is one identity however many installations see it), so the
- * record names no installation.
+ * record names no installation. An account whose id starts with `blocked-`
+ * cannot be reached, the same trigger the fake messenger refuses, so a core
+ * path that skips an unreachable account for one that answers is tested
+ * without a platform.
  */
 final class FakeIdentityResolver implements IdentityResolver
 {
+    /**
+     * @param   InstallationRef  $installation  The installation that would send.
+     * @param   CredentialBag    $credentials   Its secrets, unused.
+     * @param   IdentityRef      $identity      The account.
+     * @return  Recipient|null   The account, or null for a `blocked-` id.
+     */
+    public function deliveryTarget(InstallationRef $installation, CredentialBag $credentials, IdentityRef $identity): ?Recipient
+    {
+        return str_starts_with($identity->externalId, 'blocked-') ? null : new Recipient($identity);
+    }
+
     /**
      * @param   InstallationRef  $installation  The installation the account is seen by; it fixes the connector, not the record's installation.
      * @param   IdentitySummary  $identity      The account as reported.

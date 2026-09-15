@@ -25,13 +25,16 @@ use Subscriby\Connector\Contracts\Ports\TextRenderer;
 use Subscriby\Connector\Contracts\Ports\UiSlots;
 use Subscriby\Connector\Data\BackfillOptions;
 use Subscriby\Connector\Data\ConnectorManifest;
+use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\DeliveryFailure;
 use Subscriby\Connector\Data\Field;
+use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\IdentitySummary;
 use Subscriby\Connector\Data\InboundEnvelope;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Data\ReadinessItem;
+use Subscriby\Connector\Data\Recipient;
 use Subscriby\Connector\Data\ResourceKindDefinition;
 use Subscriby\Connector\Data\SlotContribution;
 use Subscriby\Connector\Enums\InstallationScope;
@@ -91,6 +94,7 @@ final class ConformanceSuite
             $this->guard('text.canonical_sample_renders', fn (): ConformanceCheck => $this->canonicalSample($key)),
             $this->guard('failures.classifies_anything', fn (): ConformanceCheck => $this->failures($key)),
             $this->guard('identity.tolerates_empty_envelope', fn (): ConformanceCheck => $this->identity($key)),
+            $this->guard('identity.answers_reachability', fn (): ConformanceCheck => $this->reachability($key)),
             $this->guard('inbound.tolerates_empty_request', fn (): ConformanceCheck => $this->inbound($key)),
             $this->guard('slots.well_formed', fn (): ConformanceCheck => $this->slots($key)),
         ];
@@ -330,6 +334,22 @@ final class ConformanceSuite
         }
 
         return ConformanceCheck::offenders('failures.classifies_anything', $offenders, 'the classifier:');
+    }
+
+    /**
+     * @param   string            $key  The connector key.
+     * @return  ConformanceCheck  An account the connector never saw is answered unreachable or addressable, never with a throw.
+     */
+    private function reachability(string $key): ConformanceCheck
+    {
+        $installation = new InstallationRef('00000000-0000-0000-0000-000000000000', $key, InstallationScope::Project, '00000000-0000-0000-0000-000000000001');
+        $identity = new IdentityRef('00000000-0000-0000-0000-000000000002', $key, 'conformance-nobody');
+
+        $target = $this->registry->port($key, IdentityResolver::class)->deliveryTarget($installation, new CredentialBag, $identity);
+
+        return $target === null || $target instanceof Recipient
+            ? ConformanceCheck::passed('identity.answers_reachability')
+            : ConformanceCheck::failed('identity.answers_reachability', 'deliveryTarget() returned something other than null or a Recipient');
     }
 
     /**
