@@ -10,6 +10,8 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 - `Core\Installations::credentials()`: the stored bag of an installation the connector can name, for an inbound gateway that has to verify a signature before the core has handed it anything.
 - `Registry\PortRegistrar` and `Registry\PortAgreement`: collecting a connector's ports and checking them against its manifest (the required ports, capability and port in both directions, official-only capabilities, fields declared in the file versus a bound `SettingsSchema`) now live in the SDK, so every registry refuses the same connector in the same words.
 - `Testing\TestRegistry` and `Testing\PassthroughTranslator`: a `ConnectorRegistry` for a package's own suite, so the conformance kit runs without an application. The official, available and disabled lists are constructor arguments, and manifest-declared form labels come back as written.
+- `Core\Resources`, `Data\ResourceRef` and `Exceptions\ResourceRefused`: a connector creates the resource that sells a place a creator picked (`create()`, idempotent on the project and the place, authorised as the dashboard's own "add a resource" is, bound to the space and announced through `project.resource.linked`), and reads resources by id, by place and by project.
+- `Core\Recovery::registerStandby()` and `replaceSpace()` with `Exceptions\RecoveryRefused`: a standby or a replacement place is filed through the same actions the dashboard runs, and the core's refusal arrives with its stable reason and the translated sentence for the creator.
 
 ## [1.0.0] - 2026-09-15
 

@@ -53,7 +53,7 @@ Ports take and return the SDK's data objects (`Subscriby\Connector\Data`) and en
 
 ## The Core API
 
-A connector reads and writes the creator's world through `Subscriby\Connector\Core\*` (`Installations`, `Identities`, `Spaces`, `Grants`, `Creators`, `Alerts`, `Recovery`, `PaymentMethods`), which the application binds. Every call authorises the way the dashboard does, so a teammate refused on the web is refused in a bot.
+A connector reads and writes the creator's world through `Subscriby\Connector\Core\*` (`Installations`, `Identities`, `Spaces`, `Resources`, `Grants`, `Creators`, `Alerts`, `Recovery`, `PaymentMethods`), which the application binds. Every call authorises the way the dashboard does, so a teammate refused on the web is refused in a bot.
 
 ## Testing kit
 
