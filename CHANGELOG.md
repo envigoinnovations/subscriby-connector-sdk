@@ -6,10 +6,12 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ### Removed
 
+- The `portal_login_method`, `portal_cta` and `onboarding_step` slots: the portal's sign-in buttons render from `PortalLoginMethod::button()`, its call to action from the manifest's `listing.portal_cta`, and the onboarding carousel from the listing, so no Blade contribution could add anything a connector cannot already say in data. `ConnectorSlot` names eighteen places.
 - `Messenger::edit()` and `Messenger::delete()`: the core never edits or deletes a message it sent, and a connector's own surface talks to its platform client directly, so the two methods had no caller on either side. A connector that implemented them keeps the code for its own use and drops the `Messenger` signatures.
 
 ### Added
 
+- The `settings`, `broadcast_hints`, `access_code_redemption_hint`, `resource_badge` and `grant_action` slots are rendered: each installation's settings note on the Configuration tab (`installation`), a hint per live installation under the broadcast editor (`installation`) and under "Where members redeem a code" in the access-code generator (`installation`), a badge beside each gated resource in the resources list (`resource`, `space`), and an action beside each place in a subscription's detail (`resource`, `space`, `joined`).
 - The `creator_login_method` slot is rendered: the creator's sign-in and sign-up pages show one contribution per available connector that fills it (`<x-connector-slots>`), and `RegistersCreators::signupEntry()` gains its caller, the sign-up page's "Sign up inside … instead" entry for every connector whose platform installation answers a link.
 
 - `CredentialBag::with()` and `InstallationSummary::credentialsFor()`: what a connector puts in a summary's `meta` while connecting is merged into the credentials the core stores, so a secret minted at `complete()` (a webhook signing secret) survives and returns in every bag.
