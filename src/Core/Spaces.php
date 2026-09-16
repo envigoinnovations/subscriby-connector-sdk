@@ -54,4 +54,16 @@ interface Spaces
      * @param  ResourceKind  $kind        The stored kind, `connector:kind`.
      */
     public function bindResource(SpaceRef $space, string $resourceId, ResourceKind $kind): void;
+
+    /**
+     * Point a resource's standby at a space.
+     *
+     * A standby is the place kept ready to take a resource over, the same
+     * kind of place as the resource; binding it names that place in neutral
+     * shape so the recovery program never has to read the connector's rows.
+     *
+     * @param  SpaceRef  $space      The place.
+     * @param  string    $standbyId  The standby kept ready for a resource.
+     */
+    public function bindStandby(SpaceRef $space, string $standbyId): void;
 }
