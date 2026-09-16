@@ -46,31 +46,6 @@ final class FakeMessenger implements Messenger
     }
 
     /**
-     * @param   InstallationRef  $installation       The installation.
-     * @param   CredentialBag    $credentials        Its secrets.
-     * @param   Recipient        $recipient          Where the original went.
-     * @param   string           $externalMessageId  The original's id.
-     * @param   Message          $message            The replacement.
-     * @return  DeliveryResult   Always delivered.
-     */
-    public function edit(InstallationRef $installation, CredentialBag $credentials, Recipient $recipient, string $externalMessageId, Message $message): DeliveryResult
-    {
-        return DeliveryResult::delivered($externalMessageId);
-    }
-
-    /**
-     * @param   InstallationRef  $installation       The installation.
-     * @param   CredentialBag    $credentials        Its secrets.
-     * @param   Recipient        $recipient          Where the original went.
-     * @param   string           $externalMessageId  The original's id.
-     * @return  DeliveryResult   Always delivered.
-     */
-    public function delete(InstallationRef $installation, CredentialBag $credentials, Recipient $recipient, string $externalMessageId): DeliveryResult
-    {
-        return DeliveryResult::delivered($externalMessageId);
-    }
-
-    /**
      * @param   InstallationRef  $installation  The installation.
      * @param   CredentialBag    $credentials   Its secrets.
      * @param   Recipient        $recipient     Who receives it.

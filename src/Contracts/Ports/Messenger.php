@@ -30,25 +30,6 @@ interface Messenger
     public function send(InstallationRef $installation, CredentialBag $credentials, Recipient $recipient, Message $message): DeliveryResult;
 
     /**
-     * @param   InstallationRef  $installation       The installation that sent the original.
-     * @param   CredentialBag    $credentials        Its secrets.
-     * @param   Recipient        $recipient          Where the original went.
-     * @param   string           $externalMessageId  The platform's id for it.
-     * @param   Message          $message            The replacement.
-     * @return  DeliveryResult   Edited, or the classified failure.
-     */
-    public function edit(InstallationRef $installation, CredentialBag $credentials, Recipient $recipient, string $externalMessageId, Message $message): DeliveryResult;
-
-    /**
-     * @param   InstallationRef  $installation       The installation that sent the original.
-     * @param   CredentialBag    $credentials        Its secrets.
-     * @param   Recipient        $recipient          Where the original went.
-     * @param   string           $externalMessageId  The platform's id for it.
-     * @return  DeliveryResult   Deleted, or the classified failure.
-     */
-    public function delete(InstallationRef $installation, CredentialBag $credentials, Recipient $recipient, string $externalMessageId): DeliveryResult;
-
-    /**
      * @param   InstallationRef  $installation  The installation sending.
      * @param   CredentialBag    $credentials   Its secrets.
      * @param   Recipient        $recipient     Who receives it.

@@ -4,7 +4,13 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+### Removed
+
+- `Messenger::edit()` and `Messenger::delete()`: the core never edits or deletes a message it sent, and a connector's own surface talks to its platform client directly, so the two methods had no caller on either side. A connector that implemented them keeps the code for its own use and drops the `Messenger` signatures.
+
 ### Added
+
+- The `creator_login_method` slot is rendered: the creator's sign-in and sign-up pages show one contribution per available connector that fills it (`<x-connector-slots>`), and `RegistersCreators::signupEntry()` gains its caller, the sign-up page's "Sign up inside … instead" entry for every connector whose platform installation answers a link.
 
 - `CredentialBag::with()` and `InstallationSummary::credentialsFor()`: what a connector puts in a summary's `meta` while connecting is merged into the credentials the core stores, so a secret minted at `complete()` (a webhook signing secret) survives and returns in every bag.
 - `Core\Installations::credentials()`: the stored bag of an installation the connector can name, for an inbound gateway that has to verify a signature before the core has handed it anything.
