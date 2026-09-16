@@ -46,7 +46,15 @@
                     "icon": { "type": "string", "minLength": 1 },
                     "grant_mode": { "enum": ["bearer_link", "membership", "role", "creator_task"] },
                     "supports_early_admission_hold": { "type": "boolean" },
-                    "mirrorable": { "type": "boolean", "description": "Whether a standby place of this kind can receive a live copy of every post." }
+                    "mirrorable": { "type": "boolean", "description": "Whether a standby place of this kind can receive a live copy of every post." },
+                    "upgrades_from": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$", "description": "Another kind of this connector a place of this kind can be an upgrade of, so a resource sold as that kind may move onto one of this kind in a recovery." },
+                    "plan_kinds": {
+                        "type": "array",
+                        "uniqueItems": true,
+                        "minItems": 1,
+                        "items": { "enum": ["one_time", "recurring", "pass", "pass_series"] },
+                        "description": "The shapes of plan a place of this kind can be sold under; every shape when omitted. A pass series needs passes, and a kind that holds early admission sells passes."
+                    }
                 }
             }
         },

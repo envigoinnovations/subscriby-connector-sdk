@@ -22,7 +22,8 @@
             "label": "Errand",
             "portal_label": "Personal perk",
             "icon": "clipboard-document-check",
-            "grant_mode": "creator_task"
+            "grant_mode": "creator_task",
+            "plan_kinds": ["one_time", "recurring"]
         }
     ],
     "capabilities": ["messaging", "broadcasts", "access_control", "management_surface", "portal_login", "recovery_probes"],

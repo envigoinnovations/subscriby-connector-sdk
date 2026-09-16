@@ -88,6 +88,24 @@ final readonly class ResourceKind implements Stringable
     }
 
     /**
+     * Parse the stored form, answering null instead of throwing for a value that is not a kind.
+     *
+     * For route parameters and other input a page reads without wanting to
+     * fail on: a typo lists nothing rather than breaking the page.
+     *
+     * @param   string     $value  `manual`, `connector:kind`, or anything else.
+     * @return  self|null  The kind, or null when the value spells none.
+     */
+    public static function tryFromString(string $value): ?self
+    {
+        try {
+            return self::fromString($value);
+        } catch (InvalidArgumentException) {
+            return null;
+        }
+    }
+
+    /**
      * @return  bool  True for the core's manual perk.
      */
     public function isManual(): bool

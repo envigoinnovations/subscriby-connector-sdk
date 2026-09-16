@@ -23,6 +23,7 @@ use Subscriby\Connector\Enums\InstallationScope;
 use Subscriby\Connector\Enums\InstallMode;
 use Subscriby\Connector\Enums\ListingCategory;
 use Subscriby\Connector\Enums\ManagementCommand;
+use Subscriby\Connector\Enums\PlanKind;
 use Subscriby\Connector\Exceptions\InvalidManifest;
 
 /**
@@ -117,6 +118,8 @@ final class ManifestFile
                 $resourceKinds[] = $kind;
             }
         }
+
+        self::refuseUpgradesFromStrangers($reader, $resourceKinds);
 
         $capabilities = $reader->enums('capabilities', Capability::class, required: false);
 
@@ -287,6 +290,28 @@ final class ManifestFile
     }
 
     /**
+     * Record a kind that claims to upgrade from a kind the same manifest does not declare.
+     *
+     * The definition itself can only check its own words; whether the named
+     * kind exists is a question about the list, so it is asked here once the
+     * list is complete. A recovery that lets a resource move between kinds
+     * trusts this cross-reference, and a typo would let nothing move at all.
+     *
+     * @param  ManifestReader                $reader  The file, for the problem list.
+     * @param  list<ResourceKindDefinition>  $kinds   The kinds read so far.
+     */
+    private static function refuseUpgradesFromStrangers(ManifestReader $reader, array $kinds): void
+    {
+        $declared = array_map(static fn (ResourceKindDefinition $kind): string => $kind->kind, $kinds);
+
+        foreach ($kinds as $index => $kind) {
+            if ($kind->upgradesFrom !== null && ! in_array($kind->upgradesFrom, $declared, true)) {
+                $reader->fail(sprintf('resource_kinds[%d].upgrades_from: "%s" is not a resource kind of this connector', $index, $kind->upgradesFrom));
+            }
+        }
+    }
+
+    /**
      * @param   ManifestReader               $reader  One entry of `resource_kinds`.
      * @return  ResourceKindDefinition|null  The kind, or null when the entry broke a rule the reader recorded.
      */
@@ -294,7 +319,7 @@ final class ManifestFile
     {
         $before = $reader->problemCount();
 
-        $reader->refuseUnknownKeys(['kind', 'label', 'portal_label', 'icon', 'grant_mode', 'supports_early_admission_hold', 'mirrorable']);
+        $reader->refuseUnknownKeys(['kind', 'label', 'portal_label', 'icon', 'grant_mode', 'supports_early_admission_hold', 'mirrorable', 'upgrades_from', 'plan_kinds']);
 
         $kind = $reader->string('kind');
         $label = $reader->string('label');
@@ -303,13 +328,15 @@ final class ManifestFile
         $grantMode = $reader->enum('grant_mode', GrantMode::class);
         $hold = $reader->optionalBool('supports_early_admission_hold') ?? false;
         $mirrorable = $reader->optionalBool('mirrorable') ?? false;
+        $upgradesFrom = $reader->optionalString('upgrades_from');
+        $planKinds = $reader->has('plan_kinds') ? $reader->enums('plan_kinds', PlanKind::class) : null;
 
         if ($reader->problemCount() > $before) {
             return null;
         }
 
         try {
-            return new ResourceKindDefinition($kind, $label, $portalLabel, $icon, $grantMode, $hold, $mirrorable);
+            return new ResourceKindDefinition($kind, $label, $portalLabel, $icon, $grantMode, $hold, $mirrorable, $upgradesFrom, $planKinds);
         } catch (InvalidManifest $exception) {
             $reader->fail($exception->reason);
 
