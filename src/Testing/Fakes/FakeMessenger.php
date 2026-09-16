@@ -98,6 +98,20 @@ final class FakeMessenger implements Messenger
     }
 
     /**
+     * @param  string       $externalId  The account that should have received nothing.
+     * @param  string|null  $containing  Text no body to that account should contain, or null for any message at all.
+     */
+    public function assertNotSentTo(string $externalId, ?string $containing = null): void
+    {
+        $matches = array_filter(
+            $this->sent,
+            fn (array $entry): bool => $entry['to'] === $externalId && ($containing === null || str_contains($entry['message']->body, $containing)),
+        );
+
+        Assert::assertSame([], $matches, sprintf('Expected no message to %s%s, %d were sent.', $externalId, $containing === null ? '' : ' containing "'.$containing.'"', count($matches)));
+    }
+
+    /**
      * Fail when anything was sent.
      */
     public function assertNothingSent(): void
