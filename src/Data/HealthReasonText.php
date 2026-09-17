@@ -8,7 +8,7 @@ namespace Subscriby\Connector\Data;
  * A connector's own words for one of the core's health reason codes.
  *
  * The core records why an installation or a place stopped answering as a
- * stable machine code (`telegram_api_unauthorized`, `chat_not_found`) that
+ * stable machine code (`connector_api_unauthorized`, `chat_not_found`) that
  * its webhooks carry; the sentence a creator reads for that code is the
  * platform's business ("the token was revoked in @BotFather"), so the
  * connector supplies the label and the remedy and the core keeps only a
