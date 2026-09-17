@@ -25,8 +25,9 @@ use Subscriby\Connector\Manifest\ManifestFile;
  * routes (behind the application's `connector.inbound` middleware, given the
  * connector key, which authenticates each call through the connector's
  * `InboundGateway`, drops a replayed event and refuses a paused connector) and
- * console commands are loaded from the package directory when present, and the listeners the
- * package declares for the SDK's events are bound. The package directory is
+ * console commands are loaded from the package directory when present, the listeners the
+ * package declares for the SDK's events are bound, and the seeders it declares
+ * are handed to the registry for the application's database seeder. The package directory is
  * the grandparent of the concrete provider's file, which is the layout
  * `<package>/src/<Provider>.php` every connector shares.
  */
@@ -42,7 +43,12 @@ abstract class ConnectorServiceProvider extends ServiceProvider
         $manifest = ManifestFile::load($this->packagePath(ManifestFile::FILENAME));
         $key = $manifest->key;
 
-        $this->app->make(ConnectorRegistry::class)->register($manifest, $this->connector());
+        $registry = $this->app->make(ConnectorRegistry::class);
+        $registry->register($manifest, $this->connector());
+
+        if ($this->packageSeeders() !== []) {
+            $registry->registerSeeders($key, $this->packageSeeders());
+        }
 
         if (is_dir($this->packagePath('database/migrations'))) {
             $this->loadMigrationsFrom($this->packagePath('database/migrations'));
@@ -121,6 +127,21 @@ abstract class ConnectorServiceProvider extends ServiceProvider
      * @return  list<class-string>  Command classes to register.
      */
     protected function packageCommands(): array
+    {
+        return [];
+    }
+
+    /**
+     * The database seeders the package ships, if any.
+     *
+     * A connector's demo rows (its bots, its chats, its native currency) are
+     * seeded by the connector, not the application: the application's seeder
+     * runs whatever every registered connector returns here, in registration
+     * order, before the projects and resources that point at those rows.
+     *
+     * @return  list<class-string>  Seeder classes, in the order they run.
+     */
+    protected function packageSeeders(): array
     {
         return [];
     }

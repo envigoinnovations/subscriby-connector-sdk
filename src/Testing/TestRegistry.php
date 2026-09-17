@@ -35,6 +35,9 @@ final class TestRegistry implements ConnectorRegistry
     /** @var array<string, array<class-string, object>> */
     private array $ports = [];
 
+    /** @var array<string, list<class-string>> */
+    private array $seeders = [];
+
     /**
      * @param  list<string>       $official    Keys treated as official, which alone may declare native payments.
      * @param  list<string>|null  $available   Keys a creator may install, or null for every registered key.
@@ -160,5 +163,22 @@ final class TestRegistry implements ConnectorRegistry
     public function isDisabled(string $key): bool
     {
         return in_array($key, $this->disabled, true);
+    }
+
+    /**
+     * @param  string              $key      The connector key.
+     * @param  list<class-string>  $seeders  Seeder classes, in the order they run.
+     */
+    public function registerSeeders(string $key, array $seeders): void
+    {
+        $this->seeders[$key] = array_values($seeders);
+    }
+
+    /**
+     * @return  list<class-string>  Every registered connector's seeders, in registration order.
+     */
+    public function seeders(): array
+    {
+        return array_merge([], ...array_values($this->seeders));
     }
 }

@@ -54,6 +54,11 @@ interface NativePaymentProvider
     public function tagline(): string;
 
     /**
+     * @return  string  A sentence for the plan editor about where and how members can pay in this currency, shown when a plan is priced in it.
+     */
+    public function explainer(): string;
+
+    /**
      * The fixed value of one unit of the provider's currency in US dollars, when the platform fixes it.
      *
      * A native currency no exchange feed carries needs its rate from the

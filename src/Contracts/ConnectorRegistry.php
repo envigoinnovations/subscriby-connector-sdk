@@ -94,4 +94,22 @@ interface ConnectorRegistry
      * @return  bool    True when the kill switch has it off.
      */
     public function isDisabled(string $key): bool;
+
+    /**
+     * Remember the seeders a connector ships, for the application's database seeder to run.
+     *
+     * A connector's storage is the connector's business, demo rows included:
+     * the application's seeder runs these where it used to seed the first
+     * connector's rows itself, before the projects and resources that point
+     * at them.
+     *
+     * @param  string              $key      The connector key.
+     * @param  list<class-string>  $seeders  Seeder classes, in the order they run.
+     */
+    public function registerSeeders(string $key, array $seeders): void;
+
+    /**
+     * @return  list<class-string>  Every registered connector's seeders, in registration order.
+     */
+    public function seeders(): array;
 }
