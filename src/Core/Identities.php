@@ -126,4 +126,12 @@ interface Identities
      * @return  MemberRef|null  The member who holds it there, or null when none does.
      */
     public function findMember(IdentityRef $identity, ProjectRef $project): ?MemberRef;
+
+    /**
+     * Every account a creator holds, so a connector can address them on any of its own rows.
+     *
+     * @param   CreatorRef         $creator  The creator.
+     * @return  list<IdentityRef>  Their accounts, primary before backup, by connector; empty when they hold none.
+     */
+    public function listForCreator(CreatorRef $creator): array;
 }
