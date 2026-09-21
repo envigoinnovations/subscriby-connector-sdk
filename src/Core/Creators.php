@@ -28,4 +28,17 @@ interface Creators
      * @throws  RegistrationRefused  When the address already has an account, or the core would not adopt the account.
      */
     public function register(CreatorRegistration $registration): CreatorRef;
+
+    /**
+     * Whether an address already belongs to a creator, so a wizard can refuse it at the step it was typed.
+     *
+     * Compared without regard to case or surrounding whitespace, as
+     * `register()` compares it: a connector that checked with its own
+     * exact-match rule let a capitalised copy of an existing address through,
+     * and a second account was opened under it.
+     *
+     * @param   string  $email  The address as the visitor typed it.
+     * @return  bool    True when the address already has an account.
+     */
+    public function isEmailTaken(string $email): bool;
 }

@@ -4,6 +4,12 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-22
+
+### Added
+
+- `Core\Creators::isEmailTaken(string $email): bool`: whether an address already belongs to a creator, compared without regard to case, so a sign-up conversation refuses a taken address at the step it was typed instead of at `register()`.
+
 ## [1.0.0] - 2026-09-19
 
 The first public release, the contract every Subscriby connector is built against.

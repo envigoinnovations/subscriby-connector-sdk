@@ -25,7 +25,7 @@ use Subscriby\Connector\Contracts\Ports\UiSlots;
 final class Sdk
 {
     /** The SDK's own version, bumped with every release. */
-    public const string VERSION = '1.0.0';
+    public const string VERSION = '1.0.1';
 
     /**
      * The ports every connector binds whatever it can do.
