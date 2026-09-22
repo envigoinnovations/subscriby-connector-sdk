@@ -4,6 +4,12 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-22
+
+### Changed
+
+- The SDK requires PHP 8.5 (`"php": "^8.5"`), the version Subscriby's core now runs. A connector that must stay on PHP 8.4 pins `subscriby/connector-sdk` to `~1.0.0`.
+
 ## [1.0.1] - 2026-09-22
 
 ### Added

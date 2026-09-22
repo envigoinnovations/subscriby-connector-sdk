@@ -8,7 +8,7 @@ Every connector Subscriby runs, official or third-party, depends on this SDK and
 
 ## Requirements
 
-- PHP 8.4
+- PHP 8.5
 - Laravel 13 (`illuminate/contracts`, `illuminate/http`, `illuminate/support`)
 
 ## Installation
