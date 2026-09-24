@@ -69,7 +69,7 @@ A connector creates only tables prefixed with its key, never alters a core table
 
 ## Documentation
 
-The complete guide, port by port and field by field, lives at [docs.subscriby.net/connectors/building](https://docs.subscriby.net/connectors/building).
+The complete guide, port by port and field by field, lives at [docs.subscriby.net/sdk/building](https://docs.subscriby.net/sdk/building).
 
 ## Versioning
 

@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://docs.subscriby.net/connectors/connector.schema.json",
+    "$id": "https://docs.subscriby.net/sdk/connector.schema.json",
     "title": "Subscriby connector manifest",
     "description": "The connector.json a connector package keeps at its root: what the connector is, what it can do, how it talks and how the directory presents it. Strings a creator reads are English keys the package translates through its own lang files.",
     "type": "object",

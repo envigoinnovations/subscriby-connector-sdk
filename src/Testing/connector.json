@@ -49,7 +49,7 @@
         "tagline": "A stand-in connector for tests and local demos",
         "overview": "Exercises every connector surface without talking to a real platform.",
         "screenshots": [],
-        "links": { "documentation": "https://docs.subscriby.net/connectors/building" },
+        "links": { "documentation": "https://docs.subscriby.net/sdk/building" },
         "added_at": "2026-09-10",
         "sign_in_required": false,
         "portal_cta": { "label": "Open the fake room" },
