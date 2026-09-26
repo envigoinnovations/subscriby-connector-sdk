@@ -11,7 +11,6 @@ use RuntimeException;
 use Subscriby\Connector\Contracts\ConnectorRegistry;
 use Subscriby\Connector\Contracts\NativePaymentProvider;
 use Subscriby\Connector\Contracts\Ports\AccessController;
-use Subscriby\Connector\Contracts\Ports\DataMigrator;
 use Subscriby\Connector\Contracts\Ports\FailureClassifier;
 use Subscriby\Connector\Contracts\Ports\IdentityResolver;
 use Subscriby\Connector\Contracts\Ports\InboundGateway;
@@ -23,7 +22,6 @@ use Subscriby\Connector\Contracts\Ports\SettingsSchema;
 use Subscriby\Connector\Contracts\Ports\SupportRelay;
 use Subscriby\Connector\Contracts\Ports\TextRenderer;
 use Subscriby\Connector\Contracts\Ports\UiSlots;
-use Subscriby\Connector\Data\BackfillOptions;
 use Subscriby\Connector\Data\ConnectorManifest;
 use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\DeliveryFailure;
@@ -123,10 +121,6 @@ final class ConformanceSuite
 
         if ($this->registry->binds($key, ProvidesPaymentMethods::class)) {
             $checks[] = $this->guard('payments.provider_keys', fn (): ConformanceCheck => $this->paymentProviders($key));
-        }
-
-        if ($this->registry->binds($key, DataMigrator::class)) {
-            $checks[] = $this->guard('migration.reports_for_connector', fn (): ConformanceCheck => $this->migrator($key));
         }
 
         if ($packagePath !== null) {
@@ -545,32 +539,6 @@ final class ConformanceSuite
         }
 
         return ConformanceCheck::offenders('payments.provider_keys', $offenders, 'payment providers:');
-    }
-
-    /**
-     * @param   string            $key  The connector key.
-     * @return  ConformanceCheck  A dry run and a verification both report for this connector, and the dry run says so.
-     */
-    private function migrator(string $key): ConformanceCheck
-    {
-        $migrator = $this->registry->port($key, DataMigrator::class);
-        $backfill = $migrator->backfill(new BackfillOptions(dryRun: true));
-        $verification = $migrator->verify();
-        $offenders = [];
-
-        if ($backfill->connector !== $key) {
-            $offenders[] = sprintf('the backfill report names "%s"', $backfill->connector);
-        }
-
-        if (! $backfill->dryRun) {
-            $offenders[] = 'the dry run did not report itself as one';
-        }
-
-        if ($verification->connector !== $key) {
-            $offenders[] = sprintf('the verification report names "%s"', $verification->connector);
-        }
-
-        return ConformanceCheck::offenders('migration.reports_for_connector', $offenders, 'the migrator:');
     }
 
     /**

@@ -4,6 +4,13 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-26
+
+The contract release of the first connector: the port that existed only to carry its legacy rows across is gone, so every connector built against 2.x declares `"sdk": "^2.0"`.
+
+### Removed
+- The optional `DataMigrator` port with its `BackfillOptions`, `BackfillReport`, `VerificationReport` and `VerificationCheck` data objects, and the conformance rule `migration.reports_for_connector`. They carried the first connector's legacy rows into the neutral tables for the 5.0.0 release; the contract release that drops those rows has no use for them, and no other connector ever had legacy rows to move.
+
 ## [1.1.0] - 2026-09-22
 
 ### Changed

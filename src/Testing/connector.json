@@ -3,7 +3,7 @@
     "key": "fake",
     "name": "Fake Connector",
     "version": "0.1.0",
-    "sdk": "^1.0",
+    "sdk": "^2.0",
     "vendor": "Subscriby",
     "install": {
         "mode": "paste_credential",

@@ -47,7 +47,6 @@ A port is an interface under `Subscriby\Connector\Contracts\Ports`. Seven are bo
 | `SupportRelay` | capability | Carry support conversations between members and creators. |
 | `RecoverySupport` | capability | Probe health, register standbys, mirror, relink, fail over. |
 | `ProvidesPaymentMethods` | official only | Native payment providers the platform offers. |
-| `DataMigrator` | optional | Move legacy data into the neutral tables and verify it. |
 
 Ports take and return the SDK's data objects (`Subscriby\Connector\Data`) and enums (`Subscriby\Connector\Enums`). Nothing from the application crosses the boundary.
 
