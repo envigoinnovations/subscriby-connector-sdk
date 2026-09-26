@@ -13,8 +13,8 @@ use Subscriby\Connector\Enums\Concerns\EnumHelpers;
  * a `Bot` link was made by the account talking to the installation, a `Portal`
  * or `Handshake` link by a two-sided proof, an `Adopted` link by a member's own
  * tap on the portal to reuse an account from a sibling project, and a
- * `Backfill` link by the migration that read the legacy columns. Only the
- * backfill rows may be rewritten by a later backfill run.
+ * `Backfill` link by the one-time migration that carried the first
+ * connector's accounts across when the identity tables were introduced.
  */
 enum IdentityLinkSource: string
 {
