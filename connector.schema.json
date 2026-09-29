@@ -164,6 +164,44 @@
                         "label": { "type": "string", "minLength": 1, "description": "The button's text, such as \"Open Telegram Bot\"." },
                         "icon": { "type": "string", "minLength": 1, "description": "An icon slug; the connector's own icon when omitted." }
                     }
+                },
+                "seo": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["title", "description", "h1"],
+                    "description": "The copy that turns the connector's public page into a search landing page: the only page of the marketing site that may lead with the platform's name. Text may carry the site's tokens (:app, :gateways, :webhook_events, :api_resources, :mcp_tools), filled at render time.",
+                    "properties": {
+                        "title": { "type": "string", "minLength": 1, "maxLength": 70, "description": "The page title, a search phrase first, at most 70 characters." },
+                        "description": { "type": "string", "minLength": 1, "maxLength": 160, "description": "The meta description, at most 160 characters." },
+                        "h1": { "type": "string", "minLength": 1, "description": "The page's one headline." },
+                        "h1_sub": { "type": "string", "minLength": 1, "description": "The line under the headline; the tagline when omitted." },
+                        "sections": {
+                            "type": "array",
+                            "description": "Prose sections under the overview, in order.",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": ["heading", "body"],
+                                "properties": {
+                                    "heading": { "type": "string", "minLength": 1 },
+                                    "body": { "type": "string", "minLength": 1, "description": "One or more paragraphs separated by blank lines." }
+                                }
+                            }
+                        },
+                        "faq": {
+                            "type": "array",
+                            "description": "Questions and answers, rendered as cards and described as a FAQPage.",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": ["q", "a"],
+                                "properties": {
+                                    "q": { "type": "string", "minLength": 1 },
+                                    "a": { "type": "string", "minLength": 1 }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

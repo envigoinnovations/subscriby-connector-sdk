@@ -31,6 +31,7 @@ final readonly class Listing
      * @param  bool                   $signInRequired  Whether the creator has to sign in to the platform to install.
      * @param  ListingMarketing|null  $marketing       The words the marketing site borrows; null when the connector lends none.
      * @param  ListingPortalCta|null  $portalCta       The button the member portal shows to open the connector; null when it has nowhere to open.
+     * @param  ListingSeo|null        $seo             The copy that makes the connector's public page a search landing page; null for the generic page.
      *
      * @throws  InvalidManifest  When the tagline is empty or too long.
      */
@@ -45,6 +46,7 @@ final readonly class Listing
         public bool $signInRequired = true,
         public ?ListingMarketing $marketing = null,
         public ?ListingPortalCta $portalCta = null,
+        public ?ListingSeo $seo = null,
     ) {
         $length = mb_strlen(trim($tagline));
 

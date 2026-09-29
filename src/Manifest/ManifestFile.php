@@ -12,6 +12,9 @@ use Subscriby\Connector\Data\Listing;
 use Subscriby\Connector\Data\ListingLinks;
 use Subscriby\Connector\Data\ListingMarketing;
 use Subscriby\Connector\Data\ListingPortalCta;
+use Subscriby\Connector\Data\ListingSeo;
+use Subscriby\Connector\Data\ListingSeoQuestion;
+use Subscriby\Connector\Data\ListingSeoSection;
 use Subscriby\Connector\Data\MessagingLimits;
 use Subscriby\Connector\Data\Pacing;
 use Subscriby\Connector\Data\RecoveryCapabilities;
@@ -157,7 +160,7 @@ final class ManifestFile
         ];
 
         $listing = $reader->object('listing');
-        $listing->refuseUnknownKeys(['category', 'tagline', 'overview', 'screenshots', 'links', 'added_at', 'changelog_url', 'sign_in_required', 'marketing', 'portal_cta']);
+        $listing->refuseUnknownKeys(['category', 'tagline', 'overview', 'screenshots', 'links', 'added_at', 'changelog_url', 'sign_in_required', 'marketing', 'portal_cta', 'seo']);
         $category = $listing->enum('category', ListingCategory::class);
         $tagline = $listing->string('tagline');
         $overview = $listing->string('overview');
@@ -199,6 +202,34 @@ final class ManifestFile
             $portalCta = [$cta->string('label'), $cta->optionalString('icon')];
         }
 
+        $seoValues = null;
+
+        if ($listing->has('seo')) {
+            $seo = $listing->object('seo');
+            $seo->refuseUnknownKeys(['title', 'description', 'h1', 'h1_sub', 'sections', 'faq']);
+            $sections = [];
+            $questions = [];
+
+            foreach ($seo->objects('sections', required: false) as $section) {
+                $section->refuseUnknownKeys(['heading', 'body']);
+                $sections[] = [$section->string('heading'), $section->string('body')];
+            }
+
+            foreach ($seo->objects('faq', required: false) as $question) {
+                $question->refuseUnknownKeys(['q', 'a']);
+                $questions[] = [$question->string('q'), $question->string('a')];
+            }
+
+            $seoValues = [
+                $seo->string('title'),
+                $seo->string('description'),
+                $seo->string('h1'),
+                $seo->optionalString('h1_sub'),
+                $sections,
+                $questions,
+            ];
+        }
+
         $reader->throwIfInvalid($key === '' ? 'unknown' : $key);
 
         try {
@@ -217,7 +248,7 @@ final class ManifestFile
                 managementCommands: $managementCommands,
                 relayModes: $relayModes,
                 recovery: new RecoveryCapabilities(...$facets),
-                listing: new Listing($category, $tagline, $overview, $screenshots, new ListingLinks(...$linkValues), $addedAt, $changelogUrl, $signInRequired, $marketingValues === null ? null : new ListingMarketing(...$marketingValues), $portalCta === null ? null : new ListingPortalCta(...$portalCta)),
+                listing: new Listing($category, $tagline, $overview, $screenshots, new ListingLinks(...$linkValues), $addedAt, $changelogUrl, $signInRequired, $marketingValues === null ? null : new ListingMarketing(...$marketingValues), $portalCta === null ? null : new ListingPortalCta(...$portalCta), $seoValues === null ? null : self::seo($seoValues)),
                 installFields: $installFields,
                 settingsFields: $settingsFields,
             );
@@ -342,5 +373,39 @@ final class ManifestFile
 
             return null;
         }
+    }
+
+    /**
+     * @param   array{0: string, 1: string, 2: string, 3: string|null, 4: list<array{0: string, 1: string}>, 5: list<array{0: string, 1: string}>}  $values  Title, description, headline, subline, sections as heading and body pairs, questions as question and answer pairs.
+     * @return  ListingSeo                                                                                                                          The typed block.
+     *
+     * @throws  InvalidManifest  When the title or the description is empty or longer than a search snippet shows, or the headline is empty.
+     */
+    private static function seo(array $values): ListingSeo
+    {
+        [$title, $description, $h1, $h1Sub, $sections, $questions] = $values;
+        $titleLength = mb_strlen(trim($title));
+        $descriptionLength = mb_strlen(trim($description));
+
+        if ($titleLength === 0 || $titleLength > ListingSeo::TITLE_LENGTH) {
+            throw InvalidManifest::because('unknown', sprintf('the listing seo title must be 1 to %d characters', ListingSeo::TITLE_LENGTH));
+        }
+
+        if ($descriptionLength === 0 || $descriptionLength > ListingSeo::DESCRIPTION_LENGTH) {
+            throw InvalidManifest::because('unknown', sprintf('the listing seo description must be 1 to %d characters', ListingSeo::DESCRIPTION_LENGTH));
+        }
+
+        if (trim($h1) === '') {
+            throw InvalidManifest::because('unknown', 'the listing seo h1 must not be empty');
+        }
+
+        return new ListingSeo(
+            $title,
+            $description,
+            $h1,
+            $h1Sub,
+            array_map(static fn (array $section): ListingSeoSection => new ListingSeoSection($section[0], $section[1]), $sections),
+            array_map(static fn (array $question): ListingSeoQuestion => new ListingSeoQuestion($question[0], $question[1]), $questions),
+        );
     }
 }

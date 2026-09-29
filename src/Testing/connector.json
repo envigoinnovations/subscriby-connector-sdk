@@ -53,6 +53,19 @@
         "added_at": "2026-09-10",
         "sign_in_required": false,
         "portal_cta": { "label": "Open the fake room" },
+        "seo": {
+            "title": "Fake Membership Bot for Paid Rooms and Halls",
+            "description": "Sell access to a paid fake room with your own fake bot: members pay, are admitted the moment they pay and are removed when access ends.",
+            "h1": "The Fake Membership Bot for Paid Rooms",
+            "h1_sub": "A stand-in landing page that exercises every field of the block.",
+            "sections": [
+                { "heading": "How a paid fake room works", "body": "A creator connects a fake bot and adds the rooms it runs.\n\nA member pays through any of the :gateways payment methods and is let in at once." }
+            ],
+            "faq": [
+                { "q": "Do I need my own fake bot?", "a": "Yes, and it takes a minute to make one." },
+                { "q": "Are members removed when they stop paying?", "a": "The moment their access ends." }
+            ]
+        },
         "marketing": {
             "audience": "fake communities",
             "place": "room",

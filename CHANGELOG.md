@@ -4,6 +4,12 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-29
+
+### Added
+- The optional `listing.seo` block: `title` (at most 70 characters), `description` (at most 160), `h1`, an optional `h1_sub`, `sections` of `heading` and `body`, and `faq` entries of `q` and `a`. A connector that carries it turns its public page on the marketing site into a search landing page that leads with the platform's name, which the site's own copy never does; the text may use the site's tokens (`:app`, `:gateways`, `:webhook_events`, `:api_resources`, `:mcp_tools`), filled at render time. Typed as `ListingSeo`, `ListingSeoSection` and `ListingSeoQuestion` on `Listing::$seo`; the loader refuses an over-long title or description and any unknown key. A connector without the block keeps the generic page.
+- `Sdk::VERSION` is `1.3.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.2.0] - 2026-09-26
 
 The contract release of the first connector: the port that existed only to carry its legacy rows across is gone. It leaves in a minor because no published connector could have bound it (it carried the first connector's own rows, and the first connector is never published), so `^1.0` stays the constraint every connector declares.
