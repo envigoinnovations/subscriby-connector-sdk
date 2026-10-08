@@ -31,6 +31,7 @@ enum ManagementCommand: string
     case PlanManage = 'plan_manage';
     case PaymentMethodSetup = 'payment_method_setup';
     case CouponCreate = 'coupon_create';
+    case ReferralProgramManage = 'referral_program_manage';
     case AccessCodesGenerate = 'access_codes_generate';
     case Broadcast = 'broadcast';
     case SupportReply = 'support_reply';

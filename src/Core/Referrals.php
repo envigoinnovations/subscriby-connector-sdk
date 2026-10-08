@@ -97,4 +97,21 @@ interface Referrals
      * @return  list<ReferralLink>  The links in the order the dashboard lists them, each labelled by where it lands.
      */
     public function links(InstallationRef $installation, IdentityRecord $member): array;
+
+    /**
+     * Record where an affiliate wants to be paid, in answer to the creator's question.
+     *
+     * One free text per affiliate, at most 500 characters, stored encrypted
+     * by the core and read by the creator alone when they pay; the question
+     * is the programme's `payoutDetailsLabel`, and a connector offers this
+     * only on a cash programme that asks one.
+     *
+     * @param   InstallationRef   $installation  The project's installation the conversation runs on.
+     * @param   IdentityRecord    $member        The account that is talking.
+     * @param   string|null       $details       What they typed, or null to clear it.
+     * @return  AffiliateSummary  Their standing, with the details as written.
+     *
+     * @throws  ReferralRefused  When the installation names no project, the member never joined (`not_joined`), or the text is too long (`invalid_details`).
+     */
+    public function updatePayoutDetails(InstallationRef $installation, IdentityRecord $member, ?string $details): AffiliateSummary;
 }

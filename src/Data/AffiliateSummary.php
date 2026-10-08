@@ -16,17 +16,18 @@ use Subscriby\Connector\Enums\AffiliateStatus;
 final readonly class AffiliateSummary
 {
     /**
-     * @param  string                   $id           The affiliate row's UUID.
-     * @param  string                   $projectId    The project whose programme they joined.
-     * @param  string                   $memberId     The member row's UUID.
-     * @param  string                   $code         The code their links carry and a friend may type.
-     * @param  AffiliateStatus          $status       Where they stand.
-     * @param  bool                     $programLive  Whether the programme attributes and rewards right now.
-     * @param  bool                     $paysCash     Whether the programme pays money rather than membership days.
-     * @param  int                      $referred     How many friends arrived through their links or code, paid or not.
-     * @param  int                      $converted    How many of them made a first payment.
-     * @param  int                      $daysEarned   Membership days their referrals earned them, banked or waiting.
-     * @param  list<AffiliateEarnings>  $earnings     What they are owed and were paid, one entry per currency anything was earned in.
+     * @param  string                   $id             The affiliate row's UUID.
+     * @param  string                   $projectId      The project whose programme they joined.
+     * @param  string                   $memberId       The member row's UUID.
+     * @param  string                   $code           The code their links carry and a friend may type.
+     * @param  AffiliateStatus          $status         Where they stand.
+     * @param  bool                     $programLive    Whether the programme attributes and rewards right now.
+     * @param  bool                     $paysCash       Whether the programme pays money rather than membership days.
+     * @param  int                      $referred       How many friends arrived through their links or code, paid or not.
+     * @param  int                      $converted      How many of them made a first payment.
+     * @param  int                      $daysEarned     Membership days their referrals earned them, banked or waiting.
+     * @param  list<AffiliateEarnings>  $earnings       What they are owed and were paid, one entry per currency anything was earned in.
+     * @param  string|null              $payoutDetails  Where they asked to be paid, in their own words, or null while they left nothing; shown to them alone.
      */
     public function __construct(
         public string $id,
@@ -40,5 +41,6 @@ final readonly class AffiliateSummary
         public int $converted,
         public int $daysEarned,
         public array $earnings,
+        public ?string $payoutDetails,
     ) {}
 }

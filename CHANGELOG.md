@@ -4,6 +4,13 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-08
+
+### Added
+- `Core\ReferralManagement`, the Referral Program as a connector's creator surface runs it, the other half of `Core\Referrals`: `options(CreatorRef, ProjectRef)` (whether the owner's plan includes the programme and coupon codes, the pickable coupons, plans and currencies, and the limits the core validates against), `programOf()` (every setting typed, the state, the core's words for the reward, the commission period, the friend's reward and the terms, the portal address and the overview's six figures), `saveProgram(…, ReferralProgramDraft)` (the first save creates, every later save changes only what the draft names, null clears), `setProgramActive()`, `deleteProgram()`, `affiliates(…, ?AffiliateStatus, page, perPage)`, `affiliate()`, `approveAffiliate()`, `suspendAffiliate()`, `searchMembers()`, `enrolMember()` and `recordPayout(…, ReferralPayoutDraft)`. Every call names the creator and the project by ref and the core authorises as the dashboard does for that creator on that project. Typed as `ReferralProgramDetails`, `ReferralProgramStats`, `ReferralProgramOptions`, `ReferralProgramDraft`, `ReferralOption`, `AffiliateRecord`, `AffiliateBalanceLine`, `AffiliatePage`, `ReferralPayoutDraft` and `ReferralPayoutRecord`, with `ReferralRewardKind`, `ReferralCommissionType` and `ReferralFriendRewardKind`; refusals leave as `ReferralRefused` with a stable `reason` (`project_unknown`, `forbidden`, `not_entitled`, `program_missing`, `affiliate_unknown`, `member_unknown`, `invalid_settings`, `programme_owes_balances`, `payout_exceeds_balance`, and the join refusals).
+- `ManagementCommand::ReferralProgramManage`, the catalogue entry a connector declares when its creator surface runs the programme.
+- `Sdk::VERSION` is `1.5.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.4.0] - 2026-10-08
 
 ### Added
