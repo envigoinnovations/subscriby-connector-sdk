@@ -4,6 +4,13 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-08
+
+### Added
+- `Core\Referrals`, the Referral Program as a connector's member surface offers it: `programFor(InstallationRef)` (the live programme in the core's own words: what a referrer earns, the one-sentence offer, the terms one sentence a line exactly as the core's own approval and change notices state them, what a friend is told on arrival, the attribution window, the creator's terms), `affiliateFor(InstallationRef, IdentityRecord)` (a member's standing with their tallies and what they are owed per currency, live or not), `join()`, `capture(…, string $code, ReferralSource)` for the two doors a connector has (its own deep link carrying the code, and a code typed at the checkout) and `links()` (the connector's deep link and the portal's, labelled). Every call names the project through the installation and the member through the account that is talking, as `Core\Support` does. Typed as `ReferralProgramSummary`, `AffiliateSummary`, `AffiliateEarnings`, `ReferralLink` and `ReferralCapture`, with `ReferralSource` and `AffiliateStatus`; refusals leave as `ReferralRefused` with a stable `reason`.
+- `MemberCommand::Referrals`, the button the core puts on a notice to open a member's Refer & Earn screen.
+- `Sdk::VERSION` is `1.4.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.3.0] - 2026-09-29
 
 ### Added
