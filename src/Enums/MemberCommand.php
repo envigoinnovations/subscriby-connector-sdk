@@ -29,4 +29,9 @@ enum MemberCommand: string
      * Mint fresh access grants for everything the member's subscriptions entitle them to.
      */
     case ReissueGrants = 'reissue_grants';
+
+    /**
+     * Open the member's Refer & Earn screen: the offer, their code and links, and what their referrals earned.
+     */
+    case Referrals = 'referrals';
 }
