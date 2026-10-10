@@ -4,6 +4,15 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-10
+
+### Added
+- `Core\PartnerProgram`, the platform's Partner Program as a connector's creator surface shows it: `summaryFor(CreatorRef)` (the standing with the programme in the core's words: the pitch, the terms, the rate broken down, the code and the links, the tallies, the balance, how the partner is paid and what stands in the way of being paid), `referrals()`, `rewards()` and `payouts()` paged, `commitments()`, `submitProof()`, `commitmentOptions()`, `audiencesFor()` and `addCommitment()` (a commitment added after the application on a declared audience or a new one), `payoutOptions()`, `updatePayoutDetails()` and `acceptTerms()`; every refusal is `PartnerRefused` with a stable reason. The application itself stays the dashboard's.
+- The DTOs the port speaks: `PartnerSummary`, `PartnerStats`, `PartnerBalanceSummary`, `PartnerLink`, `PartnerReferralRecord`/`Page`, `PartnerRewardRecord`/`Page`, `PartnerPayoutRecord`/`Page`, `PartnerCommitmentRecord`, `PartnerCommitmentOptions`, `PartnerCommitmentOption`, `PartnerChannelOption`, `PartnerReachOption`, `PartnerAudienceOption`, `PartnerCommitmentDraft`, `PartnerPayoutOptions`, `PartnerRailOption`, `PartnerPayoutDraft`, `PartnerBankDraft`; the enums `PartnerStanding` and `PartnerAttention`.
+- `CreatorRegistration::$partnerCode`: a partner code the sign-up conversation was opened with (a `partner_<code>` deep link), recorded by the core as a referral from the connector.
+- `ManagementCommand::PartnerProgram`, the catalogue entry a connector declares when its creator surface shows the programme.
+- `Sdk::VERSION` is `1.6.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.5.0] - 2026-10-08
 
 ### Added

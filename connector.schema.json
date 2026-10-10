@@ -99,7 +99,7 @@
             "items": {
                 "enum": [
                     "project_create", "project_settings", "project_delete", "installation_connect", "manage_connectors",
-                    "resource_link", "resource_manage", "plan_create", "plan_manage", "payment_method_setup", "coupon_create", "referral_program_manage",
+                    "resource_link", "resource_manage", "plan_create", "plan_manage", "payment_method_setup", "coupon_create", "referral_program_manage", "partner_program",
                     "access_codes_generate", "broadcast", "support_reply", "support_relay_setup", "creator_tasks",
                     "recovery_status", "recovery_relink", "recovery_standby", "recovery_replace_resource",
                     "account_recovery_email", "set_alert_destination", "donate"
