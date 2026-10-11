@@ -4,6 +4,12 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-11
+
+### Added
+- `Core\SmartLinks`, Smart Links as a connector sees them: `arrive(InstallationRef, IdentityRecord, string $code)` credits a member who opened the project's bot through a `via_<code>` deep link, under the core's own attribution rule (the last link wins while the member has never paid, the connector recorded as the door), and answers the plan the link sells when the project still offers it, so the bot can open that plan; `linksFor(CreatorRef, ProjectRef)` lists a project's links newest first with their lifetime clicks, leads and paid members; `linkFor(CreatorRef, string $linkId)` reads one link's funnel and the three addresses to share, named by the link alone because callback data has no room for the project beside it (the core finds the project and checks the creator's right to it first). Read-only on the creator's side: links are made on the dashboard. Typed as `SmartLinkArrival`, `SmartLinkSummary` and `SmartLinkDetails`, every label and amount already in the creator's language; refusals leave as `SmartLinkRefused` with a stable `reason` (`installation_unknown`, `code_unknown`, `project_unknown`, `link_unknown`, `forbidden`).
+- `Sdk::VERSION` is `1.7.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.6.0] - 2026-10-10
 
 ### Added
