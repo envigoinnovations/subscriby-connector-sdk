@@ -10,6 +10,7 @@ use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\PaymentProviderKey;
 use Subscriby\Connector\Data\RetentionOfferOutcome;
+use Subscriby\Connector\Data\SequenceArrival;
 use Subscriby\Connector\Exceptions\RetentionRefused;
 
 /**
@@ -101,4 +102,38 @@ interface Retention
      * @throws  RetentionRefused  `installation_unknown` when the ref names no project.
      */
     public function recordCheckoutStart(InstallationRef $installation, IdentityRecord $member, string $planId, PaymentProviderKey $provider, ?string $methodId): bool;
+
+    /**
+     * Receive a member who opened the project's bot through a sequence step's button.
+     *
+     * The deep link a step carries is `seq_` and the passage's id. The core
+     * checks the passage is the member's own in this project, records the
+     * step's coupon for them on the plan the passage is about, and answers
+     * the plan to open; a passage that is not theirs, or that the core does
+     * not know, answers null and the connector shows its home as for a
+     * plain start, never telling the member a link was involved.
+     *
+     * @param   InstallationRef       $installation  The project's installation the conversation runs on.
+     * @param   IdentityRecord        $member        The account that arrived.
+     * @param   string                $enrollmentId  The passage id after `seq_`.
+     * @return  SequenceArrival|null  The plan to open with the coupon recorded, or null when the link was not the member's.
+     *
+     * @throws  RetentionRefused  `installation_unknown` when the ref names no project.
+     */
+    public function arriveFromSequence(InstallationRef $installation, IdentityRecord $member, string $enrollmentId): ?SequenceArrival;
+
+    /**
+     * Stop every sequence for a member who pressed the Stop button a step carries.
+     *
+     * Every open passage of theirs in the project ends, and no sequence
+     * enrols them again until a charge settles for them or they switch the
+     * follow-ups back on from the portal.
+     *
+     * @param   InstallationRef  $installation  The project's installation the conversation runs on.
+     * @param   IdentityRecord   $member        The account that asked.
+     * @return  bool             True when the member was found and stamped; false for an account the project does not know.
+     *
+     * @throws  RetentionRefused  `installation_unknown` when the ref names no project.
+     */
+    public function stopSequences(InstallationRef $installation, IdentityRecord $member): bool;
 }

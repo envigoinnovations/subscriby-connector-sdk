@@ -17,12 +17,14 @@ final readonly class RetentionSettingsDraft
     public const string NONE = '';
 
     /**
-     * @param  int|null     $graceDays         The grace window in days, or null to keep it.
-     * @param  bool|null    $digestEnabled     Whether the owner gets the digest, or null to keep it.
-     * @param  bool|null    $feedbackEnabled   Whether a cancelling member is asked why, or null to keep it.
-     * @param  bool|null    $pauseOffered      Whether a pause is offered, or null to keep it.
-     * @param  string|null  $discountCouponId  The coupon to offer as a discount, `NONE` to offer none, or null to keep it.
-     * @param  string|null  $returnCouponId    The coupon to hand over, `NONE` to hand none, or null to keep it.
+     * @param  int|null     $graceDays           The grace window in days, or null to keep it.
+     * @param  bool|null    $digestEnabled       Whether the owner gets the digest, or null to keep it.
+     * @param  bool|null    $feedbackEnabled     Whether a cancelling member is asked why, or null to keep it.
+     * @param  bool|null    $pauseOffered        Whether a pause is offered, or null to keep it.
+     * @param  string|null  $discountCouponId    The coupon to offer as a discount, `NONE` to offer none, or null to keep it.
+     * @param  string|null  $returnCouponId      The coupon to hand over, `NONE` to hand none, or null to keep it.
+     * @param  int|null     $checkoutStallHours  How many hours a checkout may stay open before it counts as stalled, or null to keep it.
+     * @param  int|null     $trialNoticeDays     How many days before a trial without a card ends its sequence begins, or null to keep it.
      */
     public function __construct(
         public ?int $graceDays = null,
@@ -31,5 +33,7 @@ final readonly class RetentionSettingsDraft
         public ?bool $pauseOffered = null,
         public ?string $discountCouponId = null,
         public ?string $returnCouponId = null,
+        public ?int $checkoutStallHours = null,
+        public ?int $trialNoticeDays = null,
     ) {}
 }
