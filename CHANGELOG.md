@@ -4,6 +4,13 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-10-12
+
+### Added
+- `Core\Retention`, the cancellation screen of Revenue Recovery as a connector's member surface shows it: `cancellationScreenFor(InstallationRef, IdentityRecord)` answers whether the project asks a cancelling member why (with the reasons in the member's language, each with the stable code the core records), the one offer the project makes on the member's rail (a pause for one billing cycle, a discount on the renewals, or a coupon to come back with, with the headline, the sentence and the button label the core phrased) and the day access would end, or null without a live membership; `recordCancellationFeedback(…, string $reason, ?string $note)` writes the answer, tells the creator and answers the offer to show next; `takeOffer(…, ?string $cancellationId)` gives the offer (the core derives it again, holds the charge at the gateway first and pauses access second, mints the discount, or hands the code over on the screen and in a message) and answers what the member now has in one sentence; `declineOffer()` notes the pass so shown offers are counted. Typed as `CancellationScreen`, `CancellationReasonOption`, `RetentionOfferSummary`, `CancellationRecord` and `RetentionOfferOutcome` with the enum `RetentionOfferKind`; refusals leave as `RetentionRefused` with a stable `reason` (`installation_unknown`, `member_unknown`, `subscription_unknown`, `reason_unknown`, `invalid_note`, `cancellation_unknown`, `offer_unavailable`, `gateway_refused`).
+- `Core\RetentionManagement`, the settings as a connector's creator surface reads and edits them: `settingsOf(CreatorRef, ProjectRef)` (the grace window and its bounds, the notice ladder in the creator's words, the question, the digest, whether the owner's plan includes the offers, the three offers and the project's live coupons to pick from) and `saveSettings(…, RetentionSettingsDraft)` (null keeps a field, the empty string clears a coupon). Typed as `RetentionSettingsDetails`, `RetentionSettingsDraft` and `RetentionCouponOption`; refusals are `RetentionRefused` with `project_unknown`, `forbidden`, `invalid_settings` or `coupon_unknown`.
+- `Sdk::VERSION` is `1.8.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.7.0] - 2026-10-11
 
 ### Added
