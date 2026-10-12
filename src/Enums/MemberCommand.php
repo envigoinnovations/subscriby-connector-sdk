@@ -34,4 +34,9 @@ enum MemberCommand: string
      * Open the member's Refer & Earn screen: the offer, their code and links, and what their referrals earned.
      */
     case Referrals = 'referrals';
+
+    /**
+     * The member asked the project's sequences to stop; the Stop button every sequence step carries.
+     */
+    case StopSequences = 'stop_sequences';
 }

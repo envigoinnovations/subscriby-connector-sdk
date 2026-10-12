@@ -8,6 +8,7 @@ use Subscriby\Connector\Data\CancellationRecord;
 use Subscriby\Connector\Data\CancellationScreen;
 use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\PaymentProviderKey;
 use Subscriby\Connector\Data\RetentionOfferOutcome;
 use Subscriby\Connector\Exceptions\RetentionRefused;
 
@@ -80,4 +81,24 @@ interface Retention
      * @throws  RetentionRefused  `installation_unknown`, `member_unknown`, `subscription_unknown` or `cancellation_unknown`.
      */
     public function declineOffer(InstallationRef $installation, IdentityRecord $member, ?string $cancellationId): ?CancellationRecord;
+
+    /**
+     * Write a checkout the connector's own door just opened to the checkout ledger.
+     *
+     * A bot hands the member the gateway's page or invoice itself, so the
+     * core never saw the start; this is how the ledger learns of it, so
+     * the hourly sweep can count the checkout as stalled once the project's
+     * window has passed and the member can be reminded. The core raises
+     * `payment.pending` for it, as the portal's doors do for theirs.
+     *
+     * @param   InstallationRef     $installation  The project's installation the conversation runs on.
+     * @param   IdentityRecord      $member        The account that is buying.
+     * @param   string              $planId        The plan they are buying.
+     * @param   PaymentProviderKey  $provider      The method row's key: a gateway's word, or a connector's native provider.
+     * @param   string|null         $methodId      The gateway row the checkout opened on, or null for a rail with none.
+     * @return  bool                True when the row was written; false when the project or the member is unknown or the rail is not one the core keys.
+     *
+     * @throws  RetentionRefused  `installation_unknown` when the ref names no project.
+     */
+    public function recordCheckoutStart(InstallationRef $installation, IdentityRecord $member, string $planId, PaymentProviderKey $provider, ?string $methodId): bool;
 }
