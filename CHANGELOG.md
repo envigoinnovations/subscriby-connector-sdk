@@ -4,6 +4,14 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-10-18
+
+### Added
+- `Core\Copilot`, Subscriby Copilot as a connector's creator surface reaches it: `standing(CreatorRef)` answers whether the creator's role includes the Copilot, the free turns left this month, the Copilot Credits balance formatted and whether both are spent; `ask(CreatorRef, CopilotAsk)` takes a message with the installation and account it came through, the parked thread to continue (a pruned one is replaced, never refused), the project the conversation is about and whether the message was tapped rather than typed, checks the creator and the credit, opens the connector's own display at once and runs the turn on the queue, answering a `CopilotTurnTicket` with the thread to park; `decide(CreatorRef, CopilotDecision)` answers a confirmation card by its id alone, a confirm queued like a turn and a cancel settled at once for nothing. Refusals leave as `CopilotRefused` with a stable `reason` (`creator_unknown`, `not_allowed`, `credit_exhausted`, `cap_reached`, `message_invalid`, `project_unknown`, `thread_unknown`, `action_unknown`, `action_expired`, `surface_unavailable`) beside the core's sentence.
+- `Ports\CopilotSurface`, bound under the new capability `copilot`: the core drives `begin()` the moment a message is accepted, `progress()` about once a second with the whole state so far (`CopilotTurnProgress`: the model's reasoning, the tools reached for in words, the answer as Markdown and as canonical HTML), then one `finish()` with the `CopilotTurnAnswer` (the answer both ways, the dashboard links as signed URL buttons, up to three follow-up requests, the `CopilotPendingCard` waiting on the creator with every label translated, whether anything changed) or one `fail()` with a sentence; the connector keeps its display in an opaque `CopilotTurnHandle` of scalars. `Capability::Copilot` shelves under `access` and cannot be switched off per installation; `ManagementCommand::Copilot` is the catalogue entry a creator surface declares when it offers the Copilot.
+- `Testing\Fakes\FakeCopilotSurface`, bound by the fake connector under `copilot`: records every opening, repaint, answer and failure with `assertOpenedFor()`, `assertFinishedFor()` and `assertNothingOpened()`; a `blocked-` identity cannot be shown anything.
+- `Sdk::VERSION` is `1.9.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.8.0] - 2026-10-12
 
 ### Added

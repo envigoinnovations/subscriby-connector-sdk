@@ -42,6 +42,7 @@ A port is an interface under `Subscriby\Connector\Contracts\Ports`. Seven are bo
 | `AccessController` | capability | Grant, revoke, reconcile and announce access; hold early admission. |
 | `Messenger` | capability | Send, edit and delete messages and files. |
 | `ManagementSurface` | capability | Render the core's management commands in the platform's idiom. |
+| `CopilotSurface` | capability | Show a Subscriby Copilot turn in the creator's chat: the thinking, the tools, the answer and its buttons. |
 | `PortalLoginMethod` | capability | Sign a member into the portal through the platform. |
 | `RegistersCreators` | capability | Let a creator sign up from inside the platform. |
 | `SupportRelay` | capability | Carry support conversations between members and creators. |
@@ -52,7 +53,7 @@ Ports take and return the SDK's data objects (`Subscriby\Connector\Data`) and en
 
 ## The Core API
 
-A connector reads and writes the creator's world through `Subscriby\Connector\Core\*` (`Installations`, `Identities`, `Spaces`, `Resources`, `Grants`, `Creators`, `Alerts`, `Recovery`, `PaymentMethods`, `Support`, `Referrals`, `ReferralManagement`, `PartnerProgram`, `SmartLinks`), which the application binds. Every call authorises the way the dashboard does, so a teammate refused on the web is refused in a bot.
+A connector reads and writes the creator's world through `Subscriby\Connector\Core\*` (`Installations`, `Identities`, `Spaces`, `Resources`, `Grants`, `Creators`, `Alerts`, `Recovery`, `PaymentMethods`, `Support`, `Referrals`, `ReferralManagement`, `PartnerProgram`, `SmartLinks`, `Retention`, `RetentionManagement`, `Copilot`), which the application binds. Every call authorises the way the dashboard does, so a teammate refused on the web is refused in a bot.
 
 ## Testing kit
 

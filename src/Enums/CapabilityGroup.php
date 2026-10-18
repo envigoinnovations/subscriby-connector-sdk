@@ -9,7 +9,7 @@ use Subscriby\Connector\Enums\Concerns\EnumHelpers;
 /**
  * The shelf a capability sits on when a page lists what a connector can do.
  *
- * Fourteen capabilities read as a wall; four groups read as a story: how the
+ * Fifteen capabilities read as a wall; four groups read as a story: how the
  * connector talks to members, how it lets them in, how it survives a ban,
  * and how it takes money. The dashboard's Configuration tab, the directory's
  * matrix and a connector's own pages shelve them the same way, so the

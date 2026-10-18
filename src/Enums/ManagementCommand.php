@@ -33,6 +33,7 @@ enum ManagementCommand: string
     case CouponCreate = 'coupon_create';
     case ReferralProgramManage = 'referral_program_manage';
     case PartnerProgram = 'partner_program';
+    case Copilot = 'copilot';
     case AccessCodesGenerate = 'access_codes_generate';
     case Broadcast = 'broadcast';
     case SupportReply = 'support_reply';

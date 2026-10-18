@@ -7,6 +7,7 @@ namespace Subscriby\Connector\Testing;
 use Subscriby\Connector\Contracts\Connector;
 use Subscriby\Connector\Contracts\ConnectorRegistrar;
 use Subscriby\Connector\Contracts\Ports\AccessController;
+use Subscriby\Connector\Contracts\Ports\CopilotSurface;
 use Subscriby\Connector\Contracts\Ports\FailureClassifier;
 use Subscriby\Connector\Contracts\Ports\IdentityResolver;
 use Subscriby\Connector\Contracts\Ports\InboundGateway;
@@ -23,6 +24,7 @@ use Subscriby\Connector\Data\ConnectorManifest;
 use Subscriby\Connector\Enums\ManagementCommand;
 use Subscriby\Connector\Manifest\ManifestFile;
 use Subscriby\Connector\Testing\Fakes\FakeAccessController;
+use Subscriby\Connector\Testing\Fakes\FakeCopilotSurface;
 use Subscriby\Connector\Testing\Fakes\FakeFailureClassifier;
 use Subscriby\Connector\Testing\Fakes\FakeIdentityResolver;
 use Subscriby\Connector\Testing\Fakes\FakeInboundGateway;
@@ -42,9 +44,10 @@ use Subscriby\Connector\Testing\Fakes\FakeUiSlots;
  * It deliberately violates every assumption a Telegram-shaped core would make:
  * messages are 280 characters with no files, access is a membership rather
  * than an invite link, one resource kind is a task the creator does by hand,
- * there is no early admission and the admin surface renders three commands out
- * of the catalogue. A core code path that still assumes Telegram fails against
- * it. Its manifest is the `connector.json` beside this class, read through the
+ * there is no early admission, the admin surface renders three commands out
+ * of the catalogue, and the Copilot surface records what it was asked to show
+ * instead of showing it. A core code path that still assumes Telegram fails
+ * against it. Its manifest is the `connector.json` beside this class, read through the
  * same loader every package goes through, so the loader runs in every test and
  * the file doubles as the worked example a connector author copies. Its port
  * fakes keep what they were asked in memory and offer assertions.
@@ -67,6 +70,8 @@ final class FakeConnector implements Connector
 
     public readonly FakeRecoverySupport $recovery;
 
+    public readonly FakeCopilotSurface $copilot;
+
     private readonly ConnectorManifest $manifest;
 
     /**
@@ -83,6 +88,7 @@ final class FakeConnector implements Connector
         $this->inbound = new FakeInboundGateway($this->key);
         $this->management = new FakeManagementSurface(self::commands());
         $this->recovery = new FakeRecoverySupport($this->key);
+        $this->copilot = new FakeCopilotSurface;
         $this->manifest = ManifestFile::parse(array_replace(self::declaration(), ['key' => $this->key]), 'FakeConnector connector.json');
     }
 
@@ -126,6 +132,7 @@ final class FakeConnector implements Connector
         $registrar->port(RecoverySupport::class, $this->recovery);
         $registrar->port(SettingsSchema::class, new FakeSettingsSchema);
         $registrar->port(UiSlots::class, new FakeUiSlots);
+        $registrar->port(CopilotSurface::class, $this->copilot);
     }
 
     /**

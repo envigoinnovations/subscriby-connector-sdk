@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Subscriby\Connector\Enums;
 
 use Subscriby\Connector\Contracts\Ports\AccessController;
+use Subscriby\Connector\Contracts\Ports\CopilotSurface;
 use Subscriby\Connector\Contracts\Ports\ManagementSurface;
 use Subscriby\Connector\Contracts\Ports\Messenger;
 use Subscriby\Connector\Contracts\Ports\PortalLoginMethod;
@@ -37,6 +38,7 @@ enum Capability: string
     case PortalLogin = 'portal_login';
     case CreatorRegistration = 'creator_registration';
     case ManagementSurface = 'management_surface';
+    case Copilot = 'copilot';
     case RecoveryProbes = 'recovery_probes';
     case RecoveryStandbyInstallations = 'recovery_standby_installations';
     case RecoveryResourceStandby = 'recovery_resource_standby';
@@ -62,6 +64,7 @@ enum Capability: string
             self::PortalLogin => PortalLoginMethod::class,
             self::CreatorRegistration => RegistersCreators::class,
             self::ManagementSurface => ManagementSurface::class,
+            self::Copilot => CopilotSurface::class,
             self::RecoveryProbes,
             self::RecoveryStandbyInstallations,
             self::RecoveryResourceStandby,
@@ -83,7 +86,9 @@ enum Capability: string
      *
      * Talking to members, letting them in, surviving a ban and taking money
      * are the four stories a connector tells; every capability belongs to
-     * exactly one, so a list of fourteen switches reads as four cards.
+     * exactly one, so a list of fifteen switches reads as four cards. The
+     * Copilot sits with the creator's own doors into the platform, beside
+     * the management surface it extends.
      *
      * @return  CapabilityGroup  The shelf.
      */
@@ -94,6 +99,7 @@ enum Capability: string
             self::AccessControl,
             self::EarlyAdmissionHold,
             self::ManagementSurface,
+            self::Copilot,
             self::PortalLogin,
             self::CreatorRegistration => CapabilityGroup::Access,
             self::RecoveryProbes,
