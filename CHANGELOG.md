@@ -4,6 +4,13 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-10-26
+
+### Added
+- `Core\PortalDesign`, a project's portal design as a connector's creator surface edits it: `designOf(CreatorRef, ProjectRef)` answers `PortalDesignDetails`, the draft when one waits and else the published design, with every choice and its label, the presets, colour modes, networks and sections as `PortalDesignOption`s, the social links as `PortalSocialLinkDetails`, the limits, whether a draft waits and when it was saved, the signed ten-minute preview address and the portal address; `saveDraft(CreatorRef, ProjectRef, PortalDesignDraft)` changes the choices the draft names (null keeps one, the empty string clears the tagline or the second accent, a preset recolours every colour through the core's own rule, the social-link row is sent whole as `PortalSocialLinkDraft`s); `publish()`, `discardDraft()` and `resetSection(CreatorRef, ProjectRef, string)` complete the loop. Refusals leave as `PortalDesignRefused` with a stable `reason` (`project_unknown`, `forbidden`, `invalid_design`, `no_draft`, `section_unknown`) beside the core's sentence. The banner and the project photo are not part of the document and stay on the dashboard until a connector can take an upload.
+- `ManagementCommand::PortalDesign` (`portal_design`), the catalogue entry a creator surface declares when it offers the designer; the manifest schema accepts it.
+- `Sdk::VERSION` is `1.10.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.9.0] - 2026-10-18
 
 ### Added

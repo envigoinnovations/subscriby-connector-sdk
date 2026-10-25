@@ -23,6 +23,7 @@ enum ManagementCommand: string
     case ProjectCreate = 'project_create';
     case ProjectSettings = 'project_settings';
     case ProjectDelete = 'project_delete';
+    case PortalDesign = 'portal_design';
     case InstallationConnect = 'installation_connect';
     case ManageConnectors = 'manage_connectors';
     case ResourceLink = 'resource_link';

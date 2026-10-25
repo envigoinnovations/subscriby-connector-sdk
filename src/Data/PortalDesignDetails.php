@@ -1,0 +1,106 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Subscriby\Connector\Data;
+
+use DateTimeImmutable;
+
+/**
+ * A project's portal design as a creator's connector surface shows and edits it.
+ *
+ * Every choice comes twice over: the stored value a save sends back and the
+ * label the core phrases for it, so a screen prints words and never maps a
+ * value to a name of its own; every control's options ride along the same
+ * way. The colours are six-digit lowercase hex codes, the one value a
+ * creator types as well as reads.
+ */
+final readonly class PortalDesignDetails
+{
+    /**
+     * @param  string                         $projectId             The project.
+     * @param  string                         $projectName           Its name, for the screen's heading.
+     * @param  bool                           $hasDraft              Whether a draft waits to be published or discarded.
+     * @param  DateTimeImmutable|null         $draftSavedAt          When the draft was last saved, or null without one.
+     * @param  string|null                    $previewUrl            A signed address that shows the draft on the real portal page for ten minutes, or null while the project has no portal page.
+     * @param  string|null                    $portalUrl             The portal page itself, or null while the project has no handle.
+     * @param  PortalDesignOption             $preset                The palette the colours started from.
+     * @param  list<PortalDesignOption>       $presets               Every preset a creator may pick.
+     * @param  PortalDesignOption             $colorMode             Which half of the preset the portal paints with.
+     * @param  list<PortalDesignOption>       $colorModes            Every colour mode a creator may pick.
+     * @param  string                         $accent                The accent.
+     * @param  string|null                    $accentSecondary       The second accent the creator chose, or null for the preset's own.
+     * @param  string                         $accentSecondaryInUse  The second accent the portal paints with: the creator's, else the preset's own.
+     * @param  string                         $background            The page colour.
+     * @param  bool                           $grid                  Whether the faint grid shows over the page colour.
+     * @param  string                         $surface               The card colour.
+     * @param  string                         $text                  The body text colour.
+     * @param  string                         $heading               The heading colour.
+     * @param  string                         $muted                 The colour of captions and labels.
+     * @param  string|null                    $tagline               One line under the project's name, or null for none.
+     * @param  int                            $taglineMax            The most characters a tagline may hold.
+     * @param  list<PortalSocialLinkDetails>  $socialLinks           The social-link row in order; empty hides the row.
+     * @param  int                            $socialLinksMax        The most links the row may hold.
+     * @param  list<PortalDesignOption>       $networks              Every network a link may point at, the custom one included.
+     * @param  string                         $customNetwork         The value of the one network whose link the creator names.
+     * @param  list<PortalDesignOption>       $sections              The sections a reset may name.
+     */
+    public function __construct(
+        public string $projectId,
+        public string $projectName,
+        public bool $hasDraft,
+        public ?DateTimeImmutable $draftSavedAt,
+        public ?string $previewUrl,
+        public ?string $portalUrl,
+        public PortalDesignOption $preset,
+        public array $presets,
+        public PortalDesignOption $colorMode,
+        public array $colorModes,
+        public string $accent,
+        public ?string $accentSecondary,
+        public string $accentSecondaryInUse,
+        public string $background,
+        public bool $grid,
+        public string $surface,
+        public string $text,
+        public string $heading,
+        public string $muted,
+        public ?string $tagline,
+        public int $taglineMax,
+        public array $socialLinks,
+        public int $socialLinksMax,
+        public array $networks,
+        public string $customNetwork,
+        public array $sections,
+    ) {}
+
+    /**
+     * @param   string              $value  An option's value.
+     * @return  PortalDesignOption  The section with that value, or null when none has it.
+     */
+    public function section(string $value): ?PortalDesignOption
+    {
+        foreach ($this->sections as $section) {
+            if ($section->value === $value) {
+                return $section;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param   string              $value  A network's value.
+     * @return  PortalDesignOption  The network with that value, or null when none has it.
+     */
+    public function network(string $value): ?PortalDesignOption
+    {
+        foreach ($this->networks as $network) {
+            if ($network->value === $value) {
+                return $network;
+            }
+        }
+
+        return null;
+    }
+}
