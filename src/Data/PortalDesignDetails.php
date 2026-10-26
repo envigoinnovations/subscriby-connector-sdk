@@ -18,94 +18,101 @@ use DateTimeImmutable;
 final readonly class PortalDesignDetails
 {
     /**
-     * @param  string                         $projectId             The project.
-     * @param  string                         $projectName           Its name, for the screen's heading.
-     * @param  bool                           $hasDraft              Whether a draft waits to be published or discarded.
-     * @param  DateTimeImmutable|null         $draftSavedAt          When the draft was last saved, or null without one.
-     * @param  string|null                    $previewUrl            A signed address that shows the draft on the real portal page for ten minutes, or null while the project has no portal page.
-     * @param  string|null                    $portalUrl             The portal page itself, or null while the project has no handle.
-     * @param  PortalDesignOption             $preset                The palette the colours started from.
-     * @param  list<PortalDesignOption>       $presets               Every preset a creator may pick.
-     * @param  PortalDesignOption             $colorMode             Which half of the preset the portal paints with.
-     * @param  list<PortalDesignOption>       $colorModes            Every colour mode a creator may pick.
-     * @param  string                         $accent                The accent.
-     * @param  string|null                    $accentSecondary       The second accent the creator chose, or null for the preset's own.
-     * @param  string                         $accentSecondaryInUse  The second accent the portal paints with: the creator's, else the preset's own.
-     * @param  string                         $background            The page colour.
-     * @param  bool                           $grid                  Whether the faint grid shows over the page colour.
-     * @param  string                         $surface               The card colour.
-     * @param  string                         $text                  The body text colour.
-     * @param  string                         $heading               The heading colour.
-     * @param  string                         $muted                 The colour of captions and labels.
-     * @param  string|null                    $tagline               One line under the project's name, or null for none.
-     * @param  int                            $taglineMax            The most characters a tagline may hold.
-     * @param  list<PortalSocialLinkDetails>  $socialLinks           The social-link row in order; empty hides the row.
-     * @param  int                            $socialLinksMax        The most links the row may hold.
-     * @param  list<PortalDesignOption>       $networks              Every network a link may point at, the custom one included.
-     * @param  string                         $customNetwork         The value of the one network whose link the creator names.
-     * @param  list<PortalDesignOption>       $sections              The sections a reset may name.
-     * @param  PortalDesignOption             $fontDisplay           The face the headings and figures are set in.
-     * @param  PortalDesignOption             $fontBody              The face the rest of the text is set in.
-     * @param  list<PortalDesignOption>       $fonts                 Every face either may be, the two the portal always had first.
-     * @param  PortalDesignOption             $headingCase           Whether the headings are set in capitals or as written.
-     * @param  list<PortalDesignOption>       $headingCases          The two cases.
-     * @param  PortalDesignOption             $typeScale             How large the type is.
-     * @param  list<PortalDesignOption>       $typeScales            The three scales.
-     * @param  PortalDesignOption             $radius                How rounded every corner is.
-     * @param  list<PortalDesignOption>       $radii                 The three corner settings.
-     * @param  PortalDesignOption             $buttonStyle           The shape of the buttons.
-     * @param  list<PortalDesignOption>       $buttonStyles          The three button shapes.
-     * @param  PortalDesignOption             $buttonFill            How the buttons are filled.
-     * @param  list<PortalDesignOption>       $buttonFills           The three fills.
-     * @param  PortalDesignOption             $buttonCase            Whether button labels are set in capitals or as written; the options are `headingCases`.
-     * @param  PortalDesignOption             $shadow                How much the surfaces lift off the page.
-     * @param  list<PortalDesignOption>       $shadows               The three depths.
-     * @param  bool                           $cardBorder            Whether the two surface cards draw a hairline border.
-     * @param  PortalDesignOption             $arrangement           Where the sidebar card sits against the main card.
-     * @param  list<PortalDesignOption>       $arrangements          The four arrangements.
-     * @param  PortalDesignOption             $contentWidth          How wide the page's column is.
-     * @param  list<PortalDesignOption>       $contentWidths         The three widths.
-     * @param  bool                           $stickySidebar         Whether the sidebar card stays in view while the page scrolls.
-     * @param  PortalDesignOption             $planGrid              How many columns the plan cards fill.
-     * @param  list<PortalDesignOption>       $planGrids             The three column settings.
-     * @param  PortalDesignOption             $planDensity           How much room a plan card takes.
-     * @param  list<PortalDesignOption>       $planDensities         The two densities.
-     * @param  bool                           $plansHeading          Whether the plan list opens with its heading and subtitle.
-     * @param  bool                           $metricsSubscribers    Whether the subscriber count shows, while the project shows metrics at all.
-     * @param  bool                           $metricsFollowers      Whether the follower count shows, while the project shows metrics at all.
-     * @param  int                            $metricsThreshold      The count a figure must reach before it shows; zero shows every figure.
-     * @param  string|null                    $plansTitle            The heading over the plan list, or null for the built-in wording.
-     * @param  string|null                    $plansSubtitle         The line under the plan list heading, or null for the built-in wording.
-     * @param  string|null                    $labelLogin            The header's sign-in button, or null for the built-in wording.
-     * @param  string|null                    $labelShare            The header's share button, or null for the built-in wording.
-     * @param  string|null                    $labelSubscribe        The button on a plan that sells, or null for the built-in wording.
-     * @param  string|null                    $checkoutTitle         The checkout heading, or null for the built-in wording.
-     * @param  string|null                    $checkoutSubtitle      The line under the checkout heading, or null for the built-in wording.
-     * @param  string|null                    $checkoutNote          The creator's sentence above the acceptance line, or null for the built-in wording.
-     * @param  string|null                    $successTitle          The heading of the success screen, or null for the built-in wording.
-     * @param  string|null                    $successMessage        The creator's thank-you under the confirmation, or null for the built-in wording.
-     * @param  array<string, int>             $copyMax               The most characters each copy override may carry, by design key.
-     * @param  string|null                    $perksTitle            The heading over the perks, or null for the built-in wording.
-     * @param  list<string>                   $perks                 The perks in order.
-     * @param  string|null                    $faqTitle              The heading over the questions, or null for the built-in wording.
-     * @param  list<PortalFaqItemDetails>     $faq                   The questions in order, each with its answer.
-     * @param  string|null                    $aboutName             The creator's name on the about card, or null for none.
-     * @param  string|null                    $aboutBio              A few lines about the creator, or null for none.
-     * @param  array<string, int>             $blockLimits           The most items and characters each block takes: `perks`, `perk`, `faq`, `faq_question`, `faq_answer`, `title`, `about_name`, `about_bio`.
-     * @param  string|null                    $customButtonLabel     The second sidebar button's label, or null for none.
-     * @param  string|null                    $customButtonUrl       The second sidebar button's address, or null for none.
-     * @param  string|null                    $footerRefundUrl       The footer's refund policy link, or null for none.
-     * @param  string|null                    $footerContactUrl      The footer's contact link, a page or a mailto: address, or null for none.
-     * @param  string|null                    $footerImprintUrl      The footer's imprint link, or null for none.
-     * @param  string|null                    $footerLine            A line of the creator's under the footer links, or null for none.
-     * @param  bool                           $footerHelp            Whether the footer carries the Help link.
-     * @param  int                            $customButtonLabelMax  The most characters the second button's label may carry.
-     * @param  int                            $footerLineMax         The most characters the footer line may carry.
-     * @param  string|null                    $announcementText      The strip across the top of the page, or null for none.
-     * @param  string|null                    $announcementUrl       Where the strip leads, or null for nowhere.
-     * @param  string|null                    $announcementStartsAt  When the strip starts showing, ISO 8601 in UTC, or null for at once.
-     * @param  string|null                    $announcementEndsAt    When it stops, ISO 8601 in UTC, or null for never.
-     * @param  int                            $announcementTextMax   The most characters the strip may carry.
+     * @param  string                          $projectId             The project.
+     * @param  string                          $projectName           Its name, for the screen's heading.
+     * @param  bool                            $hasDraft              Whether a draft waits to be published or discarded.
+     * @param  DateTimeImmutable|null          $draftSavedAt          When the draft was last saved, or null without one.
+     * @param  string|null                     $previewUrl            A signed address that shows the draft on the real portal page for ten minutes, or null while the project has no portal page.
+     * @param  string|null                     $portalUrl             The portal page itself, or null while the project has no handle.
+     * @param  PortalDesignOption              $preset                The palette the colours started from.
+     * @param  list<PortalDesignOption>        $presets               Every preset a creator may pick.
+     * @param  PortalDesignOption              $colorMode             Which half of the preset the portal paints with.
+     * @param  list<PortalDesignOption>        $colorModes            Every colour mode a creator may pick.
+     * @param  string                          $accent                The accent.
+     * @param  string|null                     $accentSecondary       The second accent the creator chose, or null for the preset's own.
+     * @param  string                          $accentSecondaryInUse  The second accent the portal paints with: the creator's, else the preset's own.
+     * @param  string                          $background            The page colour.
+     * @param  bool                            $grid                  Whether the faint grid shows over the page colour.
+     * @param  string                          $surface               The card colour.
+     * @param  string                          $text                  The body text colour.
+     * @param  string                          $heading               The heading colour.
+     * @param  string                          $muted                 The colour of captions and labels.
+     * @param  string|null                     $tagline               One line under the project's name, or null for none.
+     * @param  int                             $taglineMax            The most characters a tagline may hold.
+     * @param  list<PortalSocialLinkDetails>   $socialLinks           The social-link row in order; empty hides the row.
+     * @param  int                             $socialLinksMax        The most links the row may hold.
+     * @param  list<PortalDesignOption>        $networks              Every network a link may point at, the custom one included.
+     * @param  string                          $customNetwork         The value of the one network whose link the creator names.
+     * @param  list<PortalDesignOption>        $sections              The sections a reset may name.
+     * @param  PortalDesignOption              $fontDisplay           The face the headings and figures are set in.
+     * @param  PortalDesignOption              $fontBody              The face the rest of the text is set in.
+     * @param  list<PortalDesignOption>        $fonts                 Every face either may be, the two the portal always had first.
+     * @param  PortalDesignOption              $headingCase           Whether the headings are set in capitals or as written.
+     * @param  list<PortalDesignOption>        $headingCases          The two cases.
+     * @param  PortalDesignOption              $typeScale             How large the type is.
+     * @param  list<PortalDesignOption>        $typeScales            The three scales.
+     * @param  PortalDesignOption              $radius                How rounded every corner is.
+     * @param  list<PortalDesignOption>        $radii                 The three corner settings.
+     * @param  PortalDesignOption              $buttonStyle           The shape of the buttons.
+     * @param  list<PortalDesignOption>        $buttonStyles          The three button shapes.
+     * @param  PortalDesignOption              $buttonFill            How the buttons are filled.
+     * @param  list<PortalDesignOption>        $buttonFills           The three fills.
+     * @param  PortalDesignOption              $buttonCase            Whether button labels are set in capitals or as written; the options are `headingCases`.
+     * @param  PortalDesignOption              $shadow                How much the surfaces lift off the page.
+     * @param  list<PortalDesignOption>        $shadows               The three depths.
+     * @param  bool                            $cardBorder            Whether the two surface cards draw a hairline border.
+     * @param  PortalDesignOption              $arrangement           Where the sidebar card sits against the main card.
+     * @param  list<PortalDesignOption>        $arrangements          The four arrangements.
+     * @param  PortalDesignOption              $contentWidth          How wide the page's column is.
+     * @param  list<PortalDesignOption>        $contentWidths         The three widths.
+     * @param  bool                            $stickySidebar         Whether the sidebar card stays in view while the page scrolls.
+     * @param  PortalDesignOption              $planGrid              How many columns the plan cards fill.
+     * @param  list<PortalDesignOption>        $planGrids             The three column settings.
+     * @param  PortalDesignOption              $planDensity           How much room a plan card takes.
+     * @param  list<PortalDesignOption>        $planDensities         The two densities.
+     * @param  bool                            $plansHeading          Whether the plan list opens with its heading and subtitle.
+     * @param  bool                            $metricsSubscribers    Whether the subscriber count shows, while the project shows metrics at all.
+     * @param  bool                            $metricsFollowers      Whether the follower count shows, while the project shows metrics at all.
+     * @param  int                             $metricsThreshold      The count a figure must reach before it shows; zero shows every figure.
+     * @param  string|null                     $plansTitle            The heading over the plan list, or null for the built-in wording.
+     * @param  string|null                     $plansSubtitle         The line under the plan list heading, or null for the built-in wording.
+     * @param  string|null                     $labelLogin            The header's sign-in button, or null for the built-in wording.
+     * @param  string|null                     $labelShare            The header's share button, or null for the built-in wording.
+     * @param  string|null                     $labelSubscribe        The button on a plan that sells, or null for the built-in wording.
+     * @param  string|null                     $checkoutTitle         The checkout heading, or null for the built-in wording.
+     * @param  string|null                     $checkoutSubtitle      The line under the checkout heading, or null for the built-in wording.
+     * @param  string|null                     $checkoutNote          The creator's sentence above the acceptance line, or null for the built-in wording.
+     * @param  string|null                     $successTitle          The heading of the success screen, or null for the built-in wording.
+     * @param  string|null                     $successMessage        The creator's thank-you under the confirmation, or null for the built-in wording.
+     * @param  array<string, int>              $copyMax               The most characters each copy override may carry, by design key.
+     * @param  string|null                     $perksTitle            The heading over the perks, or null for the built-in wording.
+     * @param  list<string>                    $perks                 The perks in order.
+     * @param  string|null                     $faqTitle              The heading over the questions, or null for the built-in wording.
+     * @param  list<PortalFaqItemDetails>      $faq                   The questions in order, each with its answer.
+     * @param  string|null                     $aboutName             The creator's name on the about card, or null for none.
+     * @param  string|null                     $aboutBio              A few lines about the creator, or null for none.
+     * @param  array<string, int>              $blockLimits           The most items and characters each block takes: `perks`, `perk`, `faq`, `faq_question`, `faq_answer`, `title`, `about_name`, `about_bio`.
+     * @param  string|null                     $customButtonLabel     The second sidebar button's label, or null for none.
+     * @param  string|null                     $customButtonUrl       The second sidebar button's address, or null for none.
+     * @param  string|null                     $footerRefundUrl       The footer's refund policy link, or null for none.
+     * @param  string|null                     $footerContactUrl      The footer's contact link, a page or a mailto: address, or null for none.
+     * @param  string|null                     $footerImprintUrl      The footer's imprint link, or null for none.
+     * @param  string|null                     $footerLine            A line of the creator's under the footer links, or null for none.
+     * @param  bool                            $footerHelp            Whether the footer carries the Help link.
+     * @param  int                             $customButtonLabelMax  The most characters the second button's label may carry.
+     * @param  int                             $footerLineMax         The most characters the footer line may carry.
+     * @param  string|null                     $announcementText      The strip across the top of the page, or null for none.
+     * @param  string|null                     $announcementUrl       Where the strip leads, or null for nowhere.
+     * @param  string|null                     $announcementStartsAt  When the strip starts showing, ISO 8601 in UTC, or null for at once.
+     * @param  string|null                     $announcementEndsAt    When it stops, ISO 8601 in UTC, or null for never.
+     * @param  int                             $announcementTextMax   The most characters the strip may carry.
+     * @param  string|null                     $videoUrl              The embedded video's canonical address, or null for none.
+     * @param  string|null                     $videoProvider         The service the video is on, YouTube or Vimeo, or null for none.
+     * @param  string|null                     $galleryTitle          The heading over the gallery, or null for the built-in wording.
+     * @param  list<string>                    $gallery               The gallery's pictures as stored, in order.
+     * @param  string|null                     $testimonialsTitle     The heading over the quotes, or null for the built-in wording.
+     * @param  list<PortalTestimonialDetails>  $testimonials          The members' quotes in order.
+     * @param  array<string, int>              $mediaLimits           The most items and characters the media blocks take: `gallery`, `testimonials`, `testimonial_quote`, `testimonial_name`, `testimonial_subtitle`, `title`.
      */
     public function __construct(
         public string $projectId,
@@ -196,6 +203,13 @@ final readonly class PortalDesignDetails
         public ?string $announcementStartsAt,
         public ?string $announcementEndsAt,
         public int $announcementTextMax,
+        public ?string $videoUrl,
+        public ?string $videoProvider,
+        public ?string $galleryTitle,
+        public array $gallery,
+        public ?string $testimonialsTitle,
+        public array $testimonials,
+        public array $mediaLimits,
     ) {}
 
     /**
