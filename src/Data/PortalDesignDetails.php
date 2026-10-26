@@ -135,6 +135,11 @@ final readonly class PortalDesignDetails
      * @param  string|null                     $pixelGoogleAds        The Google Ads conversion id, or null for no tag.
      * @param  string|null                     $customCss             The creator's own stylesheet, or null for none.
      * @param  int                             $customCssMax          The most bytes the stylesheet may hold.
+     * @param  string|null                     $seoTitleSuffix        The words after the project's name in the page title, or null for the built-in ones.
+     * @param  string|null                     $seoDescription        The description search engines and shared links show, or null for one cut from the project's text.
+     * @param  string|null                     $socialCardUrl         An uploaded card as stored, or null for the card the portal draws in its colours.
+     * @param  int                             $seoTitleSuffixMax     The most characters the suffix takes.
+     * @param  int                             $seoDescriptionMax     The most characters the description takes.
      */
     public function __construct(
         public string $projectId,
@@ -254,6 +259,11 @@ final readonly class PortalDesignDetails
         public ?string $pixelGoogleAds,
         public ?string $customCss,
         public int $customCssMax,
+        public ?string $seoTitleSuffix,
+        public ?string $seoDescription,
+        public ?string $socialCardUrl,
+        public int $seoTitleSuffixMax,
+        public int $seoDescriptionMax,
     ) {}
 
     /**
