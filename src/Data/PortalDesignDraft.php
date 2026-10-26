@@ -84,6 +84,13 @@ final readonly class PortalDesignDraft
      * @param  list<PortalPlacementDraft>|null    $sidebarItems          The sidebar card's parts in the order wanted, each shown or hidden, or null to keep them; a part left out keeps its place at the end, shown.
      * @param  list<PortalPlacementDraft>|null    $contentBlocks         The blocks under the plans in the order wanted, each shown or hidden, or null to keep them.
      * @param  bool|null                          $localeSwitcher        Whether the list of languages shows under the sidebar card, or null to keep it.
+     * @param  string|null                        $featuredPlanId        A plan id from the details' `planOptions`, `NONE` for no featured plan, or null to keep it.
+     * @param  string|null                        $couponBox             `always` or `link`, or null to keep it.
+     * @param  bool|null                          $shareButton           Whether the header shows the Share button, or null to keep it.
+     * @param  list<string>|null                  $shareNetworks         The whole list of networks the share sheet offers, from the details' options, or null to keep it.
+     * @param  bool|null                          $loginButton           Whether the header shows the Login button to a visitor, or null to keep it.
+     * @param  bool|null                          $socialProof           Whether the plan list says how many joined this week, or null to keep it.
+     * @param  bool|null                          $seatsBadges           Whether a series card shows the seats left, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -152,5 +159,12 @@ final readonly class PortalDesignDraft
         public ?array $sidebarItems = null,
         public ?array $contentBlocks = null,
         public ?bool $localeSwitcher = null,
+        public ?string $featuredPlanId = null,
+        public ?string $couponBox = null,
+        public ?bool $shareButton = null,
+        public ?array $shareNetworks = null,
+        public ?bool $loginButton = null,
+        public ?bool $socialProof = null,
+        public ?bool $seatsBadges = null,
     ) {}
 }

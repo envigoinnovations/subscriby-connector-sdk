@@ -116,6 +116,17 @@ final readonly class PortalDesignDetails
      * @param  list<PortalPlacementDetails>    $sidebarItems          The sidebar card's parts in order, each with its key, its name and whether it shows.
      * @param  list<PortalPlacementDetails>    $contentBlocks         The blocks under the plans in order, each with its key, its name and whether it shows.
      * @param  bool                            $localeSwitcher        Whether the list of languages shows under the sidebar card.
+     * @param  string|null                     $featuredPlanId        The plan with the Most popular badge, or null for none.
+     * @param  string|null                     $featuredPlanName      That plan's name, or null for none.
+     * @param  list<PortalDesignOption>        $planOptions           The project's plans by name, each `value` an id the draft may feature.
+     * @param  string                          $couponBox             When the checkout offers the coupon box: `always`, or `link` for only once a coupon arrived with the visit.
+     * @param  list<PortalDesignOption>        $couponBoxes           The two settings.
+     * @param  bool                            $shareButton           Whether the header shows the Share button.
+     * @param  list<string>                    $shareNetworks         The networks the share sheet offers, in the sheet's order.
+     * @param  list<PortalDesignOption>        $shareNetworkOptions   Every network the sheet can draw.
+     * @param  bool                            $loginButton           Whether the header shows the Login button to a visitor.
+     * @param  bool                            $socialProof           Whether the plan list says how many members joined in the last seven days.
+     * @param  bool                            $seatsBadges           Whether a series card shows the seats left.
      */
     public function __construct(
         public string $projectId,
@@ -216,6 +227,17 @@ final readonly class PortalDesignDetails
         public array $sidebarItems,
         public array $contentBlocks,
         public bool $localeSwitcher,
+        public ?string $featuredPlanId,
+        public ?string $featuredPlanName,
+        public array $planOptions,
+        public string $couponBox,
+        public array $couponBoxes,
+        public bool $shareButton,
+        public array $shareNetworks,
+        public array $shareNetworkOptions,
+        public bool $loginButton,
+        public bool $socialProof,
+        public bool $seatsBadges,
     ) {}
 
     /**
