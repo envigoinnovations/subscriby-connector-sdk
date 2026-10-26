@@ -91,6 +91,13 @@ final readonly class PortalDesignDraft
      * @param  bool|null                          $loginButton           Whether the header shows the Login button to a visitor, or null to keep it.
      * @param  bool|null                          $socialProof           Whether the plan list says how many joined this week, or null to keep it.
      * @param  bool|null                          $seatsBadges           Whether a series card shows the seats left, or null to keep it.
+     * @param  bool|null                          $seoIndexable          Whether search engines may list the portal, or null to keep it.
+     * @param  bool|null                          $seoSocialCard         Whether the page sends the generated card, or null to keep it.
+     * @param  string|null                        $pixelMeta             The Meta Pixel dataset id, `NONE` for no tag, or null to keep it; the shape is checked.
+     * @param  string|null                        $pixelGa4              The Google Analytics 4 measurement id (`G-…`), `NONE` for no tag, or null to keep it.
+     * @param  string|null                        $pixelTiktok           The TikTok Pixel id, `NONE` for no tag, or null to keep it.
+     * @param  string|null                        $pixelGoogleAds        The Google Ads conversion id (`AW-…`), `NONE` for no tag, or null to keep it.
+     * @param  string|null                        $customCss             The creator's own stylesheet within `customCssMax` bytes, with no `@import`, `url(` or anything that runs, `NONE` for none, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -166,5 +173,12 @@ final readonly class PortalDesignDraft
         public ?bool $loginButton = null,
         public ?bool $socialProof = null,
         public ?bool $seatsBadges = null,
+        public ?bool $seoIndexable = null,
+        public ?bool $seoSocialCard = null,
+        public ?string $pixelMeta = null,
+        public ?string $pixelGa4 = null,
+        public ?string $pixelTiktok = null,
+        public ?string $pixelGoogleAds = null,
+        public ?string $customCss = null,
     ) {}
 }

@@ -127,6 +127,14 @@ final readonly class PortalDesignDetails
      * @param  bool                            $loginButton           Whether the header shows the Login button to a visitor.
      * @param  bool                            $socialProof           Whether the plan list says how many members joined in the last seven days.
      * @param  bool                            $seatsBadges           Whether a series card shows the seats left.
+     * @param  bool                            $seoIndexable          Whether search engines may list the portal, on top of the project's own readiness.
+     * @param  bool                            $seoSocialCard         Whether the page sends the generated card as its social image.
+     * @param  string|null                     $pixelMeta             The Meta Pixel dataset id, or null for no tag.
+     * @param  string|null                     $pixelGa4              The Google Analytics 4 measurement id, or null for no tag.
+     * @param  string|null                     $pixelTiktok           The TikTok Pixel id, or null for no tag.
+     * @param  string|null                     $pixelGoogleAds        The Google Ads conversion id, or null for no tag.
+     * @param  string|null                     $customCss             The creator's own stylesheet, or null for none.
+     * @param  int                             $customCssMax          The most bytes the stylesheet may hold.
      */
     public function __construct(
         public string $projectId,
@@ -238,6 +246,14 @@ final readonly class PortalDesignDetails
         public bool $loginButton,
         public bool $socialProof,
         public bool $seatsBadges,
+        public bool $seoIndexable,
+        public bool $seoSocialCard,
+        public ?string $pixelMeta,
+        public ?string $pixelGa4,
+        public ?string $pixelTiktok,
+        public ?string $pixelGoogleAds,
+        public ?string $customCss,
+        public int $customCssMax,
     ) {}
 
     /**
