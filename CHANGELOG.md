@@ -16,6 +16,9 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 - `Core\PortalDesign` carries the blocks: `PortalDesignDetails` gains `perksTitle`, `perks`, `faqTitle`, `faq` (a list of `PortalFaqItemDetails`), `aboutName`, `aboutBio` and `blockLimits`; `PortalDesignDraft` gains `perksTitle`, `perks` (the whole list), `faqTitle`, `faq` (a list of `PortalFaqItemDraft`), `aboutName` and `aboutBio`, the texts `NONE` to clear, every one null to keep. A reset may name the `blocks` section.
 - `Core\PortalDesign` carries the copy: `PortalDesignDetails` gains `plansTitle`, `plansSubtitle`, `labelLogin`, `labelShare`, `labelSubscribe`, `checkoutTitle`, `checkoutSubtitle`, `checkoutNote`, `successTitle` and `successMessage` (each null for the built-in wording) and `copyMax`, the ceiling of each; `PortalDesignDraft` gains the same ten, `NONE` for the built-in wording, null to keep. A reset may name the `copy` section.
 
+### Changed
+- `Core\PortalDesign` refuses a body text, heading or caption colour that blends into the surface or the background (a contrast ratio under 3:1) as `invalid_design` with the reason `colour_blends`, the message naming both colours.
+
 ## [1.13.0] - 2026-10-26
 
 ### Added
