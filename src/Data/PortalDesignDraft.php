@@ -59,6 +59,12 @@ final readonly class PortalDesignDraft
      * @param  string|null                       $checkoutNote        The creator's sentence above the acceptance line, `NONE` for the built-in wording, or null to keep it.
      * @param  string|null                       $successTitle        The heading of the success screen, `NONE` for the built-in wording, or null to keep it.
      * @param  string|null                       $successMessage      The creator's thank-you under the confirmation, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $perksTitle          The heading over the perks, `NONE` for the built-in wording, or null to keep it.
+     * @param  list<string>|null                 $perks               The whole perk list in order, or null to keep it.
+     * @param  string|null                       $faqTitle            The heading over the questions, `NONE` for the built-in wording, or null to keep it.
+     * @param  list<PortalFaqItemDraft>|null     $faq                 The whole question list in order, or null to keep it.
+     * @param  string|null                       $aboutName           The creator's name, `NONE` for none, or null to keep it.
+     * @param  string|null                       $aboutBio            A few lines about the creator, `NONE` for none, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -102,5 +108,11 @@ final readonly class PortalDesignDraft
         public ?string $checkoutNote = null,
         public ?string $successTitle = null,
         public ?string $successMessage = null,
+        public ?string $perksTitle = null,
+        public ?array $perks = null,
+        public ?string $faqTitle = null,
+        public ?array $faq = null,
+        public ?string $aboutName = null,
+        public ?string $aboutBio = null,
     ) {}
 }

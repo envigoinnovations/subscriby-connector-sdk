@@ -85,6 +85,13 @@ final readonly class PortalDesignDetails
      * @param  string|null                    $successTitle          The heading of the success screen, or null for the built-in wording.
      * @param  string|null                    $successMessage        The creator's thank-you under the confirmation, or null for the built-in wording.
      * @param  array<string, int>             $copyMax               The most characters each copy override may carry, by design key.
+     * @param  string|null                    $perksTitle            The heading over the perks, or null for the built-in wording.
+     * @param  list<string>                   $perks                 The perks in order.
+     * @param  string|null                    $faqTitle              The heading over the questions, or null for the built-in wording.
+     * @param  list<PortalFaqItemDetails>     $faq                   The questions in order, each with its answer.
+     * @param  string|null                    $aboutName             The creator's name on the about card, or null for none.
+     * @param  string|null                    $aboutBio              A few lines about the creator, or null for none.
+     * @param  array<string, int>             $blockLimits           The most items and characters each block takes: `perks`, `perk`, `faq`, `faq_question`, `faq_answer`, `title`, `about_name`, `about_bio`.
      */
     public function __construct(
         public string $projectId,
@@ -154,6 +161,13 @@ final readonly class PortalDesignDetails
         public ?string $successTitle,
         public ?string $successMessage,
         public array $copyMax,
+        public ?string $perksTitle,
+        public array $perks,
+        public ?string $faqTitle,
+        public array $faq,
+        public ?string $aboutName,
+        public ?string $aboutBio,
+        public array $blockLimits,
     ) {}
 
     /**
