@@ -65,6 +65,13 @@ final readonly class PortalDesignDraft
      * @param  list<PortalFaqItemDraft>|null     $faq                 The whole question list in order, or null to keep it.
      * @param  string|null                       $aboutName           The creator's name, `NONE` for none, or null to keep it.
      * @param  string|null                       $aboutBio            A few lines about the creator, `NONE` for none, or null to keep it.
+     * @param  string|null                       $customButtonLabel   The second sidebar button's label, `NONE` for none, or null to keep it.
+     * @param  string|null                       $customButtonUrl     The second sidebar button's address, `NONE` for none, or null to keep it.
+     * @param  string|null                       $footerRefundUrl     The footer's refund policy link, `NONE` for none, or null to keep it.
+     * @param  string|null                       $footerContactUrl    The footer's contact link, a page or a mailto: address, `NONE` for none, or null to keep it.
+     * @param  string|null                       $footerImprintUrl    The footer's imprint link, `NONE` for none, or null to keep it.
+     * @param  string|null                       $footerLine          A line of the creator's under the footer links, `NONE` for none, or null to keep it.
+     * @param  bool|null                         $footerHelp          Whether the footer carries the Help link, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -114,5 +121,12 @@ final readonly class PortalDesignDraft
         public ?array $faq = null,
         public ?string $aboutName = null,
         public ?string $aboutBio = null,
+        public ?string $customButtonLabel = null,
+        public ?string $customButtonUrl = null,
+        public ?string $footerRefundUrl = null,
+        public ?string $footerContactUrl = null,
+        public ?string $footerImprintUrl = null,
+        public ?string $footerLine = null,
+        public ?bool $footerHelp = null,
     ) {}
 }

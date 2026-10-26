@@ -92,6 +92,15 @@ final readonly class PortalDesignDetails
      * @param  string|null                    $aboutName             The creator's name on the about card, or null for none.
      * @param  string|null                    $aboutBio              A few lines about the creator, or null for none.
      * @param  array<string, int>             $blockLimits           The most items and characters each block takes: `perks`, `perk`, `faq`, `faq_question`, `faq_answer`, `title`, `about_name`, `about_bio`.
+     * @param  string|null                    $customButtonLabel     The second sidebar button's label, or null for none.
+     * @param  string|null                    $customButtonUrl       The second sidebar button's address, or null for none.
+     * @param  string|null                    $footerRefundUrl       The footer's refund policy link, or null for none.
+     * @param  string|null                    $footerContactUrl      The footer's contact link, a page or a mailto: address, or null for none.
+     * @param  string|null                    $footerImprintUrl      The footer's imprint link, or null for none.
+     * @param  string|null                    $footerLine            A line of the creator's under the footer links, or null for none.
+     * @param  bool                           $footerHelp            Whether the footer carries the Help link.
+     * @param  int                            $customButtonLabelMax  The most characters the second button's label may carry.
+     * @param  int                            $footerLineMax         The most characters the footer line may carry.
      */
     public function __construct(
         public string $projectId,
@@ -168,6 +177,15 @@ final readonly class PortalDesignDetails
         public ?string $aboutName,
         public ?string $aboutBio,
         public array $blockLimits,
+        public ?string $customButtonLabel,
+        public ?string $customButtonUrl,
+        public ?string $footerRefundUrl,
+        public ?string $footerContactUrl,
+        public ?string $footerImprintUrl,
+        public ?string $footerLine,
+        public bool $footerHelp,
+        public int $customButtonLabelMax,
+        public int $footerLineMax,
     ) {}
 
     /**
