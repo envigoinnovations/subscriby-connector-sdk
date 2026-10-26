@@ -4,6 +4,12 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-10-26
+
+### Added
+- `Core\PortalDesign` carries the layout: `PortalDesignDetails` gains `arrangement` with `arrangements`, `contentWidth` with `contentWidths`, `stickySidebar`, `planGrid` with `planGrids`, `planDensity` with `planDensities`, `plansHeading`, `metricsSubscribers`, `metricsFollowers` and `metricsThreshold`; `PortalDesignDraft` gains the same nine, each null to keep it. A reset may name the `layout` section.
+- `Sdk::VERSION` is `1.13.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.12.0] - 2026-10-26
 
 ### Added

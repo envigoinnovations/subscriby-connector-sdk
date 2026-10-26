@@ -61,6 +61,19 @@ final readonly class PortalDesignDetails
      * @param  PortalDesignOption             $shadow                How much the surfaces lift off the page.
      * @param  list<PortalDesignOption>       $shadows               The three depths.
      * @param  bool                           $cardBorder            Whether the two surface cards draw a hairline border.
+     * @param  PortalDesignOption             $arrangement           Where the sidebar card sits against the main card.
+     * @param  list<PortalDesignOption>       $arrangements          The four arrangements.
+     * @param  PortalDesignOption             $contentWidth          How wide the page's column is.
+     * @param  list<PortalDesignOption>       $contentWidths         The three widths.
+     * @param  bool                           $stickySidebar         Whether the sidebar card stays in view while the page scrolls.
+     * @param  PortalDesignOption             $planGrid              How many columns the plan cards fill.
+     * @param  list<PortalDesignOption>       $planGrids             The three column settings.
+     * @param  PortalDesignOption             $planDensity           How much room a plan card takes.
+     * @param  list<PortalDesignOption>       $planDensities         The two densities.
+     * @param  bool                           $plansHeading          Whether the plan list opens with its heading and subtitle.
+     * @param  bool                           $metricsSubscribers    Whether the subscriber count shows, while the project shows metrics at all.
+     * @param  bool                           $metricsFollowers      Whether the follower count shows, while the project shows metrics at all.
+     * @param  int                            $metricsThreshold      The count a figure must reach before it shows; zero shows every figure.
      */
     public function __construct(
         public string $projectId,
@@ -106,6 +119,19 @@ final readonly class PortalDesignDetails
         public PortalDesignOption $shadow,
         public array $shadows,
         public bool $cardBorder,
+        public PortalDesignOption $arrangement,
+        public array $arrangements,
+        public PortalDesignOption $contentWidth,
+        public array $contentWidths,
+        public bool $stickySidebar,
+        public PortalDesignOption $planGrid,
+        public array $planGrids,
+        public PortalDesignOption $planDensity,
+        public array $planDensities,
+        public bool $plansHeading,
+        public bool $metricsSubscribers,
+        public bool $metricsFollowers,
+        public int $metricsThreshold,
     ) {}
 
     /**
