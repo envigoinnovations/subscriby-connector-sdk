@@ -140,6 +140,9 @@ final readonly class PortalDesignDetails
      * @param  string|null                     $socialCardUrl         An uploaded card as stored, or null for the card the portal draws in its colours.
      * @param  int                             $seoTitleSuffixMax     The most characters the suffix takes.
      * @param  int                             $seoDescriptionMax     The most characters the description takes.
+     * @param  string|null                     $defaultLocale         The language a visitor sees before choosing one, as its code, or null for the platform's default.
+     * @param  list<string>                    $locales               The languages the switcher offers, as codes in the platform's order.
+     * @param  list<PortalDesignOption>        $localeOptions         Every language the platform has, each value a code and each label the language's own name.
      */
     public function __construct(
         public string $projectId,
@@ -264,6 +267,9 @@ final readonly class PortalDesignDetails
         public ?string $socialCardUrl,
         public int $seoTitleSuffixMax,
         public int $seoDescriptionMax,
+        public ?string $defaultLocale,
+        public array $locales,
+        public array $localeOptions,
     ) {}
 
     /**

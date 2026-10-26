@@ -100,6 +100,8 @@ final readonly class PortalDesignDraft
      * @param  string|null                        $customCss             The creator's own stylesheet within `customCssMax` bytes, with no `@import`, `url(` or anything that runs, `NONE` for none, or null to keep it.
      * @param  string|null                        $seoTitleSuffix        The words after the project's name in the page title, `NONE` for the built-in ones, or null to keep them.
      * @param  string|null                        $seoDescription        The description search engines and shared links show, `NONE` for one cut from the project's text, or null to keep it; the card image is uploaded on the dashboard alone.
+     * @param  string|null                        $defaultLocale         A language code from the details' options, `NONE` for the platform's default, or null to keep it; it must be among the offered ones.
+     * @param  list<string>|null                  $locales               The whole list of languages the switcher offers, from the details' options, never empty, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -184,5 +186,7 @@ final readonly class PortalDesignDraft
         public ?string $customCss = null,
         public ?string $seoTitleSuffix = null,
         public ?string $seoDescription = null,
+        public ?string $defaultLocale = null,
+        public ?array $locales = null,
     ) {}
 }
