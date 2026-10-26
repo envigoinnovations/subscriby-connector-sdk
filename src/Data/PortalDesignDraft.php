@@ -34,6 +34,12 @@ final readonly class PortalDesignDraft
      * @param  string|null                       $fontBody         A face's value for the body, or null to keep it.
      * @param  string|null                       $headingCase      A heading case's value, or null to keep it.
      * @param  string|null                       $typeScale        A type scale's value, or null to keep it.
+     * @param  string|null                       $radius           A corner setting's value, or null to keep it.
+     * @param  string|null                       $buttonStyle      A button shape's value, or null to keep it.
+     * @param  string|null                       $buttonFill       A button fill's value, or null to keep it.
+     * @param  string|null                       $buttonCase       A text case's value for the button labels, or null to keep it.
+     * @param  string|null                       $shadow           A shadow depth's value, or null to keep it.
+     * @param  bool|null                         $cardBorder       Whether the surface cards draw a border, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -52,5 +58,11 @@ final readonly class PortalDesignDraft
         public ?string $fontBody = null,
         public ?string $headingCase = null,
         public ?string $typeScale = null,
+        public ?string $radius = null,
+        public ?string $buttonStyle = null,
+        public ?string $buttonFill = null,
+        public ?string $buttonCase = null,
+        public ?string $shadow = null,
+        public ?bool $cardBorder = null,
     ) {}
 }

@@ -4,6 +4,12 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-10-26
+
+### Added
+- `Core\PortalDesign` carries the shape: `PortalDesignDetails` gains `radius` with `radii`, `buttonStyle` with `buttonStyles`, `buttonFill` with `buttonFills`, `buttonCase` (its options are `headingCases`), `shadow` with `shadows` and `cardBorder`; `PortalDesignDraft` gains `radius`, `buttonStyle`, `buttonFill`, `buttonCase`, `shadow` and `cardBorder`, each null to keep it. A reset may name the `shape` section.
+- `Sdk::VERSION` is `1.12.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.11.0] - 2026-10-26
 
 ### Added

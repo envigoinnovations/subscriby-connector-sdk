@@ -51,6 +51,16 @@ final readonly class PortalDesignDetails
      * @param  list<PortalDesignOption>       $headingCases          The two cases.
      * @param  PortalDesignOption             $typeScale             How large the type is.
      * @param  list<PortalDesignOption>       $typeScales            The three scales.
+     * @param  PortalDesignOption             $radius                How rounded every corner is.
+     * @param  list<PortalDesignOption>       $radii                 The three corner settings.
+     * @param  PortalDesignOption             $buttonStyle           The shape of the buttons.
+     * @param  list<PortalDesignOption>       $buttonStyles          The three button shapes.
+     * @param  PortalDesignOption             $buttonFill            How the buttons are filled.
+     * @param  list<PortalDesignOption>       $buttonFills           The three fills.
+     * @param  PortalDesignOption             $buttonCase            Whether button labels are set in capitals or as written; the options are `headingCases`.
+     * @param  PortalDesignOption             $shadow                How much the surfaces lift off the page.
+     * @param  list<PortalDesignOption>       $shadows               The three depths.
+     * @param  bool                           $cardBorder            Whether the two surface cards draw a hairline border.
      */
     public function __construct(
         public string $projectId,
@@ -86,6 +96,16 @@ final readonly class PortalDesignDetails
         public array $headingCases,
         public PortalDesignOption $typeScale,
         public array $typeScales,
+        public PortalDesignOption $radius,
+        public array $radii,
+        public PortalDesignOption $buttonStyle,
+        public array $buttonStyles,
+        public PortalDesignOption $buttonFill,
+        public array $buttonFills,
+        public PortalDesignOption $buttonCase,
+        public PortalDesignOption $shadow,
+        public array $shadows,
+        public bool $cardBorder,
     ) {}
 
     /**
