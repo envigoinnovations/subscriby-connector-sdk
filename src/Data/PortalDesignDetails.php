@@ -113,6 +113,9 @@ final readonly class PortalDesignDetails
      * @param  string|null                     $testimonialsTitle     The heading over the quotes, or null for the built-in wording.
      * @param  list<PortalTestimonialDetails>  $testimonials          The members' quotes in order.
      * @param  array<string, int>              $mediaLimits           The most items and characters the media blocks take: `gallery`, `testimonials`, `testimonial_quote`, `testimonial_name`, `testimonial_subtitle`, `title`.
+     * @param  list<PortalPlacementDetails>    $sidebarItems          The sidebar card's parts in order, each with its key, its name and whether it shows.
+     * @param  list<PortalPlacementDetails>    $contentBlocks         The blocks under the plans in order, each with its key, its name and whether it shows.
+     * @param  bool                            $localeSwitcher        Whether the list of languages shows under the sidebar card.
      */
     public function __construct(
         public string $projectId,
@@ -210,6 +213,9 @@ final readonly class PortalDesignDetails
         public ?string $testimonialsTitle,
         public array $testimonials,
         public array $mediaLimits,
+        public array $sidebarItems,
+        public array $contentBlocks,
+        public bool $localeSwitcher,
     ) {}
 
     /**

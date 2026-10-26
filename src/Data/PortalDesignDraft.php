@@ -81,6 +81,9 @@ final readonly class PortalDesignDraft
      * @param  list<string>|null                  $gallery               The whole gallery in order, addresses the details gave, or null to keep it; a connector cannot add a picture.
      * @param  string|null                        $testimonialsTitle     The heading over the quotes, `NONE` for the built-in wording, or null to keep it.
      * @param  list<PortalTestimonialDraft>|null  $testimonials          The whole quote list in order, or null to keep it.
+     * @param  list<PortalPlacementDraft>|null    $sidebarItems          The sidebar card's parts in the order wanted, each shown or hidden, or null to keep them; a part left out keeps its place at the end, shown.
+     * @param  list<PortalPlacementDraft>|null    $contentBlocks         The blocks under the plans in the order wanted, each shown or hidden, or null to keep them.
+     * @param  bool|null                          $localeSwitcher        Whether the list of languages shows under the sidebar card, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -146,5 +149,8 @@ final readonly class PortalDesignDraft
         public ?array $gallery = null,
         public ?string $testimonialsTitle = null,
         public ?array $testimonials = null,
+        public ?array $sidebarItems = null,
+        public ?array $contentBlocks = null,
+        public ?bool $localeSwitcher = null,
     ) {}
 }
