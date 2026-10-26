@@ -101,6 +101,11 @@ final readonly class PortalDesignDetails
      * @param  bool                           $footerHelp            Whether the footer carries the Help link.
      * @param  int                            $customButtonLabelMax  The most characters the second button's label may carry.
      * @param  int                            $footerLineMax         The most characters the footer line may carry.
+     * @param  string|null                    $announcementText      The strip across the top of the page, or null for none.
+     * @param  string|null                    $announcementUrl       Where the strip leads, or null for nowhere.
+     * @param  string|null                    $announcementStartsAt  When the strip starts showing, ISO 8601 in UTC, or null for at once.
+     * @param  string|null                    $announcementEndsAt    When it stops, ISO 8601 in UTC, or null for never.
+     * @param  int                            $announcementTextMax   The most characters the strip may carry.
      */
     public function __construct(
         public string $projectId,
@@ -186,6 +191,11 @@ final readonly class PortalDesignDetails
         public bool $footerHelp,
         public int $customButtonLabelMax,
         public int $footerLineMax,
+        public ?string $announcementText,
+        public ?string $announcementUrl,
+        public ?string $announcementStartsAt,
+        public ?string $announcementEndsAt,
+        public int $announcementTextMax,
     ) {}
 
     /**
