@@ -4,6 +4,9 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+### Added
+- `Core\PortalDesign` carries the copy: `PortalDesignDetails` gains `plansTitle`, `plansSubtitle`, `labelLogin`, `labelShare`, `labelSubscribe`, `checkoutTitle`, `checkoutSubtitle`, `checkoutNote`, `successTitle` and `successMessage` (each null for the built-in wording) and `copyMax`, the ceiling of each; `PortalDesignDraft` gains the same ten, `NONE` for the built-in wording, null to keep. A reset may name the `copy` section.
+
 ## [1.13.0] - 2026-10-26
 
 ### Added

@@ -74,6 +74,17 @@ final readonly class PortalDesignDetails
      * @param  bool                           $metricsSubscribers    Whether the subscriber count shows, while the project shows metrics at all.
      * @param  bool                           $metricsFollowers      Whether the follower count shows, while the project shows metrics at all.
      * @param  int                            $metricsThreshold      The count a figure must reach before it shows; zero shows every figure.
+     * @param  string|null                    $plansTitle            The heading over the plan list, or null for the built-in wording.
+     * @param  string|null                    $plansSubtitle         The line under the plan list heading, or null for the built-in wording.
+     * @param  string|null                    $labelLogin            The header's sign-in button, or null for the built-in wording.
+     * @param  string|null                    $labelShare            The header's share button, or null for the built-in wording.
+     * @param  string|null                    $labelSubscribe        The button on a plan that sells, or null for the built-in wording.
+     * @param  string|null                    $checkoutTitle         The checkout heading, or null for the built-in wording.
+     * @param  string|null                    $checkoutSubtitle      The line under the checkout heading, or null for the built-in wording.
+     * @param  string|null                    $checkoutNote          The creator's sentence above the acceptance line, or null for the built-in wording.
+     * @param  string|null                    $successTitle          The heading of the success screen, or null for the built-in wording.
+     * @param  string|null                    $successMessage        The creator's thank-you under the confirmation, or null for the built-in wording.
+     * @param  array<string, int>             $copyMax               The most characters each copy override may carry, by design key.
      */
     public function __construct(
         public string $projectId,
@@ -132,6 +143,17 @@ final readonly class PortalDesignDetails
         public bool $metricsSubscribers,
         public bool $metricsFollowers,
         public int $metricsThreshold,
+        public ?string $plansTitle,
+        public ?string $plansSubtitle,
+        public ?string $labelLogin,
+        public ?string $labelShare,
+        public ?string $labelSubscribe,
+        public ?string $checkoutTitle,
+        public ?string $checkoutSubtitle,
+        public ?string $checkoutNote,
+        public ?string $successTitle,
+        public ?string $successMessage,
+        public array $copyMax,
     ) {}
 
     /**

@@ -49,6 +49,16 @@ final readonly class PortalDesignDraft
      * @param  bool|null                         $metricsSubscribers  Whether the subscriber count shows, or null to keep it.
      * @param  bool|null                         $metricsFollowers    Whether the follower count shows, or null to keep it.
      * @param  int|null                          $metricsThreshold    The count a figure must reach before it shows, or null to keep it.
+     * @param  string|null                       $plansTitle          The heading over the plan list, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $plansSubtitle       The line under the plan list heading, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $labelLogin          The header's sign-in button, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $labelShare          The header's share button, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $labelSubscribe      The button on a plan that sells, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $checkoutTitle       The checkout heading, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $checkoutSubtitle    The line under the checkout heading, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $checkoutNote        The creator's sentence above the acceptance line, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $successTitle        The heading of the success screen, `NONE` for the built-in wording, or null to keep it.
+     * @param  string|null                       $successMessage      The creator's thank-you under the confirmation, `NONE` for the built-in wording, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -82,5 +92,15 @@ final readonly class PortalDesignDraft
         public ?bool $metricsSubscribers = null,
         public ?bool $metricsFollowers = null,
         public ?int $metricsThreshold = null,
+        public ?string $plansTitle = null,
+        public ?string $plansSubtitle = null,
+        public ?string $labelLogin = null,
+        public ?string $labelShare = null,
+        public ?string $labelSubscribe = null,
+        public ?string $checkoutTitle = null,
+        public ?string $checkoutSubtitle = null,
+        public ?string $checkoutNote = null,
+        public ?string $successTitle = null,
+        public ?string $successMessage = null,
     ) {}
 }
