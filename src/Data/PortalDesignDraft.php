@@ -30,6 +30,10 @@ final readonly class PortalDesignDraft
      * @param  string|null                       $muted            The caption colour as a hex code, or null to keep it.
      * @param  string|null                       $tagline          The tagline, `NONE` for no tagline, or null to keep it.
      * @param  list<PortalSocialLinkDraft>|null  $socialLinks      The whole social-link row in order, an empty list for no row, or null to keep it.
+     * @param  string|null                       $fontDisplay      A face's value for the headings, or null to keep it.
+     * @param  string|null                       $fontBody         A face's value for the body, or null to keep it.
+     * @param  string|null                       $headingCase      A heading case's value, or null to keep it.
+     * @param  string|null                       $typeScale        A type scale's value, or null to keep it.
      */
     public function __construct(
         public ?string $preset = null,
@@ -44,5 +48,9 @@ final readonly class PortalDesignDraft
         public ?string $muted = null,
         public ?string $tagline = null,
         public ?array $socialLinks = null,
+        public ?string $fontDisplay = null,
+        public ?string $fontBody = null,
+        public ?string $headingCase = null,
+        public ?string $typeScale = null,
     ) {}
 }

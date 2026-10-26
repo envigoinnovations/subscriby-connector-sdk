@@ -44,6 +44,13 @@ final readonly class PortalDesignDetails
      * @param  list<PortalDesignOption>       $networks              Every network a link may point at, the custom one included.
      * @param  string                         $customNetwork         The value of the one network whose link the creator names.
      * @param  list<PortalDesignOption>       $sections              The sections a reset may name.
+     * @param  PortalDesignOption             $fontDisplay           The face the headings and figures are set in.
+     * @param  PortalDesignOption             $fontBody              The face the rest of the text is set in.
+     * @param  list<PortalDesignOption>       $fonts                 Every face either may be, the two the portal always had first.
+     * @param  PortalDesignOption             $headingCase           Whether the headings are set in capitals or as written.
+     * @param  list<PortalDesignOption>       $headingCases          The two cases.
+     * @param  PortalDesignOption             $typeScale             How large the type is.
+     * @param  list<PortalDesignOption>       $typeScales            The three scales.
      */
     public function __construct(
         public string $projectId,
@@ -72,6 +79,13 @@ final readonly class PortalDesignDetails
         public array $networks,
         public string $customNetwork,
         public array $sections,
+        public PortalDesignOption $fontDisplay,
+        public PortalDesignOption $fontBody,
+        public array $fonts,
+        public PortalDesignOption $headingCase,
+        public array $headingCases,
+        public PortalDesignOption $typeScale,
+        public array $typeScales,
     ) {}
 
     /**
@@ -98,6 +112,21 @@ final readonly class PortalDesignDetails
         foreach ($this->networks as $network) {
             if ($network->value === $value) {
                 return $network;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param   string              $value  A face's value.
+     * @return  PortalDesignOption  The face with that value, or null when none has it.
+     */
+    public function font(string $value): ?PortalDesignOption
+    {
+        foreach ($this->fonts as $font) {
+            if ($font->value === $value) {
+                return $font;
             }
         }
 

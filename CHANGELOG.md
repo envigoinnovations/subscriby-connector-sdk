@@ -4,6 +4,12 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.11.0] - 2026-10-26
+
+### Added
+- `Core\PortalDesign` carries the type: `PortalDesignDetails` gains `fontDisplay`, `fontBody` and `fonts` (the twelve faces as options, the two the portal always had first), `headingCase` with `headingCases` and `typeScale` with `typeScales`, plus `font(string)`; `PortalDesignDraft` gains `fontDisplay`, `fontBody`, `headingCase` and `typeScale`, each null to keep it. A reset may name the `typography` section.
+- `Sdk::VERSION` is `1.11.0`; `^1.0` remains the constraint every connector declares.
+
 ## [1.10.0] - 2026-10-26
 
 ### Added
