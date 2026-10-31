@@ -22,13 +22,15 @@ use Subscriby\Connector\Exceptions\InstallationRefused;
 /**
  * An installation lifecycle that connects in one step by default and remembers what it was asked.
  *
- * Three tokens drive the core's connect paths without a platform: a token of
+ * Five tokens drive the core's connect paths without a platform: a token of
  * `revoked` verifies as revoked; a token starting `steps-` asks for one more
  * field (a region) before it completes, so the second round of a connect can
  * be exercised; a token starting `oauth-` sends the creator to the fake host
  * and completes only from what the platform hands back on the return leg,
  * minting the real credential into the summary's `meta` as an OAuth
- * connector would.
+ * connector would; and the two refusals a creator meets when they paste the
+ * wrong thing, `held` for credentials an installation already uses and
+ * `refused` for credentials the platform turns down.
  */
 final class FakeInstallationLifecycle implements InstallationLifecycle
 {
@@ -38,16 +40,28 @@ final class FakeInstallationLifecycle implements InstallationLifecycle
     /** The prefix of a token that sends the creator to the platform first. */
     public const string OAUTH_PREFIX = 'oauth-';
 
+    /** A token an installation the fake already knows is using. */
+    public const string HELD_TOKEN = 'held';
+
+    /** A token the fake platform turns down when it is asked to complete. */
+    public const string REFUSED_TOKEN = 'refused';
+
     /** @var list<InstallationRef> */
     public array $disconnected = [];
 
     /**
      * @param   InstallationRequest  $request  The creator's answers.
      * @return  InstallationDraft    Complete for a plain token; a region field for a `steps-` token until it is answered; the fake host's authorisation page for an `oauth-` token.
+     *
+     * @throws  InstallationRefused  When the token is the one another installation already holds.
      */
     public function begin(InstallationRequest $request): InstallationDraft
     {
         $token = (string) ($request->fields['token'] ?? '');
+
+        if ($token === self::HELD_TOKEN) {
+            throw InstallationRefused::credentialsHeld('fake');
+        }
 
         if (str_starts_with($token, self::STEPS_PREFIX) && ($request->fields['region'] ?? '') === '') {
             return new InstallationDraft(
@@ -71,6 +85,8 @@ final class FakeInstallationLifecycle implements InstallationLifecycle
      * @param   InstallationDraft    $draft        The completed draft, carrying the return leg for an OAuth token.
      * @param   CredentialBag        $credentials  The token the creator pasted.
      * @return  InstallationSummary  An identity derived from the token, so two tokens make two installations; from the returned code for an OAuth token, with the minted credential in `meta`.
+     *
+     * @throws  InstallationRefused  When the platform refuses the authorisation it handed back, or the token is the one it turns down.
      */
     public function complete(InstallationRequest $request, InstallationDraft $draft, CredentialBag $credentials): InstallationSummary
     {
@@ -92,6 +108,10 @@ final class FakeInstallationLifecycle implements InstallationLifecycle
         }
 
         $token = (string) $credentials->get('token');
+
+        if ($token === self::REFUSED_TOKEN) {
+            throw InstallationRefused::byPlatform('fake', new DeliveryFailure(DeliveryFailureKind::NotPermitted, 'The fake platform turned the credentials down.', code: 'credentials_rejected'));
+        }
 
         return new InstallationSummary(
             externalId: 'fake-'.hash('crc32b', $token),
