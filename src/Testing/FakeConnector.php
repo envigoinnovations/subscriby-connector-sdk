@@ -24,6 +24,7 @@ use Subscriby\Connector\Contracts\Ports\SpaceCatalog;
 use Subscriby\Connector\Contracts\Ports\TextRenderer;
 use Subscriby\Connector\Contracts\Ports\UiSlots;
 use Subscriby\Connector\Data\ConnectorManifest;
+use Subscriby\Connector\Enums\Capability;
 use Subscriby\Connector\Enums\ManagementCommand;
 use Subscriby\Connector\Manifest\ManifestFile;
 use Subscriby\Connector\Testing\Fakes\FakeAccessController;
@@ -87,10 +88,14 @@ final class FakeConnector implements Connector
     private readonly ConnectorManifest $manifest;
 
     /**
-     * @param  string  $key  The connector key; tests that register more than one fake give each its own.
+     * @param  string  $key            The connector key; tests that register more than one fake give each its own.
+     * @param  bool    $browses        Whether the fake lists its places; false stands for a platform that can only ask the creator, so a host tests the request flow beside the picker.
+     * @param  bool    $offersActions  Whether the fake offers installation actions; false stands for a connector with nothing to set up, so a host tests the empty offer.
      */
     public function __construct(
         private readonly string $key = 'fake',
+        private readonly bool $browses = true,
+        private readonly bool $offersActions = true,
     ) {
         $this->installations = new FakeInstallationLifecycle;
         $this->identities = new FakeIdentityResolver;
@@ -104,7 +109,18 @@ final class FakeConnector implements Connector
         $this->browser = new FakeSpaceBrowser;
         $this->announcer = new FakeAnnouncer;
         $this->actions = new FakeInstallationActions;
-        $this->manifest = ManifestFile::parse(array_replace(self::declaration(), ['key' => $this->key]), 'FakeConnector connector.json');
+        $declaration = array_replace(self::declaration(), ['key' => $this->key]);
+
+        $withheld = [
+            ...($this->browses ? [] : [Capability::SpaceBrowsing->value]),
+            ...($this->offersActions ? [] : [Capability::InstallationActions->value]),
+        ];
+
+        if ($withheld !== []) {
+            $declaration['capabilities'] = array_values(array_filter((array) ($declaration['capabilities'] ?? []), static fn (mixed $capability): bool => ! in_array($capability, $withheld, true)));
+        }
+
+        $this->manifest = ManifestFile::parse($declaration, 'FakeConnector connector.json');
     }
 
     /**
@@ -148,9 +164,15 @@ final class FakeConnector implements Connector
         $registrar->port(SettingsSchema::class, new FakeSettingsSchema);
         $registrar->port(UiSlots::class, new FakeUiSlots);
         $registrar->port(CopilotSurface::class, $this->copilot);
-        $registrar->port(SpaceBrowser::class, $this->browser);
+        if ($this->browses) {
+            $registrar->port(SpaceBrowser::class, $this->browser);
+        }
+
         $registrar->port(Announcer::class, $this->announcer);
-        $registrar->port(InstallationActions::class, $this->actions);
+
+        if ($this->offersActions) {
+            $registrar->port(InstallationActions::class, $this->actions);
+        }
     }
 
     /**
