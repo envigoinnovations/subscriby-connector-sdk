@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Subscriby\Connector\Data;
 
 use DateTimeImmutable;
+use LogicException;
 use Subscriby\Connector\Enums\GrantMode;
 use Subscriby\Connector\Enums\GrantState;
 
@@ -30,6 +31,7 @@ final readonly class GrantSummary
      * @param  string|null             $reference       The connector's handle on the grant.
      * @param  DateTimeImmutable|null  $grantedAt       When access was given.
      * @param  DateTimeImmutable|null  $revokedAt       When access was withdrawn.
+     * @param  string|null             $memberId        The member the purchase belongs to, so a connector can link the account that used a reference to them; null while the purchase has no member yet.
      */
     public function __construct(
         public string $id,
@@ -44,7 +46,22 @@ final readonly class GrantSummary
         public ?string $reference = null,
         public ?DateTimeImmutable $grantedAt = null,
         public ?DateTimeImmutable $revokedAt = null,
+        public ?string $memberId = null,
     ) {}
+
+    /**
+     * @return  MemberRef  The ref the identity links take for the member the purchase belongs to.
+     *
+     * @throws  LogicException  When the purchase has no member to name.
+     */
+    public function member(): MemberRef
+    {
+        if ($this->memberId === null) {
+            throw new LogicException(sprintf('Grant %s belongs to a purchase with no member yet.', $this->id));
+        }
+
+        return new MemberRef($this->memberId, $this->projectId);
+    }
 
     /**
      * @return  GrantRef  The ref a port takes.

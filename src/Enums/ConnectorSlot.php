@@ -26,6 +26,7 @@ enum ConnectorSlot: string
     case Settings = 'settings';
     case ResourceBadge = 'resource_badge';
     case ResourceLinkInstructions = 'resource_link_instructions';
+    case ResourceSettings = 'resource_settings';
     case ResourceSwap = 'resource_swap';
     case ResourceHealthDetail = 'resource_health_detail';
     case MemberIdentityBadge = 'member_identity_badge';

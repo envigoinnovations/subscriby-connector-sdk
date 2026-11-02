@@ -11,17 +11,21 @@ use RuntimeException;
 use Subscriby\Connector\Contracts\ConnectorRegistry;
 use Subscriby\Connector\Contracts\NativePaymentProvider;
 use Subscriby\Connector\Contracts\Ports\AccessController;
+use Subscriby\Connector\Contracts\Ports\Announcer;
 use Subscriby\Connector\Contracts\Ports\FailureClassifier;
 use Subscriby\Connector\Contracts\Ports\IdentityResolver;
 use Subscriby\Connector\Contracts\Ports\InboundGateway;
+use Subscriby\Connector\Contracts\Ports\InstallationActions;
 use Subscriby\Connector\Contracts\Ports\ManagementSurface;
 use Subscriby\Connector\Contracts\Ports\PortalLoginMethod;
 use Subscriby\Connector\Contracts\Ports\ProvidesPaymentMethods;
 use Subscriby\Connector\Contracts\Ports\RecoverySupport;
 use Subscriby\Connector\Contracts\Ports\SettingsSchema;
+use Subscriby\Connector\Contracts\Ports\SpaceBrowser;
 use Subscriby\Connector\Contracts\Ports\SupportRelay;
 use Subscriby\Connector\Contracts\Ports\TextRenderer;
 use Subscriby\Connector\Contracts\Ports\UiSlots;
+use Subscriby\Connector\Data\Announcement;
 use Subscriby\Connector\Data\ConnectorManifest;
 use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\DeliveryFailure;
@@ -29,12 +33,15 @@ use Subscriby\Connector\Data\Field;
 use Subscriby\Connector\Data\IdentityRef;
 use Subscriby\Connector\Data\IdentitySummary;
 use Subscriby\Connector\Data\InboundEnvelope;
+use Subscriby\Connector\Data\InstallationAction;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\Message;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Data\ReadinessItem;
 use Subscriby\Connector\Data\Recipient;
 use Subscriby\Connector\Data\ResourceKindDefinition;
 use Subscriby\Connector\Data\SlotContribution;
+use Subscriby\Connector\Data\SpaceSummary;
 use Subscriby\Connector\Enums\InstallationScope;
 use Subscriby\Connector\Enums\InstallMode;
 use Subscriby\Connector\Enums\ManagementCommand;
@@ -121,6 +128,18 @@ final class ConformanceSuite
 
         if ($this->registry->binds($key, ProvidesPaymentMethods::class)) {
             $checks[] = $this->guard('payments.provider_keys', fn (): ConformanceCheck => $this->paymentProviders($key));
+        }
+
+        if ($this->registry->binds($key, SpaceBrowser::class)) {
+            $checks[] = $this->guard('spaces.browse_answers_declared_kinds', fn (): ConformanceCheck => $this->browse($key, $manifest));
+        }
+
+        if ($this->registry->binds($key, Announcer::class)) {
+            $checks[] = $this->guard('announcer.answers_delivery_result', fn (): ConformanceCheck => $this->announcer($key));
+        }
+
+        if ($this->registry->binds($key, InstallationActions::class)) {
+            $checks[] = $this->guard('actions.unknown_action_refused', fn (): ConformanceCheck => $this->installationActions($key));
         }
 
         if ($packagePath !== null) {
@@ -508,6 +527,91 @@ final class ConformanceSuite
         }
 
         return ConformanceCheck::offenders('portal_login.button', $offenders, 'portal login:');
+    }
+
+    /**
+     * @param   string            $key  The connector key.
+     * @return  ConformanceCheck  Every provider is keyed `connector:provider`, labelled and settles in at least one currency.
+     */
+    private function browse(string $key, ConnectorManifest $manifest): ConformanceCheck
+    {
+        $installation = new InstallationRef('00000000-0000-0000-0000-000000000000', $key, InstallationScope::Project, '00000000-0000-0000-0000-000000000001');
+        $browser = $this->registry->port($key, SpaceBrowser::class);
+        $offenders = [];
+
+        foreach ($manifest->resourceKinds as $definition) {
+            foreach ($browser->browse($installation, new CredentialBag, $definition->kind) as $place) {
+                if (! $place instanceof SpaceSummary) {
+                    $offenders[] = sprintf('browse("%s") answered something other than a SpaceSummary', $definition->kind);
+
+                    break;
+                }
+
+                if ($place->kind !== $definition->kind) {
+                    $offenders[] = sprintf('browse("%s") answered a place of kind "%s"', $definition->kind, $place->kind);
+
+                    break;
+                }
+            }
+        }
+
+        return ConformanceCheck::offenders('spaces.browse_answers_declared_kinds', $offenders, 'browsing:');
+    }
+
+    /**
+     * @param   string            $key  The connector key.
+     * @return  ConformanceCheck  An announcement for nobody in particular comes back as a delivery result, delivered or classified.
+     */
+    private function announcer(string $key): ConformanceCheck
+    {
+        $installation = new InstallationRef('00000000-0000-0000-0000-000000000000', $key, InstallationScope::Project, '00000000-0000-0000-0000-000000000001');
+        $announcement = new Announcement(new Message('Conformance: an announcement for everyone.'));
+
+        $result = $this->registry->port($key, Announcer::class)->announce($installation, new CredentialBag, $announcement);
+
+        return $result->delivered || $result->failure !== null
+            ? ConformanceCheck::passed('announcer.answers_delivery_result')
+            : ConformanceCheck::failed('announcer.answers_delivery_result', 'announce() answered neither delivered nor a classified failure');
+    }
+
+    /**
+     * @param   string            $key  The connector key.
+     * @return  ConformanceCheck  Every listed action is well-formed with a unique key, and an unknown key is refused rather than thrown.
+     */
+    private function installationActions(string $key): ConformanceCheck
+    {
+        $installation = new InstallationRef('00000000-0000-0000-0000-000000000000', $key, InstallationScope::Project, '00000000-0000-0000-0000-000000000001');
+        $port = $this->registry->port($key, InstallationActions::class);
+        $offenders = [];
+        $keys = [];
+
+        foreach ($port->actions($installation) as $action) {
+            if (! $action instanceof InstallationAction) {
+                $offenders[] = 'actions() listed something other than an InstallationAction';
+
+                continue;
+            }
+
+            if (in_array($action->key, $keys, true)) {
+                $offenders[] = sprintf('action "%s" is listed twice', $action->key);
+            }
+
+            $keys[] = $action->key;
+
+            foreach ($action->fields as $field) {
+                if (! $field instanceof Field) {
+                    $offenders[] = sprintf('action "%s" lists a field that is not a Field', $action->key);
+                }
+            }
+        }
+
+        $unknown = $port->run($installation, new CredentialBag, 'conformance_no_such_action', []);
+
+        if ($unknown->done) {
+            $offenders[] = 'run() reported an unknown action as done';
+        }
+
+        return ConformanceCheck::offenders('actions.unknown_action_refused', $offenders, 'installation actions:');
     }
 
     /**

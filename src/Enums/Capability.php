@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Subscriby\Connector\Enums;
 
 use Subscriby\Connector\Contracts\Ports\AccessController;
+use Subscriby\Connector\Contracts\Ports\Announcer;
 use Subscriby\Connector\Contracts\Ports\CopilotSurface;
+use Subscriby\Connector\Contracts\Ports\InstallationActions;
 use Subscriby\Connector\Contracts\Ports\ManagementSurface;
 use Subscriby\Connector\Contracts\Ports\Messenger;
 use Subscriby\Connector\Contracts\Ports\PortalLoginMethod;
 use Subscriby\Connector\Contracts\Ports\ProvidesPaymentMethods;
 use Subscriby\Connector\Contracts\Ports\RecoverySupport;
 use Subscriby\Connector\Contracts\Ports\RegistersCreators;
+use Subscriby\Connector\Contracts\Ports\SpaceBrowser;
 use Subscriby\Connector\Contracts\Ports\SupportRelay;
 use Subscriby\Connector\Enums\Concerns\EnumHelpers;
 
@@ -31,8 +34,11 @@ enum Capability: string
 
     case Messaging = 'messaging';
     case Broadcasts = 'broadcasts';
+    case Announcements = 'announcements';
     case AccessControl = 'access_control';
     case EarlyAdmissionHold = 'early_admission_hold';
+    case SpaceBrowsing = 'space_browsing';
+    case InstallationActions = 'installation_actions';
     case SupportRelay = 'support_relay';
     case NativePayments = 'native_payments';
     case PortalLogin = 'portal_login';
@@ -58,7 +64,10 @@ enum Capability: string
     {
         return match ($this) {
             self::Messaging, self::Broadcasts => Messenger::class,
+            self::Announcements => Announcer::class,
             self::AccessControl, self::EarlyAdmissionHold => AccessController::class,
+            self::SpaceBrowsing => SpaceBrowser::class,
+            self::InstallationActions => InstallationActions::class,
             self::SupportRelay => SupportRelay::class,
             self::NativePayments => ProvidesPaymentMethods::class,
             self::PortalLogin => PortalLoginMethod::class,
@@ -86,18 +95,21 @@ enum Capability: string
      *
      * Talking to members, letting them in, surviving a ban and taking money
      * are the four stories a connector tells; every capability belongs to
-     * exactly one, so a list of fifteen switches reads as four cards. The
+     * exactly one, so a list of eighteen switches reads as four cards. The
      * Copilot sits with the creator's own doors into the platform, beside
-     * the management surface it extends.
+     * the management surface it extends; browsing places and running an
+     * installation's actions are the creator's doors too.
      *
      * @return  CapabilityGroup  The shelf.
      */
     public function group(): CapabilityGroup
     {
         return match ($this) {
-            self::Messaging, self::Broadcasts, self::SupportRelay => CapabilityGroup::Messaging,
+            self::Messaging, self::Broadcasts, self::Announcements, self::SupportRelay => CapabilityGroup::Messaging,
             self::AccessControl,
             self::EarlyAdmissionHold,
+            self::SpaceBrowsing,
+            self::InstallationActions,
             self::ManagementSurface,
             self::Copilot,
             self::PortalLogin,

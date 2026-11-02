@@ -174,6 +174,14 @@ final readonly class ConnectorManifest
             throw InvalidManifest::because($this->key, 'broadcasts requires messaging');
         }
 
+        if ($this->supports(Capability::Announcements) && ! $this->supports(Capability::Broadcasts)) {
+            throw InvalidManifest::because($this->key, 'announcements requires broadcasts');
+        }
+
+        if ($this->supports(Capability::SpaceBrowsing) && ! $this->supports(Capability::AccessControl)) {
+            throw InvalidManifest::because($this->key, 'space_browsing requires access_control');
+        }
+
         if ($this->managementCommands !== [] && ! $this->supports(Capability::ManagementSurface)) {
             throw InvalidManifest::because($this->key, 'a connector that renders management commands must declare the management_surface capability');
         }

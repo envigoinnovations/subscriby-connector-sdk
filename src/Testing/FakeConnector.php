@@ -7,16 +7,19 @@ namespace Subscriby\Connector\Testing;
 use Subscriby\Connector\Contracts\Connector;
 use Subscriby\Connector\Contracts\ConnectorRegistrar;
 use Subscriby\Connector\Contracts\Ports\AccessController;
+use Subscriby\Connector\Contracts\Ports\Announcer;
 use Subscriby\Connector\Contracts\Ports\CopilotSurface;
 use Subscriby\Connector\Contracts\Ports\FailureClassifier;
 use Subscriby\Connector\Contracts\Ports\IdentityResolver;
 use Subscriby\Connector\Contracts\Ports\InboundGateway;
+use Subscriby\Connector\Contracts\Ports\InstallationActions;
 use Subscriby\Connector\Contracts\Ports\InstallationLifecycle;
 use Subscriby\Connector\Contracts\Ports\ManagementSurface;
 use Subscriby\Connector\Contracts\Ports\Messenger;
 use Subscriby\Connector\Contracts\Ports\PortalLoginMethod;
 use Subscriby\Connector\Contracts\Ports\RecoverySupport;
 use Subscriby\Connector\Contracts\Ports\SettingsSchema;
+use Subscriby\Connector\Contracts\Ports\SpaceBrowser;
 use Subscriby\Connector\Contracts\Ports\SpaceCatalog;
 use Subscriby\Connector\Contracts\Ports\TextRenderer;
 use Subscriby\Connector\Contracts\Ports\UiSlots;
@@ -24,16 +27,19 @@ use Subscriby\Connector\Data\ConnectorManifest;
 use Subscriby\Connector\Enums\ManagementCommand;
 use Subscriby\Connector\Manifest\ManifestFile;
 use Subscriby\Connector\Testing\Fakes\FakeAccessController;
+use Subscriby\Connector\Testing\Fakes\FakeAnnouncer;
 use Subscriby\Connector\Testing\Fakes\FakeCopilotSurface;
 use Subscriby\Connector\Testing\Fakes\FakeFailureClassifier;
 use Subscriby\Connector\Testing\Fakes\FakeIdentityResolver;
 use Subscriby\Connector\Testing\Fakes\FakeInboundGateway;
+use Subscriby\Connector\Testing\Fakes\FakeInstallationActions;
 use Subscriby\Connector\Testing\Fakes\FakeInstallationLifecycle;
 use Subscriby\Connector\Testing\Fakes\FakeManagementSurface;
 use Subscriby\Connector\Testing\Fakes\FakeMessenger;
 use Subscriby\Connector\Testing\Fakes\FakePortalLoginMethod;
 use Subscriby\Connector\Testing\Fakes\FakeRecoverySupport;
 use Subscriby\Connector\Testing\Fakes\FakeSettingsSchema;
+use Subscriby\Connector\Testing\Fakes\FakeSpaceBrowser;
 use Subscriby\Connector\Testing\Fakes\FakeSpaceCatalog;
 use Subscriby\Connector\Testing\Fakes\FakeTextRenderer;
 use Subscriby\Connector\Testing\Fakes\FakeUiSlots;
@@ -72,6 +78,12 @@ final class FakeConnector implements Connector
 
     public readonly FakeCopilotSurface $copilot;
 
+    public readonly FakeSpaceBrowser $browser;
+
+    public readonly FakeAnnouncer $announcer;
+
+    public readonly FakeInstallationActions $actions;
+
     private readonly ConnectorManifest $manifest;
 
     /**
@@ -89,6 +101,9 @@ final class FakeConnector implements Connector
         $this->management = new FakeManagementSurface(self::commands());
         $this->recovery = new FakeRecoverySupport($this->key);
         $this->copilot = new FakeCopilotSurface;
+        $this->browser = new FakeSpaceBrowser;
+        $this->announcer = new FakeAnnouncer;
+        $this->actions = new FakeInstallationActions;
         $this->manifest = ManifestFile::parse(array_replace(self::declaration(), ['key' => $this->key]), 'FakeConnector connector.json');
     }
 
@@ -133,6 +148,9 @@ final class FakeConnector implements Connector
         $registrar->port(SettingsSchema::class, new FakeSettingsSchema);
         $registrar->port(UiSlots::class, new FakeUiSlots);
         $registrar->port(CopilotSurface::class, $this->copilot);
+        $registrar->port(SpaceBrowser::class, $this->browser);
+        $registrar->port(Announcer::class, $this->announcer);
+        $registrar->port(InstallationActions::class, $this->actions);
     }
 
     /**

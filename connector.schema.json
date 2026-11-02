@@ -63,9 +63,10 @@
             "uniqueItems": true,
             "items": {
                 "enum": [
-                    "messaging", "broadcasts", "access_control", "early_admission_hold", "support_relay", "native_payments",
-                    "portal_login", "creator_registration", "management_surface", "copilot", "recovery_probes",
-                    "recovery_standby_installations", "recovery_resource_standby", "recovery_mirror", "recovery_identity_relink"
+                    "messaging", "broadcasts", "announcements", "access_control", "early_admission_hold", "space_browsing",
+                    "installation_actions", "support_relay", "native_payments", "portal_login", "creator_registration",
+                    "management_surface", "copilot", "recovery_probes", "recovery_standby_installations",
+                    "recovery_resource_standby", "recovery_mirror", "recovery_identity_relink"
                 ]
             }
         },

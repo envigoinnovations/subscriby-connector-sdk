@@ -67,4 +67,17 @@ interface Grants
      * @return  GrantSummary|null  The grant, granted, or null when none has that id.
      */
     public function markGranted(string $id): ?GrantSummary;
+
+    /**
+     * Replace the connector's handle on a grant without changing its standing.
+     *
+     * A grant issued as one thing becomes another on some platforms: an
+     * invite link a member used turns into the role they now hold, and the
+     * reference the ledger keeps for revocation must follow.
+     *
+     * @param   string             $id         The grant row's UUID.
+     * @param   string             $reference  The connector's new handle on the grant.
+     * @return  GrantSummary|null  The grant with its new reference, or null when none has that id.
+     */
+    public function rereference(string $id, string $reference): ?GrantSummary;
 }
