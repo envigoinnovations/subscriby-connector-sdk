@@ -7,6 +7,7 @@ namespace Subscriby\Connector\Core;
 use Subscriby\Connector\Data\GrantRecord;
 use Subscriby\Connector\Data\GrantRef;
 use Subscriby\Connector\Data\GrantSummary;
+use Subscriby\Connector\Data\IdentityRef;
 
 /**
  * The access ledger, as a connector may read and write it.
@@ -41,6 +42,18 @@ interface Grants
      * @return  list<GrantSummary>  The `pending`, `held` and `granted` rows, oldest first.
      */
     public function listLiveForSubscription(string $subscriptionId): array;
+
+    /**
+     * The grants an account holds, across every project, that admit or are about to admit it.
+     *
+     * For a platform that keeps a per-person fact beside the account (a
+     * linked role, a verified badge): what the account is owed right now,
+     * wherever it bought it.
+     *
+     * @param   IdentityRef         $identity  The account.
+     * @return  list<GrantSummary>  The `pending`, `held` and `granted` rows, oldest first; empty when the account holds nothing live.
+     */
+    public function listLiveForIdentity(IdentityRef $identity): array;
 
     /**
      * Write a grant, or rewrite the one the purchase already holds for that resource and date.
