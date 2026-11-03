@@ -143,6 +143,24 @@ interface Installations
     public function updateSettings(InstallationRef $installation, array $settings): array;
 
     /**
+     * Write some of the creator's settings for an installation as the creator a surface is talking to.
+     *
+     * The same write as {@see updateSettings()} for a creator surface with no
+     * actor bound (a gateway job answering a slash command), run under the
+     * creator the ref names: the project's permission to change its
+     * connectors is the core's check, so a teammate without it is refused
+     * as the dashboard would refuse them.
+     *
+     * @param   CreatorRef            $creator       The creator asking.
+     * @param   InstallationRef       $installation  The installation.
+     * @param   array<string, mixed>  $settings      The fields to write by declared name; the others keep their values.
+     * @return  array<string, mixed>  Every setting as now stored.
+     *
+     * @throws  InstallationRefused  `creator_unknown`, `installation_unknown`, `project_unknown` for a platform installation or one the creator may not manage, `invalid` for a field the connector never declared or a value that fails its rule, or `not_permitted` when the creator may not change the project's connectors.
+     */
+    public function updateSettingsAs(CreatorRef $creator, InstallationRef $installation, array $settings): array;
+
+    /**
      * Run one of the connector's own installation actions as the creator, from the connector's creator surface.
      *
      * The same action the dashboard's Connectors tab, the REST API and the
