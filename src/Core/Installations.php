@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector\Core;
 
+use Subscriby\Connector\Data\CreatorRef;
 use Subscriby\Connector\Data\CredentialBag;
+use Subscriby\Connector\Data\InstallationActionResult;
 use Subscriby\Connector\Data\InstallationRecord;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Enums\InstallationState;
+use Subscriby\Connector\Exceptions\InstallationRefused;
 
 /**
  * The installation rows, as a connector may read and write them.
@@ -118,4 +121,41 @@ interface Installations
      * @return  array<string, mixed>  Its settings by declared name; empty before any were saved, and for a ref the core does not know.
      */
     public function settings(InstallationRef $installation): array;
+
+    /**
+     * Write some of the creator's settings for an installation: the connector's own declared fields, checked by their rules.
+     *
+     * The one settings write a connector may make, for a value it learnt on
+     * the platform (the channel an action just created) that the creator
+     * would otherwise have to pick by hand. It runs through the same action
+     * the dashboard's settings dialog does, for whoever is acting, so a
+     * field the connector never declared and a value that fails its rule
+     * are refused exactly as a creator's would be, and `InstallationSettingsChanged`
+     * is dispatched afterwards as for any save.
+     *
+     * @param   InstallationRef       $installation  The installation.
+     * @param   array<string, mixed>  $settings      The fields to write by declared name; the others keep their values.
+     * @return  array<string, mixed>  Every setting as now stored.
+     *
+     * @throws  InstallationRefused  `installation_unknown`, `project_unknown` for a platform installation, `invalid` for a field the connector never declared or a value that fails its rule, or `not_permitted` when nobody who may change the project's connectors is acting.
+     */
+    public function updateSettings(InstallationRef $installation, array $settings): array;
+
+    /**
+     * Run one of the connector's own installation actions as the creator, from the connector's creator surface.
+     *
+     * The same action the dashboard's Connectors tab, the REST API and the
+     * apps run, under the creator's tenant, so the project's permission to
+     * change its connectors, the fields' rules and the installation's state
+     * are checked by the core before the connector's port hears of it.
+     *
+     * @param   CreatorRef                $creator       The creator asking.
+     * @param   InstallationRef           $installation  The installation acting.
+     * @param   string                    $actionKey     The action's key, as the connector's `InstallationActions` port declares it.
+     * @param   array<string, mixed>      $fields        The creator's answers by field name.
+     * @return  InstallationActionResult  Done or refused, in the port's own words.
+     *
+     * @throws  InstallationRefused  `creator_unknown`, `installation_unknown`, `project_unknown`, `not_connected`, `action_unknown`, `invalid` or `not_permitted`.
+     */
+    public function runAction(CreatorRef $creator, InstallationRef $installation, string $actionKey, array $fields = []): InstallationActionResult;
 }

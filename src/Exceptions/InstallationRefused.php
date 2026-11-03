@@ -24,6 +24,27 @@ final class InstallationRefused extends RuntimeException
     /** The platform refused the credentials, or could not be asked. */
     public const string PLATFORM_REFUSED = 'platform_refused';
 
+    /** The ref names no creator. */
+    public const string CREATOR_UNKNOWN = 'creator_unknown';
+
+    /** The ref names no installation. */
+    public const string INSTALLATION_UNKNOWN = 'installation_unknown';
+
+    /** The installation belongs to no project the creator may manage. */
+    public const string PROJECT_UNKNOWN = 'project_unknown';
+
+    /** The installation cannot act right now. */
+    public const string NOT_CONNECTED = 'not_connected';
+
+    /** The connector offers no action by that key on the installation. */
+    public const string ACTION_UNKNOWN = 'action_unknown';
+
+    /** A field or an answer failed the rules the connector declared. */
+    public const string INVALID = 'invalid';
+
+    /** Whoever is acting may not change the project's connectors. */
+    public const string NOT_PERMITTED = 'not_permitted';
+
     /**
      * @param  string                $message  What happened, for the log.
      * @param  string                $reason   One of this class's reason constants.
@@ -54,6 +75,16 @@ final class InstallationRefused extends RuntimeException
     public static function byPlatform(string $connector, DeliveryFailure $failure): self
     {
         return new self(sprintf('Connector "%s" could not install with these credentials (%s): %s', $connector, $failure->kind->value, $failure->detail), self::PLATFORM_REFUSED, $failure);
+    }
+
+    /**
+     * @param   string  $reason   One of the constants above.
+     * @param   string  $message  The core's sentence.
+     * @return  self    The exception.
+     */
+    public static function withReason(string $reason, string $message): self
+    {
+        return new self($message, $reason);
     }
 
     /**

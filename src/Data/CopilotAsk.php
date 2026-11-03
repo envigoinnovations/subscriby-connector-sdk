@@ -16,12 +16,12 @@ namespace Subscriby\Connector\Data;
 final readonly class CopilotAsk
 {
     /**
-     * @param  InstallationRef  $installation  The installation the creator is talking through.
-     * @param  IdentityRecord   $account       The account that is talking.
-     * @param  string           $message       What they said, as typed or as the button read.
-     * @param  string|null      $threadId      The thread to continue, or null to open one.
-     * @param  string|null      $projectId     The project the conversation is about, when it was opened from one.
-     * @param  bool             $newThread     True to leave the given thread and open a fresh one.
+     * @param  InstallationRef       $installation  The installation the creator is talking through.
+     * @param  IdentityRecord        $account       The account that is talking.
+     * @param  string                $message       What they said, as typed or as the button read.
+     * @param  string|null           $threadId      The thread to continue, or null to open one.
+     * @param  string|null           $projectId     The project the conversation is about, when it was opened from one.
+     * @param  bool                  $newThread     True to leave the given thread and open a fresh one.
      * @param  bool                  $showQuestion  True when the message came from a button, so the answer repeats it.
      * @param  array<string, mixed>  $surfaceMeta   What the connector needs to find the conversation that asked, handed back untouched in the opening's `meta`: an interaction token, a message to edit; empty for a platform whose answer always goes to the same chat.
      */

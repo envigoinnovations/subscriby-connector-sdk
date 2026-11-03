@@ -67,6 +67,27 @@ interface Resources
     public function create(ProjectRef $project, SpaceRef $space, ResourceKind $kind, string $title, ?string $description = null): ResourceRef;
 
     /**
+     * Create the resource that sells a place, as the creator the ref names rather than whoever is acting.
+     *
+     * For a connector's creator surface, where no web request and no inbound
+     * handler has set an actor: the same write as `create()`, run as the
+     * creator under the dashboard's rules, so a creator who may not add
+     * resources to the project is refused as "Add a resource" would refuse
+     * them, and a project they may not open is unknown.
+     *
+     * @param   CreatorRef    $creator      The creator asking.
+     * @param   ProjectRef    $project      The project.
+     * @param   SpaceRef      $space        The place, recorded through `Spaces::record()` first.
+     * @param   ResourceKind  $kind         The stored kind, `connector:kind`.
+     * @param   string        $title        The creator-facing title.
+     * @param   string|null   $description  What members get, or null for none.
+     * @return  ResourceRef   The resource, new or the one already selling that place.
+     *
+     * @throws  ResourceRefused  `creator_unknown`, `project_unknown`, `kind_outside_place`, `place_unknown` or `not_permitted`.
+     */
+    public function createAs(CreatorRef $creator, ProjectRef $project, SpaceRef $space, ResourceKind $kind, string $title, ?string $description = null): ResourceRef;
+
+    /**
      * A project's resources as its creator manages them, every connector's, with the standing the doctor recorded.
      *
      * @param   CreatorRef             $creator  The creator talking.
