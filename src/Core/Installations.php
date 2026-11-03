@@ -103,4 +103,19 @@ interface Installations
      * @param  InstallationRef  $installation  The installation to drop.
      */
     public function forget(InstallationRef $installation): void;
+
+    /**
+     * The creator's settings for an installation, as the core stores them.
+     *
+     * The values of the fields the connector's `SettingsSchema` declares, by
+     * name, written by the core's own settings action from the dashboard, the
+     * REST API and the apps after the fields' own rules have run. A field the
+     * creator never saved is absent, so the connector applies its own default;
+     * the core tells the package of every change as well, through
+     * `Events\InstallationSettingsChanged`.
+     *
+     * @param   InstallationRef       $installation  The installation.
+     * @return  array<string, mixed>  Its settings by declared name; empty before any were saved, and for a ref the core does not know.
+     */
+    public function settings(InstallationRef $installation): array;
 }
