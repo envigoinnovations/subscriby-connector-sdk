@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector\Core;
 
+use Subscriby\Connector\Data\CreatorRef;
+use Subscriby\Connector\Data\HandshakeRef;
 use Subscriby\Connector\Data\IdentityRecord;
+use Subscriby\Connector\Data\IncidentSummary;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\MirrorPair;
 use Subscriby\Connector\Data\ProjectRef;
@@ -101,4 +104,59 @@ interface Recovery
      * @throws  ResourceRefused  When no resource has that id.
      */
     public function recordMirrored(ResourceRef $resource): void;
+
+    /**
+     * Open a recovery handshake for a creator: a replacement for the account they sign in with, or a backup one.
+     *
+     * The dashboard's wizards open the same handshake; a creator surface
+     * opens it from the platform and hands the creator the start link its
+     * `RecoverySupport::beginIdentityHandshake()` builds, to open from the
+     * other account. The core's own gates apply: the creator must be the
+     * account holder, the platform installation must keep the relink facet
+     * on, a replacement spends the account allowance and a backup needs the
+     * prevention tier.
+     *
+     * @param   CreatorRef    $creator  Who is proving a new account.
+     * @param   bool          $backup   True to register a backup account rather than replace the creator's own.
+     * @return  HandshakeRef  The open handshake, its purpose `RecoveryRelink` or `BackupIdentity`.
+     *
+     * @throws  RecoveryRefused  When the core refuses, with its reason and the sentence for the creator.
+     * @throws  ResourceRefused  When no creator has that id.
+     */
+    public function openRelink(CreatorRef $creator, bool $backup = false): HandshakeRef;
+
+    /**
+     * A creator's open incidents, newest first, for a status read.
+     *
+     * @param   CreatorRef             $creator  The creator.
+     * @return  list<IncidentSummary>  What the core detected and has not seen resolved.
+     *
+     * @throws  ResourceRefused  When no creator has that id.
+     */
+    public function incidentsFor(CreatorRef $creator): array;
+
+    /**
+     * `registerStandby()` as the creator a surface names, for a surface answering from a job where nobody is bound.
+     *
+     * @param  CreatorRef   $creator   Who is linking.
+     * @param  ResourceRef  $resource  The resource the standby is for.
+     * @param  SpaceRef     $standby   The place to keep in reserve.
+     * @param  bool         $mirror    Whether posts in the resource's place are copied into it.
+     *
+     * @throws  ResourceRefused  When no resource or no creator has that id.
+     * @throws  RecoveryRefused  When the application refuses the standby.
+     */
+    public function registerStandbyAs(CreatorRef $creator, ResourceRef $resource, SpaceRef $standby, bool $mirror = false): void;
+
+    /**
+     * `replaceSpace()` as the creator a surface names.
+     *
+     * @param  CreatorRef   $creator      Who is swapping.
+     * @param  ResourceRef  $resource     The resource whose place is being replaced.
+     * @param  SpaceRef     $replacement  The place taking over.
+     *
+     * @throws  ResourceRefused  When no resource or no creator has that id.
+     * @throws  RecoveryRefused  When the application refuses the swap.
+     */
+    public function replaceSpaceAs(CreatorRef $creator, ResourceRef $resource, SpaceRef $replacement): void;
 }

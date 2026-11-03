@@ -5,6 +5,7 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 ## [Unreleased]
 
 ### Added
+- `Core\Recovery::openRelink(CreatorRef, bool $backup)`, `incidentsFor(CreatorRef): list<IncidentSummary>`, `registerStandbyAs()` and `replaceSpaceAs()`, the recovery commands' reads and writes for a creator surface answering from a job where nobody is bound; `Data\IncidentSummary`.
 - `Core\AccessWindows::listUpcoming(InstallationRef, DateTimeImmutable): list<AccessWindowChanged>`, the dated windows of access on an installation's places that have not ended, up to a horizon, once per gated place on the connector, for a daily catch-up beside the live announcements.
 - `Core\Recovery::mirrorPairs(InstallationRef): list<MirrorPair>` and `recordMirrored(ResourceRef)`, the places the core mirrors for an installation with their standbys and the stamp of a copy, for a connector that hears its platform's posts and copies them through its own recovery port; `Data\MirrorPair`.
 - `Core\Recovery::completeRelink(string, IdentityRecord): RelinkDetection`, the recovery handshake completed with the account a creator proved on the platform, for a connector whose door carries the core's recovery payload, and `HandshakeRefused::SAME_IDENTITY` for the account already linked; `Data\RelinkDetection`.
