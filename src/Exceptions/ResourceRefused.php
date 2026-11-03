@@ -65,6 +65,15 @@ final class ResourceRefused extends RuntimeException
     }
 
     /**
+     * @param   string  $creatorId  The creator id that names no creator.
+     * @return  self    The exception.
+     */
+    public static function creatorUnknown(string $creatorId): self
+    {
+        return new self('creator_unknown', sprintf('No creator has the id "%s".', $creatorId));
+    }
+
+    /**
      * @return  self  The exception.
      */
     public static function notPermitted(): self

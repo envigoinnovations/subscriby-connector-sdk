@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector\Core;
 
+use Subscriby\Connector\Data\CreatorRef;
 use Subscriby\Connector\Data\ProjectRef;
+use Subscriby\Connector\Data\ResourceDetails;
 use Subscriby\Connector\Data\ResourceKind;
 use Subscriby\Connector\Data\ResourceRef;
 use Subscriby\Connector\Data\SpaceRef;
@@ -63,4 +65,37 @@ interface Resources
      * @throws  ResourceRefused  When the kind is the manual perk or names another connector than the place's, the place or the project is unknown, or the actor may not add resources to the project.
      */
     public function create(ProjectRef $project, SpaceRef $space, ResourceKind $kind, string $title, ?string $description = null): ResourceRef;
+
+    /**
+     * A project's resources as its creator manages them, every connector's, with the standing the doctor recorded.
+     *
+     * @param   CreatorRef             $creator  The creator talking.
+     * @param   ProjectRef             $project  The project.
+     * @return  list<ResourceDetails>  The resources in storage order.
+     *
+     * @throws  ResourceRefused  When the creator or the project is unknown.
+     */
+    public function detailsForProject(CreatorRef $creator, ProjectRef $project): array;
+
+    /**
+     * Let plans grant a resource again, or stop them.
+     *
+     * @param   CreatorRef       $creator     The creator talking.
+     * @param   string           $resourceId  The resource.
+     * @param   bool             $active      True to let plans grant it, false to stop.
+     * @return  ResourceDetails  The resource as written.
+     *
+     * @throws  ResourceRefused  When the creator or the resource is unknown, or the creator may not change it.
+     */
+    public function setActive(CreatorRef $creator, string $resourceId, bool $active): ResourceDetails;
+
+    /**
+     * Delete a resource, as the dashboard's own delete does; its plans keep running without it.
+     *
+     * @param  CreatorRef  $creator     The creator talking.
+     * @param  string      $resourceId  The resource.
+     *
+     * @throws  ResourceRefused  When the creator or the resource is unknown, or the creator may not delete it.
+     */
+    public function delete(CreatorRef $creator, string $resourceId): void;
 }
