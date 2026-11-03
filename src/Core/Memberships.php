@@ -8,6 +8,7 @@ use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\MembershipCancellation;
 use Subscriby\Connector\Data\MemberStanding;
+use Subscriby\Connector\Data\RecoveryEmailStanding;
 use Subscriby\Connector\Exceptions\MembershipRefused;
 
 /**
@@ -53,4 +54,49 @@ interface Memberships
      * @throws  MembershipRefused  When the account is nobody's in the project, holds no live membership, or holds one that cannot be cancelled.
      */
     public function cancel(InstallationRef $installation, IdentityRecord $member): MembershipCancellation;
+
+    /**
+     * The member's recovery email as the portal keeps it.
+     *
+     * The address lets a member sign in to the portal when they lose the
+     * platform account they bought through, so a connector's member surface
+     * offers it where the platform is the member's only door.
+     *
+     * @param   InstallationRef             $installation  The project's installation.
+     * @param   IdentityRecord              $member        The account asking.
+     * @return  RecoveryEmailStanding|null  The address and whether it is verified, or null when the account is nobody's in the project.
+     */
+    public function recoveryEmailOf(InstallationRef $installation, IdentityRecord $member): ?RecoveryEmailStanding;
+
+    /**
+     * Set or change the member's recovery email, which mails the verification link.
+     *
+     * @param   InstallationRef        $installation  The project's installation.
+     * @param   IdentityRecord         $member        The account asking.
+     * @param   string                 $email         The address.
+     * @return  RecoveryEmailStanding  The address, unverified until the link is clicked.
+     *
+     * @throws  MembershipRefused  `not_a_member`, or `invalid` when the address fails the portal's checks or another member of the project verified it.
+     */
+    public function setRecoveryEmail(InstallationRef $installation, IdentityRecord $member, string $email): RecoveryEmailStanding;
+
+    /**
+     * Mail the verification link again.
+     *
+     * @param  InstallationRef  $installation  The project's installation.
+     * @param  IdentityRecord   $member        The account asking.
+     *
+     * @throws  MembershipRefused  `not_a_member`, or `no_email` when none is set or it is verified already.
+     */
+    public function resendRecoveryEmailVerification(InstallationRef $installation, IdentityRecord $member): void;
+
+    /**
+     * Forget the member's recovery email.
+     *
+     * @param  InstallationRef  $installation  The project's installation.
+     * @param  IdentityRecord   $member        The account asking.
+     *
+     * @throws  MembershipRefused  `not_a_member`, or `no_email` when none is set.
+     */
+    public function removeRecoveryEmail(InstallationRef $installation, IdentityRecord $member): void;
 }

@@ -10,10 +10,13 @@ use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\InboundSupportMessage;
 use Subscriby\Connector\Data\IngestedSupportMessage;
 use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Data\SpaceRef;
 use Subscriby\Connector\Data\SupportConversationSummary;
 use Subscriby\Connector\Data\SupportMessageRef;
+use Subscriby\Connector\Data\SupportMessageSummary;
 use Subscriby\Connector\Data\SupportRelayTarget;
+use Subscriby\Connector\Enums\SupportInboxFilter;
 use Subscriby\Connector\Enums\SupportReplySource;
 use Subscriby\Connector\Exceptions\SupportRefused;
 
@@ -154,4 +157,55 @@ interface Support
      * @throws  SupportRefused  When the installation names no project, or nobody may act on it.
      */
     public function unlinkRelaySpace(InstallationRef $installation): void;
+
+    /**
+     * The project's inbox as the creator reads it: the threads a filter keeps, newest activity first.
+     *
+     * For a connector's creator surface. Each summary carries the state, the
+     * unread count, the last message's first words and who holds the thread,
+     * so a surface can list the inbox without a second read.
+     *
+     * @param   CreatorRef                        $creator  The creator asking.
+     * @param   ProjectRef                        $project  The project.
+     * @param   SupportInboxFilter                $filter   Which threads: the open ones, the unread ones, one state, or all.
+     * @param   int                               $limit    How many at most.
+     * @return  list<SupportConversationSummary>  The threads.
+     *
+     * @throws  SupportRefused  `creator_unknown` or `project_unknown`.
+     */
+    public function inboxFor(CreatorRef $creator, ProjectRef $project, SupportInboxFilter $filter = SupportInboxFilter::Open, int $limit = 20): array;
+
+    /**
+     * The last messages of a thread, oldest first, as the creator may read them.
+     *
+     * @param   CreatorRef                   $creator       The creator asking.
+     * @param   ConversationRef              $conversation  The thread.
+     * @param   int                          $limit         How many at most, counted from the newest.
+     * @return  list<SupportMessageSummary>  The messages, the creator's internal notes left out.
+     *
+     * @throws  SupportRefused  `creator_unknown`, `conversation_unknown` or `not_permitted`.
+     */
+    public function messagesOf(CreatorRef $creator, ConversationRef $conversation, int $limit = 10): array;
+
+    /**
+     * Close a thread, as the dashboard's Resolve does.
+     *
+     * @param   CreatorRef                  $creator       The creator closing it.
+     * @param   ConversationRef             $conversation  The thread.
+     * @return  SupportConversationSummary  The thread, resolved.
+     *
+     * @throws  SupportRefused  `creator_unknown`, `conversation_unknown` or `not_permitted`.
+     */
+    public function resolve(CreatorRef $creator, ConversationRef $conversation): SupportConversationSummary;
+
+    /**
+     * Open a thread again, as the dashboard's Reopen does.
+     *
+     * @param   CreatorRef                  $creator       The creator opening it.
+     * @param   ConversationRef             $conversation  The thread.
+     * @return  SupportConversationSummary  The thread, open.
+     *
+     * @throws  SupportRefused  `creator_unknown`, `conversation_unknown` or `not_permitted`.
+     */
+    public function reopen(CreatorRef $creator, ConversationRef $conversation): SupportConversationSummary;
 }

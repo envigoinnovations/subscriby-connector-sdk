@@ -23,6 +23,12 @@ final class MembershipRefused extends RuntimeException
     /** The membership is not one the member may cancel: already cancelled, a pass, or not theirs. */
     public const string NOT_CANCELLABLE = 'not_cancellable';
 
+    /** The address, or the write, failed the portal's own checks; the sentence says which. */
+    public const string INVALID = 'invalid';
+
+    /** The member has no recovery email to resend or remove. */
+    public const string NO_EMAIL = 'no_email';
+
     /**
      * @param  string  $reason   One of this class's reason constants.
      * @param  string  $message  What happened, for the log.

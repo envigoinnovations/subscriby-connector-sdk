@@ -7,6 +7,7 @@ namespace Subscriby\Connector\Core;
 use Subscriby\Connector\Data\CreatorRef;
 use Subscriby\Connector\Data\CredentialBag;
 use Subscriby\Connector\Data\InstallationActionResult;
+use Subscriby\Connector\Data\InstallationDetails;
 use Subscriby\Connector\Data\InstallationRecord;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\ProjectRef;
@@ -158,4 +159,15 @@ interface Installations
      * @throws  InstallationRefused  `creator_unknown`, `installation_unknown`, `project_unknown`, `not_connected`, `action_unknown`, `invalid` or `not_permitted`.
      */
     public function runAction(CreatorRef $creator, InstallationRef $installation, string $actionKey, array $fields = []): InstallationActionResult;
+
+    /**
+     * A project's installations as the creator reads them: every connector's, with how the core last found each.
+     *
+     * @param   CreatorRef                 $creator  The creator asking.
+     * @param   ProjectRef                 $project  The project.
+     * @return  list<InstallationDetails>  The installations in storage order, live and standby alike.
+     *
+     * @throws  InstallationRefused  `creator_unknown` or `project_unknown`.
+     */
+    public function detailsForProject(CreatorRef $creator, ProjectRef $project): array;
 }

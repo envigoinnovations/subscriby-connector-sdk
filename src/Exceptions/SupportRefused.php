@@ -70,4 +70,13 @@ final class SupportRefused extends RuntimeException
     {
         return new self('not_permitted', 'The creator this request names may not answer on the project, or nobody may act on it.');
     }
+
+    /**
+     * @param   string  $creatorId  The id the ref carried.
+     * @return  self    The exception.
+     */
+    public static function creatorUnknown(string $creatorId): self
+    {
+        return new self('creator_unknown', sprintf('No creator has the id "%s".', $creatorId));
+    }
 }
