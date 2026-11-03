@@ -31,6 +31,9 @@ final class HandshakeRefused extends RuntimeException
     /** Another project's installation heard the account, not the one the handshake belongs to. */
     public const string INSTALLATION_MISMATCH = 'installation_mismatch';
 
+    /** The account that answered a recovery handshake is the creator's own, so there is nothing to change. */
+    public const string SAME_IDENTITY = 'same_identity';
+
     /**
      * @param  string          $message   What happened, for the log.
      * @param  string          $reason    One of this class's reason constants.
@@ -76,6 +79,14 @@ final class HandshakeRefused extends RuntimeException
     public static function installationMismatch(): self
     {
         return new self('The account was heard by an installation the handshake does not belong to.', self::INSTALLATION_MISMATCH);
+    }
+
+    /**
+     * @return  self  The account that answered a recovery handshake is the creator's own.
+     */
+    public static function sameIdentity(): self
+    {
+        return new self('That is the account already linked to this creator; the handshake needs a different one.', self::SAME_IDENTITY);
     }
 
     /**

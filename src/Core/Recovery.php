@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Subscriby\Connector\Core;
 
+use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Data\RecoveryCoverage;
+use Subscriby\Connector\Data\RelinkDetection;
 use Subscriby\Connector\Data\ResourceRef;
 use Subscriby\Connector\Data\SpaceRef;
+use Subscriby\Connector\Exceptions\HandshakeRefused;
 use Subscriby\Connector\Exceptions\RecoveryRefused;
 use Subscriby\Connector\Exceptions\ResourceRefused;
 
@@ -56,4 +59,20 @@ interface Recovery
      * @throws  RecoveryRefused  When the core refuses: the actor does not own the project, the place is another kind or already sold, or the self-service allowance is spent.
      */
     public function replaceSpace(ResourceRef $resource, SpaceRef $replacement): void;
+
+    /**
+     * Complete a recovery handshake with the account that answered it: the creator proved a new account, or a backup one.
+     *
+     * The token is the one the core minted for the wizard and the
+     * connector's start link carried; the account is recorded as what was
+     * detected and the dashboard confirms the change afterwards, so the
+     * connector tells the person only what was detected and where to go.
+     *
+     * @param   string           $token     The token as the start link carried it, the recovery prefix stripped.
+     * @param   IdentityRecord   $identity  The account that answered, as the connector describes it.
+     * @return  RelinkDetection  What was detected: a replacement or a backup, and the account's name.
+     *
+     * @throws  HandshakeRefused  `expired` when the token names no pending handshake, `identity_held` when another creator holds the account, `same_identity` when it is the creator's own.
+     */
+    public function completeRelink(string $token, IdentityRecord $identity): RelinkDetection;
 }
