@@ -4,6 +4,8 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.14.0] - 2026-11-03
+
 ### Added
 - `Core\Recovery::openRelink(CreatorRef, bool $backup)`, `incidentsFor(CreatorRef): list<IncidentSummary>`, `registerStandbyAs()` and `replaceSpaceAs()`, the recovery commands' reads and writes for a creator surface answering from a job where nobody is bound; `Data\IncidentSummary`.
 - `Core\AccessWindows::listUpcoming(InstallationRef, DateTimeImmutable): list<AccessWindowChanged>`, the dated windows of access on an installation's places that have not ended, up to a horizon, once per gated place on the connector, for a daily catch-up beside the live announcements.
