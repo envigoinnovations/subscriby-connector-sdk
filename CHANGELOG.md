@@ -5,6 +5,7 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 ## [Unreleased]
 
 ### Added
+- `Core\Recovery::mirrorPairs(InstallationRef): list<MirrorPair>` and `recordMirrored(ResourceRef)`, the places the core mirrors for an installation with their standbys and the stamp of a copy, for a connector that hears its platform's posts and copies them through its own recovery port; `Data\MirrorPair`.
 - `Core\Recovery::completeRelink(string, IdentityRecord): RelinkDetection`, the recovery handshake completed with the account a creator proved on the platform, for a connector whose door carries the core's recovery payload, and `HandshakeRefused::SAME_IDENTITY` for the account already linked; `Data\RelinkDetection`.
 - `Core\Support::inboxFor(CreatorRef, ProjectRef, SupportInboxFilter, int): list<SupportConversationSummary>`, `messagesOf(CreatorRef, ConversationRef, int): list<SupportMessageSummary>`, `resolve()` and `reopen()`, the inbox as a creator surface reads and settles it; `SupportConversationSummary` carries the state, the unread count, the last message and the assignee; the `SupportInboxFilter`, `SupportConversationState` and `SupportMessageAuthor` enums; `SupportRefused::creatorUnknown()`.
 - `Core\CreatorTasks`: `listForProject(CreatorRef, ProjectRef, CreatorTaskState, int): list<CreatorTaskDetails>` and `complete(CreatorRef, string): CreatorTaskDetails`, the tasks a creator settles by hand; `CreatorTasksRefused`.

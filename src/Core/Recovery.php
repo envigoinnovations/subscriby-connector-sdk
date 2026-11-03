@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Subscriby\Connector\Core;
 
 use Subscriby\Connector\Data\IdentityRecord;
+use Subscriby\Connector\Data\InstallationRef;
+use Subscriby\Connector\Data\MirrorPair;
 use Subscriby\Connector\Data\ProjectRef;
 use Subscriby\Connector\Data\RecoveryCoverage;
 use Subscriby\Connector\Data\RelinkDetection;
@@ -75,4 +77,28 @@ interface Recovery
      * @throws  HandshakeRefused  `expired` when the token names no pending handshake, `identity_held` when another creator holds the account, `same_identity` when it is the creator's own.
      */
     public function completeRelink(string $token, IdentityRecord $identity): RelinkDetection;
+
+    /**
+     * The places the core mirrors for an installation, each with the standby its posts are copied into.
+     *
+     * The core reads no connector's posts, so a connector that hears a post
+     * asks here whether the place is mirrored and copies it through its own
+     * recovery port; the answer is empty for a standby whose mirror switch is
+     * off, whose place the last probe found unhealthy, or whose project
+     * switched the mirror facet off for the connector, so a flipped switch
+     * stops the copies at once.
+     *
+     * @param   InstallationRef   $installation  The installation whose project's places are meant.
+     * @return  list<MirrorPair>  Each mirrored resource with its place and its standby; empty for an installation the core does not know.
+     */
+    public function mirrorPairs(InstallationRef $installation): array;
+
+    /**
+     * Note that a post was just copied into a resource's standby, for the prevention page's "last mirrored" line.
+     *
+     * @param  ResourceRef  $resource  The resource whose standby received the copy.
+     *
+     * @throws  ResourceRefused  When no resource has that id.
+     */
+    public function recordMirrored(ResourceRef $resource): void;
 }
