@@ -22,7 +22,8 @@ final readonly class CopilotAsk
      * @param  string|null      $threadId      The thread to continue, or null to open one.
      * @param  string|null      $projectId     The project the conversation is about, when it was opened from one.
      * @param  bool             $newThread     True to leave the given thread and open a fresh one.
-     * @param  bool             $showQuestion  True when the message came from a button, so the answer repeats it.
+     * @param  bool                  $showQuestion  True when the message came from a button, so the answer repeats it.
+     * @param  array<string, mixed>  $surfaceMeta   What the connector needs to find the conversation that asked, handed back untouched in the opening's `meta`: an interaction token, a message to edit; empty for a platform whose answer always goes to the same chat.
      */
     public function __construct(
         public InstallationRef $installation,
@@ -32,5 +33,6 @@ final readonly class CopilotAsk
         public ?string $projectId = null,
         public bool $newThread = false,
         public bool $showQuestion = false,
+        public array $surfaceMeta = [],
     ) {}
 }

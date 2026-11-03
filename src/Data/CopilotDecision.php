@@ -14,15 +14,17 @@ namespace Subscriby\Connector\Data;
 final readonly class CopilotDecision
 {
     /**
-     * @param  InstallationRef  $installation  The installation the creator is talking through.
-     * @param  IdentityRecord   $account       The account that is deciding.
-     * @param  string           $actionId      The card.
-     * @param  bool             $approve       True to run the held tool, false to decline it.
+     * @param  InstallationRef       $installation  The installation the creator is talking through.
+     * @param  IdentityRecord        $account       The account that is deciding.
+     * @param  string                $actionId      The card.
+     * @param  bool                  $approve       True to run the held tool, false to decline it.
+     * @param  array<string, mixed>  $surfaceMeta   What the connector needs to find the conversation that pressed, handed back untouched in the opening's `meta` when a confirm runs the tool; empty for a platform whose answer always goes to the same chat.
      */
     public function __construct(
         public InstallationRef $installation,
         public IdentityRecord $account,
         public string $actionId,
         public bool $approve,
+        public array $surfaceMeta = [],
     ) {}
 }

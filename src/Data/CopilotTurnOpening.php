@@ -12,11 +12,13 @@ final readonly class CopilotTurnOpening
     /**
      * @param  string       $threadId          The thread the turn belongs to.
      * @param  string       $thinkingSentence  The words to show while nothing has arrived yet, in the creator's language.
-     * @param  string|null  $question          The creator's question to show above the answer, when they tapped it rather than typed it.
+     * @param  string|null           $question          The creator's question to show above the answer, when they tapped it rather than typed it.
+     * @param  array<string, mixed>  $meta              What the connector handed the core with the ask (`CopilotAsk::$surfaceMeta`), back untouched, so the display can open where the question was asked.
      */
     public function __construct(
         public string $threadId,
         public string $thinkingSentence,
         public ?string $question = null,
+        public array $meta = [],
     ) {}
 }
