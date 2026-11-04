@@ -20,6 +20,9 @@ final readonly class Listing
     /** The longest tagline a card can show on one line. */
     public const TAGLINE_LENGTH = 80;
 
+    /** What a brand colour must look like: a hash and six hex digits. */
+    public const BRAND_COLOR_PATTERN = '/^#[0-9A-Fa-f]{6}$/';
+
     /**
      * @param  ListingCategory        $category        The shelf the connector sits on.
      * @param  string                 $tagline         One line under the name, at most 80 characters.
@@ -32,8 +35,9 @@ final readonly class Listing
      * @param  ListingMarketing|null  $marketing       The words the marketing site borrows; null when the connector lends none.
      * @param  ListingPortalCta|null  $portalCta       The button the member portal shows to open the connector; null when it has nowhere to open.
      * @param  ListingSeo|null        $seo             The copy that makes the connector's public page a search landing page; null for the generic page.
+     * @param  string|null            $brandColor      The platform's brand colour, #RRGGBB; the member portal paints the buttons that open or sign in with the connector in it and picks the text colour itself. Null leaves them in the portal's own accent.
      *
-     * @throws  InvalidManifest  When the tagline is empty or too long.
+     * @throws  InvalidManifest  When the tagline is empty or too long, or the brand colour is not #RRGGBB.
      */
     public function __construct(
         public ListingCategory $category,
@@ -47,11 +51,16 @@ final readonly class Listing
         public ?ListingMarketing $marketing = null,
         public ?ListingPortalCta $portalCta = null,
         public ?ListingSeo $seo = null,
+        public ?string $brandColor = null,
     ) {
         $length = mb_strlen(trim($tagline));
 
         if ($length === 0 || $length > self::TAGLINE_LENGTH) {
             throw InvalidManifest::because('unknown', sprintf('the listing tagline must be 1 to %d characters', self::TAGLINE_LENGTH));
+        }
+
+        if ($brandColor !== null && preg_match(self::BRAND_COLOR_PATTERN, $brandColor) !== 1) {
+            throw InvalidManifest::because('unknown', 'the listing brand_color must be a #RRGGBB colour');
         }
     }
 }

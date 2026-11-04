@@ -53,6 +53,7 @@
         "added_at": "2026-09-10",
         "sign_in_required": false,
         "portal_cta": { "label": "Open the fake room" },
+        "brand_color": "#F59E0B",
         "seo": {
             "title": "Fake Membership Bot for Paid Rooms and Halls",
             "description": "Sell access to a paid fake room with your own fake bot: members pay, are admitted the moment they pay and are removed when access ends.",

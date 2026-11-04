@@ -160,7 +160,7 @@ final class ManifestFile
         ];
 
         $listing = $reader->object('listing');
-        $listing->refuseUnknownKeys(['category', 'tagline', 'overview', 'screenshots', 'links', 'added_at', 'changelog_url', 'sign_in_required', 'marketing', 'portal_cta', 'seo']);
+        $listing->refuseUnknownKeys(['category', 'tagline', 'overview', 'screenshots', 'links', 'added_at', 'changelog_url', 'sign_in_required', 'marketing', 'portal_cta', 'seo', 'brand_color']);
         $category = $listing->enum('category', ListingCategory::class);
         $tagline = $listing->string('tagline');
         $overview = $listing->string('overview');
@@ -200,6 +200,12 @@ final class ManifestFile
             $cta = $listing->object('portal_cta');
             $cta->refuseUnknownKeys(['label', 'icon']);
             $portalCta = [$cta->string('label'), $cta->optionalString('icon')];
+        }
+
+        $brandColor = $listing->optionalString('brand_color');
+
+        if ($brandColor !== null && preg_match(Listing::BRAND_COLOR_PATTERN, $brandColor) !== 1) {
+            $listing->fail('brand_color must be a #RRGGBB colour');
         }
 
         $seoValues = null;
@@ -248,7 +254,7 @@ final class ManifestFile
                 managementCommands: $managementCommands,
                 relayModes: $relayModes,
                 recovery: new RecoveryCapabilities(...$facets),
-                listing: new Listing($category, $tagline, $overview, $screenshots, new ListingLinks(...$linkValues), $addedAt, $changelogUrl, $signInRequired, $marketingValues === null ? null : new ListingMarketing(...$marketingValues), $portalCta === null ? null : new ListingPortalCta(...$portalCta), $seoValues === null ? null : self::seo($seoValues)),
+                listing: new Listing($category, $tagline, $overview, $screenshots, new ListingLinks(...$linkValues), $addedAt, $changelogUrl, $signInRequired, $marketingValues === null ? null : new ListingMarketing(...$marketingValues), $portalCta === null ? null : new ListingPortalCta(...$portalCta), $seoValues === null ? null : self::seo($seoValues), $brandColor),
                 installFields: $installFields,
                 settingsFields: $settingsFields,
             );

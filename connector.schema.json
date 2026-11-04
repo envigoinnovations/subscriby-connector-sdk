@@ -166,6 +166,11 @@
                         "icon": { "type": "string", "minLength": 1, "description": "An icon slug; the connector's own icon when omitted." }
                     }
                 },
+                "brand_color": {
+                    "type": "string",
+                    "pattern": "^#[0-9A-Fa-f]{6}$",
+                    "description": "The platform's brand colour as #RRGGBB. The member portal paints the buttons that open or sign in with the connector in it, with the connector's icon beside the label, and picks a readable text colour itself; omitted, those buttons take the portal's own accent."
+                },
                 "seo": {
                     "type": "object",
                     "additionalProperties": false,
