@@ -13,20 +13,23 @@ use DateTimeImmutable;
  * another has access the core cannot give until they connect an account
  * there. A surface that lists what the member holds lists these beside the
  * doors still open, in the member's words for the place, with the
- * connector's name and the signed portal door that signs the member in and
- * opens the connect flow, so the member is one tap from the account the
- * place is waiting for.
+ * connector's name, the signed portal door that signs the member in and
+ * opens the connect flow, and that connector's own door and the words to
+ * type there, so the member is one tap from the account the place is
+ * waiting for without the portal in between.
  */
 final readonly class WaitingPlace
 {
     /**
-     * @param  ResourceRef             $resource       The place.
-     * @param  string                  $connector      The connector the place is on, which the member holds no account on.
-     * @param  string                  $connectorName  The connector's name as the member reads it.
-     * @param  string                  $kindBadge      The member's words for the place: the connector-named kind, then the home where the place has one.
-     * @param  string|null             $connectDoor    The signed portal address that signs the member in and opens the connect flow; null while the project has no portal handle.
-     * @param  string|null             $windowId       The dated window the place waits for, or null for undated access.
-     * @param  DateTimeImmutable|null  $opensAt        When that window opens, or null.
+     * @param  ResourceRef             $resource             The place.
+     * @param  string                  $connector            The connector the place is on, which the member holds no account on.
+     * @param  string                  $connectorName        The connector's name as the member reads it.
+     * @param  string                  $kindBadge            The member's words for the place: the connector-named kind, then the home where the place has one.
+     * @param  string|null             $connectDoor          The signed portal address that signs the member in and opens the connect flow; null while the project has no portal handle.
+     * @param  string|null             $windowId             The dated window the place waits for, or null for undated access.
+     * @param  DateTimeImmutable|null  $opensAt              When that window opens, or null.
+     * @param  string|null             $connectStart         The connector's own link for the handshake that connects the account (a bot's deep link, an authorisation page); null while the project has no live installation on it.
+     * @param  string|null             $connectInstructions  What the member types on that platform by hand to complete the same handshake, as the connector words it; null when it offers no typed route.
      */
     public function __construct(
         public ResourceRef $resource,
@@ -36,5 +39,7 @@ final readonly class WaitingPlace
         public ?string $connectDoor = null,
         public ?string $windowId = null,
         public ?DateTimeImmutable $opensAt = null,
+        public ?string $connectStart = null,
+        public ?string $connectInstructions = null,
     ) {}
 }
