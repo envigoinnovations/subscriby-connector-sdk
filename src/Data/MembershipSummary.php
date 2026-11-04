@@ -26,6 +26,7 @@ final readonly class MembershipSummary
      * @param  list<string>            $resources  The titles of the places the plan grants.
      * @param  list<GrantSummary>      $grants     The live grants on it: a `pending` bearer link is a door the member still has to walk through.
      * @param  PassStanding|null       $pass       Where the pass stands, for a pass plan.
+     * @param  list<WaitingPlace>      $waiting    The places waiting on an account the member has not connected, each with the door that connects it; empty when none wait.
      */
     public function __construct(
         public string $id,
@@ -41,6 +42,7 @@ final readonly class MembershipSummary
         public array $resources,
         public array $grants,
         public ?PassStanding $pass = null,
+        public array $waiting = [],
     ) {}
 
     /**

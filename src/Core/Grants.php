@@ -8,6 +8,7 @@ use Subscriby\Connector\Data\GrantRecord;
 use Subscriby\Connector\Data\GrantRef;
 use Subscriby\Connector\Data\GrantSummary;
 use Subscriby\Connector\Data\IdentityRef;
+use Subscriby\Connector\Data\WaitingPlace;
 
 /**
  * The access ledger, as a connector may read and write it.
@@ -54,6 +55,21 @@ interface Grants
      * @return  list<GrantSummary>  The `pending`, `held` and `granted` rows, oldest first; empty when the account holds nothing live.
      */
     public function listLiveForIdentity(IdentityRef $identity): array;
+
+    /**
+     * The places a purchase waits for: those on a connector the member holds no account on.
+     *
+     * A purchase that includes a place on a platform the member has not
+     * connected leaves a `pending_identity` row behind; the member hears
+     * about it through whichever surface they use, with the member's words
+     * for the place, the connector's name and a signed door into the portal
+     * that connects the account, so a surface on one platform can point a
+     * member at the other.
+     *
+     * @param   string              $subscriptionId  The purchase.
+     * @return  list<WaitingPlace>  The waiting places in the plan's order; empty when none wait or no purchase has that id.
+     */
+    public function listWaitingForSubscription(string $subscriptionId): array;
 
     /**
      * Write a grant, or rewrite the one the purchase already holds for that resource and date.
