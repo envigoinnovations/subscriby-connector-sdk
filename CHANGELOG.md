@@ -4,6 +4,9 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+### Added
+- `Core\Resources::memberKindLabel(ResourceKind)`, `creatorKindLabel(ResourceKind)` and `memberKindBadge(ResourceRef)`, the words the core uses for a kind of place: named after its connector ("Discord Role" rather than "Role", because a project can sell places on two platforms), translated for the reader, and for a member followed by the home the place lives in where the platform names one (the server an app was added to), so a surface that lists a plan's places or offers an invite per place reads as the portal does.
+
 ## [1.15.0] - 2026-11-04
 
 ### Added

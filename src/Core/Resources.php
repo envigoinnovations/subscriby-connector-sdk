@@ -46,6 +46,41 @@ interface Resources
     public function listForProject(ProjectRef $project, string $connector): array;
 
     /**
+     * The name a member reads for a kind of place, named after its connector.
+     *
+     * "Discord Role" rather than "Role": a project can sell places on two
+     * platforms, and a member reading a plan, an invite button or a reminder
+     * has to know which app to open. The core words it from the connector's
+     * listing name and the kind's portal label, translated for the member.
+     *
+     * @param   ResourceKind  $kind  The stored kind, `connector:kind`.
+     * @return  string        The connector's name before the kind's portal label; "Custom Perk" for the manual perk; the kind word alone when the connector is no longer registered.
+     */
+    public function memberKindLabel(ResourceKind $kind): string;
+
+    /**
+     * The name a creator reads for a kind of place, named after its connector.
+     *
+     * @param   ResourceKind  $kind  The stored kind, `connector:kind`.
+     * @return  string        The connector's name before the kind's label; "Manual Perk" for the manual perk; the kind word alone when the connector is no longer registered.
+     */
+    public function creatorKindLabel(ResourceKind $kind): string;
+
+    /**
+     * What a member reads beside a resource's title: its kind, then the home the place lives in where the platform has one.
+     *
+     * A place inside a home the platform names, a role or a channel in a
+     * server the app was added to, carries the home's name after the kind,
+     * because a project may run on two servers and the member has to know
+     * which one to open; a place on a bot connected by its token is the home
+     * itself and reads the kind alone.
+     *
+     * @param   ResourceRef  $resource  The resource.
+     * @return  string       The kind's member label, then the home after a middle dot where the place has one; the label from the ref's kind alone when the row is gone.
+     */
+    public function memberKindBadge(ResourceRef $resource): string;
+
+    /**
      * Sell access to a place: the resource for the project the creator picked it for.
      *
      * Idempotent on the project and the place: a place the project already
