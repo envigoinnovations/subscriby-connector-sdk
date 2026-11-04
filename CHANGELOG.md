@@ -4,6 +4,9 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+### Added
+- `Data\BroadcastReach::$broadcastId`, the id of the record a queued send reports into (null for a preview), so a creator surface that queued a broadcast through `Core\Broadcasts::send()` can name it in its follow-up; the core keeps every broadcast as a row the dashboard, the REST API and the agents read back with its tallies and the members it could not reach.
+
 ## [1.14.0] - 2026-11-03
 
 ### Added
