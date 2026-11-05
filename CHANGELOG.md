@@ -4,6 +4,8 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+## [1.16.0] - 2026-11-05
+
 ### Added
 - `Core\Resources::memberKindLabel(ResourceKind)`, `creatorKindLabel(ResourceKind)` and `memberKindBadge(ResourceRef)`, the words the core uses for a kind of place: named after its connector ("Discord Role" rather than "Role", because a project can sell places on two platforms), translated for the reader, and for a member followed by the home the place lives in where the platform names one (the server an app was added to), so a surface that lists a plan's places or offers an invite per place reads as the portal does.
 - `Data\Listing::$brandColor` and the manifest's `listing.brand_color` (`#RRGGBB`), the platform's brand colour: the member portal paints the buttons that open or sign in with the connector in it, with the connector's own icon beside the label, and picks a readable text colour itself; omitted, those buttons keep the portal's accent. `GET /connectors` returns it as `brand_color`.
