@@ -5,18 +5,23 @@ declare(strict_types=1);
 namespace Subscriby\Connector\Core;
 
 use Subscriby\Connector\Data\AccessCodeRedemption;
+use Subscriby\Connector\Data\HostedCheckout;
 use Subscriby\Connector\Data\IdentityRecord;
 use Subscriby\Connector\Data\InstallationRef;
 use Subscriby\Connector\Data\PlanOffer;
 use Subscriby\Connector\Exceptions\AccessCodeRefused;
+use Subscriby\Connector\Exceptions\CheckoutRefused;
 
 /**
  * What a project sells, as a connector's member surface offers it.
  *
  * The portal is where a purchase is made; a connector that cannot run a
  * checkout of its own shows the plans and hands the person to the portal's
- * checkout for the one they pick, coupon included. An access code is the
- * one purchase that completes on the connector, because nothing is paid.
+ * checkout for the one they pick, coupon included. A connector with a
+ * checkout screen of its own, where the member picks the rail, may instead
+ * start a gateway's hosted checkout for that method and hand them the
+ * gateway's page. An access code is the one purchase that completes on the
+ * connector, because nothing is paid.
  */
 interface Storefront
 {
@@ -50,6 +55,27 @@ interface Storefront
      * @return  string|null      The address, or null when the plan is not the project's or the project has no handle.
      */
     public function checkoutUrlFor(InstallationRef $installation, string $planId, ?string $coupon = null): ?string;
+
+    /**
+     * Start a gateway's hosted checkout for a member on one of the project's methods.
+     *
+     * For a connector that runs its own checkout screen and lets the member
+     * pick the rail there, as the first connector's bot does. The core runs
+     * the action the portal runs for that rail: the eligibility checks, the
+     * member's coupon, the parked intent the gateway's return and webhook
+     * find, and the pending-payment announcement; the connector only sends
+     * the address back. A connector's checkout-started line stays its own
+     * call, `Retention::recordCheckoutStart()`, made before this one.
+     *
+     * @param   InstallationRef  $installation  The project's installation.
+     * @param   IdentityRecord   $member        The account buying.
+     * @param   string           $planId        The plan.
+     * @param   string           $methodId      The project's method on the rail the member picked.
+     * @return  HostedCheckout   The gateway's page to send the member to, with the rail's name.
+     *
+     * @throws  CheckoutRefused  When the installation, the member, the plan or the method is unknown, the rail has no hosted page, the member may not buy now, the coupon cannot be honoured, or the gateway refused.
+     */
+    public function startHostedCheckout(InstallationRef $installation, IdentityRecord $member, string $planId, string $methodId): HostedCheckout;
 
     /**
      * Redeem an access code for a member, which opens the membership it stands for.

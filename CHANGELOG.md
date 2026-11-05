@@ -4,6 +4,9 @@ All notable changes to `subscriby/connector-sdk` are listed here. The format fol
 
 ## [Unreleased]
 
+### Added
+- `Core\Storefront::startHostedCheckout(InstallationRef, IdentityRecord, string $planId, string $methodId): HostedCheckout`, a gateway's hosted checkout started for a member on one of the project's methods, for a connector that runs its own checkout screen and lets the member pick the rail there: the core runs the action the portal runs for that rail (the eligibility checks, the member's coupon, the parked intent the gateway's return and webhook find, the pending-payment announcement) and answers the page to send the member to with the rail's key and name; `Data\HostedCheckout`; `Exceptions\CheckoutRefused` with `installation_unknown`, `member_unknown`, `plan_unknown`, `method_unknown`, `provider_unsupported`, `not_eligible`, `coupon_refused` and `gateway_refused`, the last three carrying the core's sentence for the member. A connector's checkout-started line stays its own `Retention::recordCheckoutStart()` call.
+
 ## [1.16.0] - 2026-11-05
 
 ### Added
