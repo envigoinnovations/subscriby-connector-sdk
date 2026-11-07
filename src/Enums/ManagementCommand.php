@@ -40,6 +40,7 @@ enum ManagementCommand: string
     case SupportReply = 'support_reply';
     case SupportRelaySetup = 'support_relay_setup';
     case CreatorTasks = 'creator_tasks';
+    case PassRoster = 'pass_roster';
     case RecoveryStatus = 'recovery_status';
     case RecoveryRelink = 'recovery_relink';
     case RecoveryStandby = 'recovery_standby';
