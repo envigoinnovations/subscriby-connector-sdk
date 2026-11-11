@@ -76,7 +76,7 @@ interface Identities
      * @param  IdentityRef         $identity   The account.
      * @param  MemberRef           $member     Who holds it, in which project.
      * @param  IdentityLinkSource  $source     How the link was proven.
-     * @param  bool                $preferred  Whether the member wants to be reached here first.
+     * @param  bool                $preferred  Whether the member asks to be reached here first; a member's first account is preferred on its own.
      */
     public function linkMember(IdentityRef $identity, MemberRef $member, IdentityLinkSource $source, bool $preferred = false): void;
 
