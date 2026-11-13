@@ -74,8 +74,10 @@ abstract class ConnectorServiceProvider extends ServiceProvider
             $this->commands($this->packageCommands());
         }
 
-        foreach ($this->packageListeners() as $event => $listener) {
-            Event::listen($event, $listener);
+        foreach ($this->packageListeners() as $event => $listeners) {
+            foreach ((array) $listeners as $listener) {
+                Event::listen($event, $listener);
+            }
         }
     }
 
@@ -154,7 +156,7 @@ abstract class ConnectorServiceProvider extends ServiceProvider
      * keeps rows of its own in step names the listener here rather than
      * listening to anything under the application's namespace.
      *
-     * @return  array<class-string, class-string>  Event class to listener class.
+     * @return  array<class-string, string|list<string>>  Event class to a listener, a class name or `Listener@method`, or to a list of them when the package follows one event for more than one reason.
      */
     protected function packageListeners(): array
     {
