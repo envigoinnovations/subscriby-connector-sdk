@@ -2,7 +2,7 @@
 
 All notable changes to `subscriby/connector-sdk` are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package follows [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.17.0] - 2026-11-14
 
 ### Changed
 - `ConnectorServiceProvider::packageListeners()` accepts a list of listeners for one event, each a class or a `Listener@method` string, so a package that follows an event for more than one reason declares every listener there rather than binding the second by hand.
